@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "the_vault:ore_painite"
+  },
+  "result": "the_vault:gem_painite",
+  "experience": 1.0,
+  "cookingtime": 200
+}

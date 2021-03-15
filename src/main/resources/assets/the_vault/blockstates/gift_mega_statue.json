@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=south": {
+      "model": "the_vault:block/gift_mega_statue"
+    },
+    "facing=east": {
+      "model": "the_vault:block/gift_mega_statue",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "the_vault:block/gift_mega_statue",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "the_vault:block/gift_mega_statue",
+      "y": 90
+    }
+  }
+}

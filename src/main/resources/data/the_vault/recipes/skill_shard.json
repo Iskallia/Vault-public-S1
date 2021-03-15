@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "the_vault:skill_essence"
+    },
+    {
+      "item": "the_vault:skill_essence"
+    },
+    {
+      "item": "the_vault:skill_essence"
+    },
+    {
+      "item": "the_vault:skill_essence"
+    },
+    {
+      "item": "the_vault:skill_essence"
+    },
+    {
+      "item": "the_vault:skill_essence"
+    },
+    {
+      "item": "the_vault:skill_essence"
+    },
+    {
+      "item": "the_vault:skill_essence"
+    },
+    {
+      "item": "the_vault:skill_essence"
+    }
+  ],
+  "result": {
+    "item": "the_vault:skill_shard",
+    "count": 1
+  }
+}

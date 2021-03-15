@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:cluster_alexandrite"},
+    {"item": "the_vault:cluster_alexandrite"},
+    {"item": "the_vault:cluster_alexandrite"},
+    {"item": "the_vault:cluster_alexandrite"},
+    {"item": "the_vault:cluster_alexandrite"},
+    {"item": "the_vault:cluster_alexandrite"},
+    {"item": "the_vault:cluster_alexandrite"},
+    {"item": "the_vault:cluster_alexandrite"},
+    {"item": "the_vault:cluster_alexandrite"}
+  ],
+  "result": {
+    "item": "the_vault:chunk_alexandrite",
+    "count": 1
+  }
+}

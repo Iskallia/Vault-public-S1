@@ -1,0 +1,100 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"1": "the_vault:block/rune_block",
+		"2": "the_vault:block/rune_block_filled",
+		"particle": "the_vault:block/rune_block_empty"
+	},
+	"elements": [
+		{
+			"name": "block",
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#2"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#1"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#1"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#1"},
+				"up": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#1"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#1"}
+			}
+		},
+		{
+			"name": "rune1",
+			"from": [6, 4, -1],
+			"to": [11, 13, 0],
+			"rotation": {"angle": 0, "axis": "y", "origin": [17, 12, 7]},
+			"faces": {
+				"north": {"uv": [5, 3, 10, 12], "texture": "#2"},
+				"east": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"south": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"west": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"up": {"uv": [15, 1, 16, 2], "texture": "#2"},
+				"down": {"uv": [15, 1, 16, 2], "texture": "#2"}
+			}
+		},
+		{
+			"name": "rune2",
+			"from": [5, 5, -1],
+			"to": [6, 12, 0],
+			"rotation": {"angle": 0, "axis": "y", "origin": [16, 12, 7]},
+			"faces": {
+				"north": {"uv": [10, 4, 11, 11], "texture": "#2"},
+				"east": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"south": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"west": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"up": {"uv": [15, 1, 16, 2], "texture": "#2"},
+				"down": {"uv": [15, 1, 16, 2], "texture": "#2"}
+			}
+		},
+		{
+			"name": "rune3",
+			"from": [11, 5, -1],
+			"to": [12, 12, 0],
+			"rotation": {"angle": 0, "axis": "y", "origin": [22, 12, 7]},
+			"faces": {
+				"north": {"uv": [4, 4, 5, 11], "texture": "#2"},
+				"east": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"south": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"west": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"up": {"uv": [15, 1, 16, 2], "texture": "#2"},
+				"down": {"uv": [15, 1, 16, 2], "texture": "#2"}
+			}
+		},
+		{
+			"name": "rune4",
+			"from": [12, 6, -1],
+			"to": [13, 11, 0],
+			"rotation": {"angle": 0, "axis": "y", "origin": [23, 12, 7]},
+			"faces": {
+				"north": {"uv": [3, 5, 4, 10], "texture": "#2"},
+				"east": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"south": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"west": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"up": {"uv": [15, 1, 16, 2], "texture": "#2"},
+				"down": {"uv": [15, 1, 16, 2], "texture": "#2"}
+			}
+		},
+		{
+			"name": "rune5",
+			"from": [4, 6, -1],
+			"to": [5, 11, 0],
+			"rotation": {"angle": 0, "axis": "y", "origin": [15, 12, 7]},
+			"faces": {
+				"north": {"uv": [11, 5, 12, 10], "texture": "#2"},
+				"east": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"south": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"west": {"uv": [15, 1, 16, 6], "texture": "#2"},
+				"up": {"uv": [15, 1, 16, 2], "texture": "#2"},
+				"down": {"uv": [15, 1, 16, 2], "texture": "#2"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "rune_block_filled",
+			"origin": [13, 7, 8],
+			"children": [0, 1, 2, 3, 4, 5]
+		}
+	]
+}

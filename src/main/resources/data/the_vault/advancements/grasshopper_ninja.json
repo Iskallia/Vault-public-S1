@@ -1,0 +1,25 @@
+{
+  "parent": "the_vault:root",
+  "display": {
+    "title": {
+      "text": "The Grasshopper Ninja"
+    },
+    "description": {
+      "text": "Use Dash with a full set of green Samurai armor!"
+    },
+    "icon": {
+      "item": "the_vault:chestplate",
+      "nbt": "{\"Vault\":{\"Attributes\":[{\"Id\":\"the_vault:gear_model\",\"BaseValue\":0},{\"Id\":\"the_vault:gear_color\",\"BaseValue\":6192150},{\"Id\":\"the_vault:gear_state\",\"BaseValue\":\"IDENTIFIED\"},{\"Id\":\"the_vault:gear_rarity\",\"BaseValue\":\"COMMON\"}]}}"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/block/blackstone.png"
+  },
+  "criteria": {
+    "hopped": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

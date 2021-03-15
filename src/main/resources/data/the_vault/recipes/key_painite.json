@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#n#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "item": "the_vault:gem_painite"
+    },
+    "n": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "result": {
+    "item": "the_vault:cluster_painite",
+    "count": 1
+  }
+}

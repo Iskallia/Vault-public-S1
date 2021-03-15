@@ -1,0 +1,7 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "the_vault:item/sword/common/sword_1",
+    "layer1": "the_vault:item/sword/common/sword_1_overlay"
+  }
+}

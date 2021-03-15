@@ -1,0 +1,65 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "the_vault:ore_alexandrite",
+              "conditions": [
+                {
+                  "condition": "minecraft:match_tool",
+                  "predicate": {
+                    "enchantments": [
+                      {
+                        "enchantment": "minecraft:silk_touch",
+                        "levels": {
+                          "min": 1
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "the_vault:gem_alexandrite",
+              "functions": [
+                {
+                  "function": "minecraft:set_count",
+                  "count": 0,
+                  "conditions": [
+                    {
+                      "condition": "minecraft:table_bonus",
+                      "enchantment": "minecraft:fortune",
+                      "chances": [
+                        0.5,
+                        0.333,
+                        0.25,
+                        0.2,
+                        0.18333
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "function": "minecraft:apply_bonus",
+                  "enchantment": "minecraft:fortune",
+                  "formula": "minecraft:ore_drops"
+                },
+                {
+                  "function": "minecraft:explosion_decay"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

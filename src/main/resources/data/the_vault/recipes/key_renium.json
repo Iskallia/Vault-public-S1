@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#n#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "item": "the_vault:gem_renium"
+    },
+    "n": {
+      "item": "minecraft:diamond_block"
+    }
+  },
+  "result": {
+    "item": "the_vault:cluster_renium",
+    "count": 1
+  }
+}

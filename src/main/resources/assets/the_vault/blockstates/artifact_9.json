@@ -1,0 +1,19 @@
+{
+        "variants": {
+          "facing=south": {
+            "model": "the_vault:block/artifact_9"
+          },
+          "facing=east": {
+            "model": "the_vault:block/artifact_9",
+            "y": 270
+          },
+          "facing=north": {
+            "model": "the_vault:block/artifact_9",
+            "y": 180
+          },
+          "facing=west": {
+            "model": "the_vault:block/artifact_9",
+            "y": 90
+          }
+        }
+      }

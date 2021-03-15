@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "color=red": {
+      "model": "the_vault:block/maze_block_red"
+    },
+    "color=blue": {
+      "model": "the_vault:block/maze_block_blue"
+    }    
+  }
+}

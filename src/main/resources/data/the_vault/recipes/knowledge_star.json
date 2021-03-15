@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "scs",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "the_vault:star_shard"
+    },
+    "c": {
+      "item": "the_vault:star_core"
+    }
+  },
+  "result": {
+    "item": "the_vault:knowledge_star",
+    "count": 1
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:chunk_alexandrite"},
+    {"item": "the_vault:chunk_black_opal"},
+    {"item": "the_vault:chunk_gorginite"},
+    {"item": "the_vault:chunk_iskallium"},
+    {"item": "the_vault:chunk_larimar"},
+    {"item": "the_vault:chunk_painite"},
+    {"item": "the_vault:chunk_renium"},
+    {"item": "the_vault:chunk_sparkletine"},
+    {"item": "the_vault:chunk_wutodie"}
+  ],
+  "result": {
+    "item": "the_vault:omega_pog",
+    "count": 1
+  }
+}

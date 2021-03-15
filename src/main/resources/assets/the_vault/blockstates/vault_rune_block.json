@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=south,rune_placed=true": {
+      "model": "the_vault:block/rune_block_filled"
+    },
+    "facing=east,rune_placed=true": {
+      "model": "the_vault:block/rune_block_filled",
+      "y": 270
+    },
+    "facing=north,rune_placed=true": {
+      "model": "the_vault:block/rune_block_filled",
+      "y": 180
+    },
+    "facing=west,rune_placed=true": {
+      "model": "the_vault:block/rune_block_filled",
+      "y": 90
+    },
+    "facing=south,rune_placed=false": {
+      "model": "the_vault:block/rune_block_empty"
+    },
+    "facing=east,rune_placed=false": {
+      "model": "the_vault:block/rune_block_empty",
+      "y": 270
+    },
+    "facing=north,rune_placed=false": {
+      "model": "the_vault:block/rune_block_empty",
+      "y": 180
+    },
+    "facing=west,rune_placed=false": {
+      "model": "the_vault:block/rune_block_empty",
+      "y": 90
+    }
+  }
+}

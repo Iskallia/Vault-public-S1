@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "the_vault:ore_wutodie"
+  },
+  "result": "the_vault:gem_wutodie",
+  "experience": 1.0,
+  "cookingtime": 200
+}

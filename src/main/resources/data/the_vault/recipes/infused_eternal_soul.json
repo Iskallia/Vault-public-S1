@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "sds",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "item": "the_vault:eternal_soul"
+    },
+    "d": {
+      "item": "the_vault:vault_diamond_block"
+    }
+  },
+  "result": {
+    "item": "the_vault:infused_eternal_soul",
+    "count": 1
+  }
+}

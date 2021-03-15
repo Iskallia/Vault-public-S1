@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+      "layer0": "the_vault:item/relic_gold_essence"
+    }
+  }

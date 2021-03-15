@@ -1,0 +1,35 @@
+{
+  "parent": "the_vault:block/relic_statue",
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 0
+      },
+      "model": "the_vault:item/statue_miner"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "the_vault:item/statue_warrior"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2
+      },
+      "model": "the_vault:item/statue_richity"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 4
+      },
+      "model": "the_vault:item/statue_cupcake"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 5
+      },
+      "model": "the_vault:item/statue_element"
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "variants": {
+    "facing=south,half=lower,chamber_state=none": {
+      "model": "the_vault:block/cryo_chamber_none"
+    },
+    "facing=east,half=lower,chamber_state=none": {
+      "model": "the_vault:block/cryo_chamber_none",
+      "y": 270
+    },
+    "facing=north,half=lower,chamber_state=none": {
+      "model": "the_vault:block/cryo_chamber_none",
+      "y": 180
+    },
+    "facing=west,half=lower,chamber_state=none": {
+      "model": "the_vault:block/cryo_chamber_none",
+      "y": 90
+    },
+    "facing=south,half=upper,chamber_state=none": {
+      "model": "the_vault:block/cryo_chamber_top"
+    },
+    "facing=east,half=upper,chamber_state=none": {
+      "model": "the_vault:block/cryo_chamber_top",
+      "y": 270
+    },
+    "facing=north,half=upper,chamber_state=none": {
+      "model": "the_vault:block/cryo_chamber_top",
+      "y": 180
+    },
+    "facing=west,half=upper,chamber_state=none": {
+      "model": "the_vault:block/cryo_chamber_top",
+      "y": 90
+    },
+    "facing=south,half=lower,chamber_state=generator": {
+      "model": "the_vault:block/cryo_chamber_generator"
+    },
+    "facing=east,half=lower,chamber_state=generator": {
+      "model": "the_vault:block/cryo_chamber_generator",
+      "y": 270
+    },
+    "facing=north,half=lower,chamber_state=generator": {
+      "model": "the_vault:block/cryo_chamber_generator",
+      "y": 180
+    },
+    "facing=west,half=lower,chamber_state=generator": {
+      "model": "the_vault:block/cryo_chamber_generator",
+      "y": 90
+    },
+    "facing=south,half=upper,chamber_state=generator": {
+      "model": "the_vault:block/cryo_chamber_top"
+    },
+    "facing=east,half=upper,chamber_state=generator": {
+      "model": "the_vault:block/cryo_chamber_top",
+      "y": 270
+    },
+    "facing=north,half=upper,chamber_state=generator": {
+      "model": "the_vault:block/cryo_chamber_top",
+      "y": 180
+    },
+    "facing=west,half=upper,chamber_state=generator": {
+      "model": "the_vault:block/cryo_chamber_top",
+      "y": 90
+    },
+    "facing=south,half=lower,chamber_state=miner": {
+      "model": "the_vault:block/cryo_chamber_miner"
+    },
+    "facing=east,half=lower,chamber_state=miner": {
+      "model": "the_vault:block/cryo_chamber_miner",
+      "y": 270
+    },
+    "facing=north,half=lower,chamber_state=miner": {
+      "model": "the_vault:block/cryo_chamber_miner",
+      "y": 180
+    },
+    "facing=west,half=lower,chamber_state=miner": {
+      "model": "the_vault:block/cryo_chamber_miner",
+      "y": 90
+    },
+    "facing=south,half=upper,chamber_state=miner": {
+      "model": "the_vault:block/cryo_chamber_top"
+    },
+    "facing=east,half=upper,chamber_state=miner": {
+      "model": "the_vault:block/cryo_chamber_top",
+      "y": 270
+    },
+    "facing=north,half=upper,chamber_state=miner": {
+      "model": "the_vault:block/cryo_chamber_top",
+      "y": 180
+    },
+    "facing=west,half=upper,chamber_state=miner": {
+      "model": "the_vault:block/cryo_chamber_top",
+      "y": 90
+    },
+    "facing=south,half=lower,chamber_state=looter": {
+      "model": "the_vault:block/cryo_chamber_looter"
+    },
+    "facing=east,half=lower,chamber_state=looter": {
+      "model": "the_vault:block/cryo_chamber_looter",
+      "y": 270
+    },
+    "facing=north,half=lower,chamber_state=looter": {
+      "model": "the_vault:block/cryo_chamber_looter",
+      "y": 180
+    },
+    "facing=west,half=lower,chamber_state=looter": {
+      "model": "the_vault:block/cryo_chamber_looter",
+      "y": 90
+    },
+    "facing=south,half=upper,chamber_state=looter": {
+      "model": "the_vault:block/cryo_chamber_top"
+    },
+    "facing=east,half=upper,chamber_state=looter": {
+      "model": "the_vault:block/cryo_chamber_top",
+      "y": 270
+    },
+    "facing=north,half=upper,chamber_state=looter": {
+      "model": "the_vault:block/cryo_chamber_top",
+      "y": 180
+    },
+    "facing=west,half=upper,chamber_state=looter": {
+      "model": "the_vault:block/cryo_chamber_top",
+      "y": 90
+    }
+  }
+}

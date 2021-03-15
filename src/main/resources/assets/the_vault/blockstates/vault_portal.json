@@ -1,0 +1,32 @@
+{
+  "variants": {
+    "rarity=0,axis=x": {
+      "model": "the_vault:block/vault_portal_common"
+    },
+    "rarity=0,axis=z": {
+      "model": "the_vault:block/vault_portal_common",
+      "y": 90
+    },
+    "rarity=1,axis=x": {
+      "model": "the_vault:block/vault_portal_rare"
+    },
+    "rarity=1,axis=z": {
+      "model": "the_vault:block/vault_portal_rare",
+      "y": 90
+    },
+    "rarity=2,axis=x": {
+      "model": "the_vault:block/vault_portal_epic"
+    },
+    "rarity=2,axis=z": {
+      "model": "the_vault:block/vault_portal_epic",
+      "y": 90
+    },
+    "rarity=3,axis=x": {
+      "model": "the_vault:block/vault_portal_omega"
+    },
+    "rarity=3,axis=z": {
+      "model": "the_vault:block/vault_portal_omega",
+      "y": 90
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "the_vault:gem_alexandrite"
+    },
+    {
+      "item": "the_vault:gem_larimar"
+    },
+    {
+      "item": "the_vault:gem_black_opal"
+    },
+    {
+      "item": "the_vault:gem_painite"
+    },
+    {
+      "item": "the_vault:gem_iskallium"
+    },
+    {
+      "item": "the_vault:gem_renium"
+    },
+    {
+      "item": "the_vault:gem_gorginite"
+    },
+    {
+      "item": "the_vault:gem_sparkletine"
+    },
+    {
+      "item": "the_vault:gem_wutodie"
+    }
+  ],
+  "result": {
+    "item": "the_vault:gem_pog",
+    "count": 1
+  }
+}

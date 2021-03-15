@@ -1,0 +1,176 @@
+{
+    "pools": [
+        {
+            "rolls": {
+            "min": 1,
+            "max": 2
+          },
+          "entries": [
+            {
+                "type": "minecraft:item",
+                "weight": 5,
+                "name": "the_vault:vault_diamond",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "min": 1,
+                      "max": 1
+                    }
+                  }
+                ],
+                "conditions": [
+                  {
+                    "condition": "minecraft:random_chance",
+                    "chance": 1
+                  }
+                ]
+              },
+              {
+                "type": "minecraft:item",
+                "weight": 11,
+                "name": "the_vault:vault_gold",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "min": 1,
+                      "max": 3
+                    }
+                  }
+                ],
+                "conditions": [
+                  {
+                    "condition": "minecraft:random_chance",
+                    "chance": 1
+                  }
+                ]
+              },
+              {
+                "type": "minecraft:item",
+                "weight": 8,
+                "name": "minecraft:air",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "min": 1,
+                      "max": 1
+                    }
+                  }
+                ],
+                "conditions": [
+                  {
+                    "condition": "minecraft:random_chance",
+                    "chance": 1
+                  }
+                ]
+              },
+              {
+                "type": "minecraft:item",
+                "weight": 3,
+                "name": "the_vault:star_essence",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "min": 1,
+                      "max": 1
+                    }
+                  }
+                ],
+                "conditions": [
+                  {
+                    "condition": "minecraft:random_chance",
+                    "chance": 1
+                  }
+                ]
+              },
+              {
+                "type": "minecraft:item",
+                "weight": 3,
+                "name": "the_vault:skill_essence",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "min": 1,
+                      "max": 1
+                    }
+                  }
+                ],
+                "conditions": [
+                  {
+                    "condition": "minecraft:random_chance",
+                    "chance": 1
+                  }
+                ]
+              },
+              {
+                "type": "minecraft:item",
+                "weight": 1,
+                "name": "the_vault:orb_frame",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "min": 1,
+                      "max": 1
+                    }
+                  }
+                ],
+                "conditions": [
+                  {
+                    "condition": "minecraft:random_chance",
+                    "chance": 0.2
+                  }
+                ]
+              },
+              {
+                "type": "minecraft:item",
+                "weight": 2,
+                "name": "the_vault:vault_scrap",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "min": 1,
+                      "max": 1
+                    }
+                  }
+                ],
+                "conditions": [
+                  {
+                    "condition": "minecraft:random_chance",
+                    "chance": 0.5
+                  }
+                ]
+              },
+              {
+                "type": "minecraft:item",
+                "weight": 1,
+                "name": "the_vault:pandoras_box",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "min": 1,
+                      "max": 1
+                    }
+                  }
+                ],
+                "conditions": [
+                  {
+                    "condition": "minecraft:random_chance",
+                    "chance": 0.2
+                  }
+                ]
+              }
+
+          ]
+        }
+
+    ]
+
+
+}

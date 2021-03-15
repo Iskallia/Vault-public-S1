@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:cluster_benitoite"},
+    {"item": "the_vault:cluster_benitoite"},
+    {"item": "the_vault:cluster_benitoite"},
+    {"item": "the_vault:cluster_benitoite"},
+    {"item": "the_vault:cluster_benitoite"},
+    {"item": "the_vault:cluster_benitoite"},
+    {"item": "the_vault:cluster_benitoite"},
+    {"item": "the_vault:cluster_benitoite"},
+    {"item": "the_vault:cluster_benitoite"}
+  ],
+  "result": {
+    "item": "the_vault:chunk_benitoite",
+    "count": 1
+  }
+}

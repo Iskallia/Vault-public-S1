@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "the_vault:burger_patty"
+    },
+    {
+      "item": "the_vault:burger_bun"
+    },
+    {
+      "item": "the_vault:mystic_tomato"
+    },
+    {
+      "item": "the_vault:mature_cheddar"
+    }
+  ],
+  "result": {
+    "item": "the_vault:vault_burger",
+    "count": 1
+  }
+}

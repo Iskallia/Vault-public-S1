@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "the_vault:item/chestplate/knight_chestplate",
+    "layer1": "the_vault:item/chestplate/knight_chestplate_overlay"
+  }
+}

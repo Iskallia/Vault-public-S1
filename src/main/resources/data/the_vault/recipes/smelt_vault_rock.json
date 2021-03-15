@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "the_vault:ore_vault_rock"
+  },
+  "result": "the_vault:vault_rock",
+  "experience": 1.0,
+  "cookingtime": 200
+}

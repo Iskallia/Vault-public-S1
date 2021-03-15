@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:cluster_renium"},
+    {"item": "the_vault:cluster_renium"},
+    {"item": "the_vault:cluster_renium"},
+    {"item": "the_vault:cluster_renium"},
+    {"item": "the_vault:cluster_renium"},
+    {"item": "the_vault:cluster_renium"},
+    {"item": "the_vault:cluster_renium"},
+    {"item": "the_vault:cluster_renium"},
+    {"item": "the_vault:cluster_renium"}
+  ],
+  "result": {
+    "item": "the_vault:chunk_renium",
+    "count": 1
+  }
+}

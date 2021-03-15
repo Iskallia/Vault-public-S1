@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "sss",
+    "sfs",
+    "sss"
+  ],
+  "key":
+  {
+    "s":
+    {
+      "item": "the_vault:skill_shard"
+    },
+    "f":
+    {
+      "item": "the_vault:orb_frame"
+    }
+  },
+  "result":
+  {
+    "item": "the_vault:skill_orb",
+    "count": 1
+  }
+}

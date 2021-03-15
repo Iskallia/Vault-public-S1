@@ -1,0 +1,7 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "the_vault:item/axe/common/axe_0",
+    "layer1": "the_vault:item/axe/common/axe_0_overlay"
+  }
+}

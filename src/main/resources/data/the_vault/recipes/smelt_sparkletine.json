@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "the_vault:ore_sparkletine"
+  },
+  "result": "the_vault:gem_sparkletine",
+  "experience": 1.0,
+  "cookingtime": 200
+}

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "pop",
+    "odo",
+    "pop"
+  ],
+  "key":
+  {
+    "p":
+    {
+      "item": "minecraft:purpur_block"
+    },
+    "d":
+    {
+      "item": "minecraft:diamond_block"
+    },
+    "o":
+    {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result":
+  {
+    "item": "the_vault:vault_altar",
+    "count": 1
+  }
+}

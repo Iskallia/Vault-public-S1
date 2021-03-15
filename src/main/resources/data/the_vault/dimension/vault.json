@@ -1,0 +1,20 @@
+{
+  "type": "the_vault:vault",
+  "generator": {
+    "type": "minecraft:flat",
+    "seed": 0,
+    "settings": {
+      "biome": "the_vault:spoopy",
+      "features": true,
+      "layers": [
+        {
+          "block": "the_vault:vault_bedrock",
+          "height": 256
+        }
+      ],
+      "structures": {
+        "structures": {}
+      }
+    }
+  }
+}

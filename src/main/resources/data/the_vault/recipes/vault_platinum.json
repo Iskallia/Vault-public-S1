@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "the_vault:vault_gold"
+    },
+    {
+      "item": "the_vault:vault_gold"
+    },
+    {
+      "item": "the_vault:vault_gold"
+    },
+    {
+      "item": "the_vault:vault_gold"
+    },
+    {
+      "item": "the_vault:vault_gold"
+    },
+    {
+      "item": "the_vault:vault_gold"
+    },
+    {
+      "item": "the_vault:vault_gold"
+    },
+    {
+      "item": "the_vault:vault_gold"
+    },
+    {
+      "item": "the_vault:vault_gold"
+    }
+  ],
+  "result": {
+    "item": "the_vault:vault_platinum",
+    "count": 1
+  }
+}

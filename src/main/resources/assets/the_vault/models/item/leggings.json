@@ -1,0 +1,21 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "the_vault:item/leggings/leggings"
+  },
+  "overrides": [
+    {"predicate": {"the_vault:texture": 0 }, "model": "the_vault:item/leggings/samurai_leggings"},
+    {"predicate": {"the_vault:texture": 1 }, "model": "the_vault:item/leggings/knight_leggings"},
+    {"predicate": {"the_vault:texture": 2 }, "model": "the_vault:item/leggings/guard_leggings"},
+    {"predicate": {"the_vault:texture": 3 }, "model": "the_vault:item/leggings/dragon_leggings"},
+    {"predicate": {"the_vault:texture": 4 }, "model": "the_vault:item/leggings/plated_1_leggings"},
+    {"predicate": {"the_vault:texture": 5 }, "model": "the_vault:item/leggings/plated_1_dark_leggings"},
+    {"predicate": {"the_vault:texture": 6 }, "model": "the_vault:item/leggings/plated_2_leggings"},
+    {"predicate": {"the_vault:texture": 7 }, "model": "the_vault:item/leggings/plated_2_dark_leggings"},
+    {"predicate": {"the_vault:texture": 8 }, "model": "the_vault:item/leggings/plated_3_leggings"},
+    {"predicate": {"the_vault:texture": 9 }, "model": "the_vault:item/leggings/plated_3_dark_leggings"},
+    {"predicate": {"the_vault:texture": 10 }, "model": "the_vault:item/leggings/plated_4_leggings"},
+    {"predicate": {"the_vault:texture": 11 }, "model": "the_vault:item/leggings/plated_4_dark_leggings"},
+    {"predicate": {"the_vault:vault_rarity": 4 }, "model": "the_vault:item/leggings/scrappy_leggings"}
+  ]
+}

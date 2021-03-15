@@ -1,0 +1,22 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "the_vault:item/sword/sword"
+  },
+  "overrides": [
+    {"predicate": {"the_vault:vault_rarity": 0, "the_vault:texture": 0}, "model": "the_vault:item/sword/common/sword_0"},
+    {"predicate": {"the_vault:vault_rarity": 0, "the_vault:texture": 1}, "model": "the_vault:item/sword/common/sword_1"},
+
+    {"predicate": {"the_vault:vault_rarity": 1, "the_vault:texture": 0}, "model": "the_vault:item/sword/rare/sword_0"},
+    {"predicate": {"the_vault:vault_rarity": 1, "the_vault:texture": 1}, "model": "the_vault:item/sword/rare/sword_1"},
+
+    {"predicate": {"the_vault:vault_rarity": 2, "the_vault:texture": 0}, "model": "the_vault:item/sword/epic/sword_0"},
+    {"predicate": {"the_vault:vault_rarity": 2, "the_vault:texture": 1}, "model": "the_vault:item/sword/epic/sword_1"},
+
+    {"predicate": {"the_vault:vault_rarity": 3, "the_vault:texture": 0}, "model": "the_vault:item/sword/omega/sword_0"},
+    {"predicate": {"the_vault:vault_rarity": 3, "the_vault:texture": 1}, "model": "the_vault:item/sword/omega/sword_1"},
+
+    {"predicate": {"the_vault:vault_rarity": 4, "the_vault:texture": 0}, "model": "the_vault:item/sword/scrappy/sword_0"},
+    {"predicate": {"the_vault:vault_rarity": 4, "the_vault:texture": 1}, "model": "the_vault:item/sword/scrappy/sword_1"}
+  ]
+}

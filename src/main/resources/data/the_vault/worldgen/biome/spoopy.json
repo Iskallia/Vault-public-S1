@@ -1,0 +1,27 @@
+{
+  "surface_builder": "minecraft:stone",
+  "depth": 0.1,
+  "scale": 0.2,
+  "temperature": 0.95,
+  "downfall": 0.0,
+  "precipitation": "none",
+  "category": "none",
+  "player_spawn_friendly": true,
+  "effects": {
+    "sky_color": 6840166,
+    "fog_color": 6840166,
+    "water_color": 4159204,
+    "water_fog_color": 329011,
+    "particle": {
+      "options": {
+        "type": "minecraft:white_ash"
+      },
+      "probability": 0.005
+    }
+  },
+  "starts": [],
+  "spawners": {},
+  "spawn_costs": {},
+  "carvers": {},
+  "features": []
+}

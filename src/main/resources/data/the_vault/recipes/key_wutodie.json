@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#n#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "item": "the_vault:gem_wutodie"
+    },
+    "n": {
+      "item": "minecraft:netherite_block"
+    }
+  },
+  "result": {
+    "item": "the_vault:cluster_wutodie",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "the_vault:item/axe/axe"
+  },
+  "overrides": [
+    {"predicate": {"the_vault:vault_rarity": 0, "the_vault:texture": 0}, "model": "the_vault:item/axe/common/axe_0"},
+
+    {"predicate": {"the_vault:vault_rarity": 1, "the_vault:texture": 0}, "model": "the_vault:item/axe/rare/axe_0"},
+
+    {"predicate": {"the_vault:vault_rarity": 2, "the_vault:texture": 0}, "model": "the_vault:item/axe/epic/axe_0"},
+
+    {"predicate": {"the_vault:vault_rarity": 3, "the_vault:texture": 0}, "model": "the_vault:item/axe/omega/axe_0"},
+
+    {"predicate": {"the_vault:vault_rarity": 4, "the_vault:texture": 0}, "model": "the_vault:item/axe/scrappy/axe_0"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:vault_scrap"},
+    {"item": "the_vault:vault_scrap"},
+    {"item": "the_vault:vault_scrap"},
+    {"item": "the_vault:vault_scrap"},
+    {"item": "the_vault:vault_scrap"},
+    {"item": "the_vault:vault_scrap"},
+    {"item": "the_vault:vault_scrap"},
+    {"item": "the_vault:vault_scrap"},
+    {"item": "the_vault:vault_scrap"}
+  ],
+  "result": {
+    "item": "the_vault:vault_ingot",
+    "count": 1
+  }
+}

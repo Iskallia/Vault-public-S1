@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "eee",
+    "eee",
+    "eee"
+  ],
+  "key": {
+    "e": {
+      "item": "the_vault:star_essence"
+    }
+  },
+  "result": {
+    "item": "the_vault:star_shard",
+    "count": 1
+  }
+}

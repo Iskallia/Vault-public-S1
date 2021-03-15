@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "nnn",
+    "nAn",
+    "nnn"
+  ],
+  "key": {
+    "n": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "A": {
+      "item": "minecraft:anvil"
+    }
+  },
+  "result": {
+    "item": "the_vault:key_press",
+    "count": 1
+  }
+}

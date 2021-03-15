@@ -1,0 +1,21 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "the_vault:item/chestplate/chestplate"
+  },
+  "overrides": [
+    {"predicate": {"the_vault:texture": 0 }, "model": "the_vault:item/chestplate/samurai_chestplate"},
+    {"predicate": {"the_vault:texture": 1 }, "model": "the_vault:item/chestplate/knight_chestplate"},
+    {"predicate": {"the_vault:texture": 2 }, "model": "the_vault:item/chestplate/guard_chestplate"},
+    {"predicate": {"the_vault:texture": 3 }, "model": "the_vault:item/chestplate/dragon_chestplate"},
+    {"predicate": {"the_vault:texture": 4 }, "model": "the_vault:item/chestplate/plated_1_chestplate"},
+    {"predicate": {"the_vault:texture": 5 }, "model": "the_vault:item/chestplate/plated_1_dark_chestplate"},
+    {"predicate": {"the_vault:texture": 6 }, "model": "the_vault:item/chestplate/plated_2_chestplate"},
+    {"predicate": {"the_vault:texture": 7 }, "model": "the_vault:item/chestplate/plated_2_dark_chestplate"},
+    {"predicate": {"the_vault:texture": 8 }, "model": "the_vault:item/chestplate/plated_3_chestplate"},
+    {"predicate": {"the_vault:texture": 9 }, "model": "the_vault:item/chestplate/plated_3_dark_chestplate"},
+    {"predicate": {"the_vault:texture": 10 }, "model": "the_vault:item/chestplate/plated_4_chestplate"},
+    {"predicate": {"the_vault:texture": 11 }, "model": "the_vault:item/chestplate/plated_4_dark_chestplate"},
+    {"predicate": {"the_vault:vault_rarity": 4 }, "model": "the_vault:item/chestplate/scrappy_chestplate"}
+  ]
+}

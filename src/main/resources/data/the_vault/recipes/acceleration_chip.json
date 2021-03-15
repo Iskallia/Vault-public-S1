@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "cac",
+    "aba",
+    "cac"
+  ],
+  "key": {
+    "a": {
+      "item": "the_vault:oozing_pizza"
+    },
+    "b": {
+      "item": "the_vault:vault_diamond"
+    },
+    "c": {
+      "item": "the_vault:gem_larimar"
+    }
+  },
+  "result": {
+    "item": "the_vault:acceleration_chip",
+    "count": 1
+  }
+}

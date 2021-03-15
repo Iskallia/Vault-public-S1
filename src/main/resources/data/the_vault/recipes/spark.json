@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "dbd",
+    "dcd",
+    "dad"
+  ],
+  "key": {
+    "a": {
+      "item": "the_vault:cluster_benitoite"
+    },
+    "b": {
+      "item": "the_vault:cluster_black_opal"
+    },
+    "c": {
+      "item": "the_vault:gem_pog"
+    },
+    "d": {
+      "item": "the_vault:vault_diamond"
+    }
+  },
+  "result": {
+    "item": "the_vault:spark",
+    "count": 1
+  }
+}

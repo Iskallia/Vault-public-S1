@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:cluster_gorginite"},
+    {"item": "the_vault:cluster_gorginite"},
+    {"item": "the_vault:cluster_gorginite"},
+    {"item": "the_vault:cluster_gorginite"},
+    {"item": "the_vault:cluster_gorginite"},
+    {"item": "the_vault:cluster_gorginite"},
+    {"item": "the_vault:cluster_gorginite"},
+    {"item": "the_vault:cluster_gorginite"},
+    {"item": "the_vault:cluster_gorginite"}
+  ],
+  "result": {
+    "item": "the_vault:chunk_gorginite",
+    "count": 1
+  }
+}

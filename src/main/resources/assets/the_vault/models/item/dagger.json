@@ -1,0 +1,17 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "the_vault:item/dagger/dagger"
+  },
+  "overrides": [
+    {"predicate": {"the_vault:vault_rarity": 0, "the_vault:texture": 0}, "model": "the_vault:item/dagger/common/dagger_0"},
+
+    {"predicate": {"the_vault:vault_rarity": 1, "the_vault:texture": 0}, "model": "the_vault:item/dagger/rare/dagger_0"},
+
+    {"predicate": {"the_vault:vault_rarity": 2, "the_vault:texture": 0}, "model": "the_vault:item/dagger/epic/dagger_0"},
+
+    {"predicate": {"the_vault:vault_rarity": 3, "the_vault:texture": 0}, "model": "the_vault:item/dagger/omega/dagger_0"},
+
+    {"predicate": {"the_vault:vault_rarity": 4, "the_vault:texture": 0}, "model": "the_vault:item/dagger/scrappy/dagger_0"}
+  ]
+}

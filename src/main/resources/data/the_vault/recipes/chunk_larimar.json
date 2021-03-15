@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:cluster_larimar"},
+    {"item": "the_vault:cluster_larimar"},
+    {"item": "the_vault:cluster_larimar"},
+    {"item": "the_vault:cluster_larimar"},
+    {"item": "the_vault:cluster_larimar"},
+    {"item": "the_vault:cluster_larimar"},
+    {"item": "the_vault:cluster_larimar"},
+    {"item": "the_vault:cluster_larimar"},
+    {"item": "the_vault:cluster_larimar"}
+  ],
+  "result": {
+    "item": "the_vault:chunk_larimar",
+    "count": 1
+  }
+}

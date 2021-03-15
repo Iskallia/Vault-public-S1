@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "the_vault:item/boots/guard_boots",
+    "layer1": "the_vault:item/boots/guard_boots_overlay"
+  }
+}

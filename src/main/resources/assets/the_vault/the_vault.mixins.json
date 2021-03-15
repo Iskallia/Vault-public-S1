@@ -1,0 +1,28 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "iskallia.vault.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "the_vault.refmap.json",
+  "mixins": [
+    "AttributeInstanceMixin",
+    "EnchantmentMixin",
+    "ItemRendererMixin",
+    "ItemStackMixin",
+    "LivingEntityMixin",
+    "MixinPlayerInventory",
+    "MixinRepairContainer",
+    "MixinServerWorld"
+  ],
+  "client": [
+    "ElytraLayerMixin",
+    "MixinAnvilScreen",
+    "MixinEnchantedBookItem",
+    "MixinItem"
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
+

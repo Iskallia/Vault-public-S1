@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "the_vault:bit_100"
+    },
+    {
+      "item": "the_vault:bit_100"
+    },
+    {
+      "item": "the_vault:bit_100"
+    },
+    {
+      "item": "the_vault:bit_100"
+    },
+    {
+      "item": "the_vault:bit_100"
+    }
+  ],
+  "result": {
+    "item": "the_vault:bit_500",
+    "count": 1
+  }
+}

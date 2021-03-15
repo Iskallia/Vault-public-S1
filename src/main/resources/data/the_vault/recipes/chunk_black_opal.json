@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:cluster_black_opal"},
+    {"item": "the_vault:cluster_black_opal"},
+    {"item": "the_vault:cluster_black_opal"},
+    {"item": "the_vault:cluster_black_opal"},
+    {"item": "the_vault:cluster_black_opal"},
+    {"item": "the_vault:cluster_black_opal"},
+    {"item": "the_vault:cluster_black_opal"},
+    {"item": "the_vault:cluster_black_opal"},
+    {"item": "the_vault:cluster_black_opal"}
+  ],
+  "result": {
+    "item": "the_vault:chunk_black_opal",
+    "count": 1
+  }
+}

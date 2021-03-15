@@ -1,0 +1,23 @@
+{
+  "display": {
+    "title": {
+      "text": "The Vault"
+    },
+    "description": {
+      "text": "Enter the strange rooms of the Vault"
+    },
+    "icon": {
+      "item": "minecraft:blackstone"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/block/blackstone.png"
+  },
+  "criteria": {
+    "entered_vault": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

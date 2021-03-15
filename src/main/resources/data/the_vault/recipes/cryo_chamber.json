@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#G#",
+    "#D#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_block"
+    },
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "D": {
+      "item": "the_vault:gem_pog"
+    }
+  },
+  "result": {
+    "item": "the_vault:cryo_chamber",
+    "count": 1
+  }
+}

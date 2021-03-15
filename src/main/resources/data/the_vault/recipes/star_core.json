@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "dbd",
+    "bcb",
+    "dbd"
+  ],
+  "key": {
+    "b": {
+      "item": "the_vault:gem_larimar"
+    },
+    "c": {
+      "item": "the_vault:vault_diamond_block"
+    },
+    "d": {
+      "item": "minecraft:air"
+    }
+  },
+  "result": {
+    "item": "the_vault:star_core",
+    "count": 1
+  }
+}

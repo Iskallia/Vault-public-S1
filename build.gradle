@@ -1,0 +1,105 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name "forge"
+            url "https://files.minecraftforge.net/maven"
+        }
+        maven { url = 'https://dist.creeper.host/Sponge/maven' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.0.+'
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+    }
+}
+
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
+
+mixin {
+    add sourceSets.main, "the_vault.refmap.json"
+}
+
+
+def mc_version = "1.16.3"
+version = "${mc_version}-1"
+
+version = '1.0.0-public'
+group = 'iskallia.vault' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+
+archivesBaseName = 'the_vault'
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+minecraft {
+    mappings channel: 'snapshot', version: '20200916-1.16.2'
+
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            properties 'forge.logging.console.level': 'debug'
+            properties 'fml.earlyprogresswindow': 'false'
+            properties 'mixin.env.disableRefMap': 'true'
+            workingDirectory project.file('run')
+            mods {
+                the_vault {
+                    source sourceSets.main
+                }
+            }
+        }
+        server {
+            properties 'forge.logging.console.level': 'debug'
+            properties 'mixin.env.disableRefMap': 'true'
+            workingDirectory project.file('run')
+            mods {
+                the_vault {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${mc_version}-34.1.42"
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "TheVault",
+                "Specification-Vendor"    : "Iskallia",
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "Iskallia",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConnector"          : "iskallia.vault.MixinConnector"
+        ])
+    }
+}
+
+
+// Prevent Mixin annotation processor from getting into IDEA's annotation processor settings
+// (from botania build.gradle)
+if (System.getProperty("idea.sync.active") == "true") {
+    afterEvaluate {
+        tasks.withType(JavaCompile).all {
+            it.options.annotationProcessorPath = files()
+        }
+    }
+}
+
+defaultTasks 'clean', 'build'

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:cluster_wutodie"},
+    {"item": "the_vault:cluster_wutodie"},
+    {"item": "the_vault:cluster_wutodie"},
+    {"item": "the_vault:cluster_wutodie"},
+    {"item": "the_vault:cluster_wutodie"},
+    {"item": "the_vault:cluster_wutodie"},
+    {"item": "the_vault:cluster_wutodie"},
+    {"item": "the_vault:cluster_wutodie"},
+    {"item": "the_vault:cluster_wutodie"}
+  ],
+  "result": {
+    "item": "the_vault:chunk_wutodie",
+    "count": 1
+  }
+}

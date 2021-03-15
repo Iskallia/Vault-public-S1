@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#n#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "item": "the_vault:gem_black_opal"
+    },
+    "n": {
+      "item": "minecraft:wither_skeleton_skull"
+    }
+  },
+  "result": {
+    "item": "the_vault:cluster_black_opal",
+    "count": 1
+  }
+}

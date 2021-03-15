@@ -1,0 +1,181 @@
+{
+  "parent": "the_vault:root",
+  "display": {
+    "title": {
+      "text": "The Vault Hunter"
+    },
+    "description": {
+      "text": "Gather up all 16 artifacts!"
+    },
+    "icon": {
+      "item": "the_vault:artifact_9"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/block/blackstone.png"
+  },
+  "criteria": {
+    "gather_artifact_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_1"
+          }
+        ]
+      }
+    },
+    "gather_artifact_2": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_2"
+          }
+        ]
+      }
+    },
+    "gather_artifact_3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_3"
+          }
+        ]
+      }
+    },
+    "gather_artifact_4": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_4"
+          }
+        ]
+      }
+    },
+    "gather_artifact_5": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_5"
+          }
+        ]
+      }
+    },
+    "gather_artifact_6": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_6"
+          }
+        ]
+      }
+    },
+    "gather_artifact_7": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_7"
+          }
+        ]
+      }
+    },
+    "gather_artifact_8": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_8"
+          }
+        ]
+      }
+    },
+    "gather_artifact_9": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_9"
+          }
+        ]
+      }
+    },
+    "gather_artifact_10": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_10"
+          }
+        ]
+      }
+    },
+    "gather_artifact_11": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_11"
+          }
+        ]
+      }
+    },
+    "gather_artifact_12": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_12"
+          }
+        ]
+      }
+    },
+    "gather_artifact_13": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_13"
+          }
+        ]
+      }
+    },
+    "gather_artifact_14": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_14"
+          }
+        ]
+      }
+    },
+    "gather_artifact_15": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_15"
+          }
+        ]
+      }
+    },
+    "gather_artifact_16": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "the_vault:artifact_16"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "a#a",
+    "#n#",
+    "a#a"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "n": {
+      "item": "minecraft:wither_skeleton_skull"
+    },
+    "a": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "item": "the_vault:cluster_netherite",
+    "count": 1
+  }
+}

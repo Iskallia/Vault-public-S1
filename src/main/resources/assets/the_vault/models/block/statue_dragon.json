@@ -1,0 +1,113 @@
+{
+    "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
+    "textures": {
+        "statue-dragon-head": "the_vault:block/statue_dragon"
+    },
+    "display": {
+        "gui": {
+            "rotation": [ 30, 45, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.625, 0.625, 0.625 ]
+        },
+        "ground": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 3, 0 ],
+            "scale": [ 0.25, 0.25, 0.25 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 180, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 1, 1, 1 ]
+        },
+        "head": {
+            "rotation": [ 0, 180, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 1, 1, 1 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, 315, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.4, 0.4, 0.4 ]
+        },
+        "thirdperson_righthand": {
+            "rotation": [ 75, 315, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        }
+    },
+    "elements": [
+        {
+            "name": "head",
+            "from": [ 8, 0, 5 ],
+            "to": [ 14, 6, 11 ],
+            "faces": {
+                "north": { "texture": "#statue-dragon-head", "uv": [ 6, 0, 12, 6 ] },
+                "east": { "texture": "#statue-dragon-head", "uv": [ 6, 0, 12, 6 ] },
+                "south": { "texture": "#statue-dragon-head", "uv": [ 6, 0, 12, 6 ] },
+                "west": { "texture": "#statue-dragon-head", "uv": [ 0, 0, 6, 6 ] },
+                "up": { "texture": "#statue-dragon-head", "uv": [ 6, 0, 12, 6 ] },
+                "down": { "texture": "#statue-dragon-head", "uv": [ 6, 0, 12, 6 ] }
+            }
+        },
+        {
+            "name": "nose",
+            "from": [ 3, 0, 6 ],
+            "to": [ 8, 3, 10 ],
+            "faces": {
+                "north": { "texture": "#statue-dragon-head", "uv": [ 0, 8, 5, 11 ] },
+                "south": { "texture": "#statue-dragon-head", "uv": [ 0, 8, 5, 11 ] },
+                "west": { "texture": "#statue-dragon-head", "uv": [ 0, 9, 4, 12 ] },
+                "up": { "texture": "#statue-dragon-head", "uv": [ 0, 10, 5, 14 ] },
+                "down": { "texture": "#statue-dragon-head", "uv": [ 0, 11, 5, 15 ] }
+            }
+        },
+        {
+            "name": "nose1",
+            "from": [ 4, 3, 6.5 ],
+            "to": [ 5, 3.5, 7.25 ],
+            "faces": {
+                "north": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 7, 8.5 ] },
+                "east": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 6.75, 8.5 ] },
+                "south": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 7, 8.5 ] },
+                "west": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 6.75, 8.5 ] },
+                "up": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 7, 8.75 ] }
+            }
+        },
+        {
+            "name": "nose2",
+            "from": [ 4, 3, 8.75 ],
+            "to": [ 5, 3.5, 9.5 ],
+            "faces": {
+                "north": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 7, 8.5 ] },
+                "east": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 6.75, 8.5 ] },
+                "south": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 7, 8.5 ] },
+                "west": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 6.75, 8.5 ] },
+                "up": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 7, 8.75 ] }
+            }
+        },
+        {
+            "name": "horn1",
+            "from": [ 10, 6, 9.75 ],
+            "to": [ 11, 7.5, 10.5 ],
+            "faces": {
+                "north": { "texture": "#statue-dragon-head", "uv": [ 6, 10, 7, 11.5 ] },
+                "east": { "texture": "#statue-dragon-head", "uv": [ 6, 9, 6.75, 10.5 ] },
+                "south": { "texture": "#statue-dragon-head", "uv": [ 6, 10, 7, 11.5 ] },
+                "west": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 6.75, 9.5 ] },
+                "up": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 7, 8.75 ] }
+            }
+        },
+        {
+            "name": "horn2",
+            "from": [ 10, 6, 5.75 ],
+            "to": [ 11, 7.5, 6.5 ],
+            "faces": {
+                "north": { "texture": "#statue-dragon-head", "uv": [ 6, 9, 7, 10.5 ] },
+                "east": { "texture": "#statue-dragon-head", "uv": [ 6, 10, 6.75, 11.5 ] },
+                "south": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 7, 9.5 ] },
+                "west": { "texture": "#statue-dragon-head", "uv": [ 6, 10, 6.75, 11.5 ] },
+                "up": { "texture": "#statue-dragon-head", "uv": [ 6, 8, 7, 8.75 ] }
+            }
+        }
+    ]
+}

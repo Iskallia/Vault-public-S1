@@ -1,0 +1,7 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "the_vault:item/dagger/epic/dagger_0",
+    "layer1": "the_vault:item/dagger/epic/dagger_0_overlay"
+  }
+}

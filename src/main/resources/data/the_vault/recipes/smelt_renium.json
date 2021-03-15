@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "the_vault:ore_renium"
+  },
+  "result": "the_vault:gem_renium",
+  "experience": 1.0,
+  "cookingtime": 200
+}

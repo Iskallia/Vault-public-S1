@@ -1,0 +1,22 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "the_vault:item/etching/etching_0"
+  },
+  "overrides": [
+    {"predicate": {"the_vault:vault_set": 0}, "model": "the_vault:item/etching/etching_0"},
+    {"predicate": {"the_vault:vault_set": 1}, "model": "the_vault:item/etching/etching_1"},
+    {"predicate": {"the_vault:vault_set": 2}, "model": "the_vault:item/etching/etching_2"},
+    {"predicate": {"the_vault:vault_set": 3}, "model": "the_vault:item/etching/etching_3"},
+    {"predicate": {"the_vault:vault_set": 4}, "model": "the_vault:item/etching/etching_4"},
+    {"predicate": {"the_vault:vault_set": 5}, "model": "the_vault:item/etching/etching_5"},
+    {"predicate": {"the_vault:vault_set": 6}, "model": "the_vault:item/etching/etching_6"},
+    {"predicate": {"the_vault:vault_set": 7}, "model": "the_vault:item/etching/etching_7"},
+    {"predicate": {"the_vault:vault_set": 8}, "model": "the_vault:item/etching/etching_8"},
+    {"predicate": {"the_vault:vault_set": 9}, "model": "the_vault:item/etching/etching_9"},
+    {"predicate": {"the_vault:vault_set": 10}, "model": "the_vault:item/etching/etching_10"},
+    {"predicate": {"the_vault:vault_set": 11}, "model": "the_vault:item/etching/etching_11"},
+    {"predicate": {"the_vault:vault_set": 12}, "model": "the_vault:item/etching/etching_12"},
+    {"predicate": {"the_vault:vault_set": 13}, "model": "the_vault:item/etching/etching_13"}
+  ]
+}

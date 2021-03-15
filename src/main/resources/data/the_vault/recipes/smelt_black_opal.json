@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "the_vault:ore_black_opal"
+  },
+  "result": "the_vault:gem_black_opal",
+  "experience": 1.0,
+  "cookingtime": 200
+}

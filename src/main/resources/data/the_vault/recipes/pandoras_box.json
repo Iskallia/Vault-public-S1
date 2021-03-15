@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "the_vault:vault_diamond"
+    },
+    "b": {
+      "item": "the_vault:gem_pog"
+    }
+  },
+  "result": {
+    "item": "the_vault:pandoras_box",
+    "count": 1
+  }
+}

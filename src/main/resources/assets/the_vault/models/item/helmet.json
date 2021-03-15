@@ -1,0 +1,21 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "the_vault:item/helmet/helmet"
+  },
+  "overrides": [
+    {"predicate": {"the_vault:texture": 0 }, "model": "the_vault:item/helmet/samurai_helmet"},
+    {"predicate": {"the_vault:texture": 1 }, "model": "the_vault:item/helmet/knight_helmet"},
+    {"predicate": {"the_vault:texture": 2 }, "model": "the_vault:item/helmet/guard_helmet"},
+    {"predicate": {"the_vault:texture": 3 }, "model": "the_vault:item/helmet/dragon_helmet"},
+    {"predicate": {"the_vault:texture": 4 }, "model": "the_vault:item/helmet/plated_1_helmet"},
+    {"predicate": {"the_vault:texture": 5 }, "model": "the_vault:item/helmet/plated_1_dark_helmet"},
+    {"predicate": {"the_vault:texture": 6 }, "model": "the_vault:item/helmet/plated_2_helmet"},
+    {"predicate": {"the_vault:texture": 7 }, "model": "the_vault:item/helmet/plated_2_dark_helmet"},
+    {"predicate": {"the_vault:texture": 8 }, "model": "the_vault:item/helmet/plated_3_helmet"},
+    {"predicate": {"the_vault:texture": 9 }, "model": "the_vault:item/helmet/plated_3_dark_helmet"},
+    {"predicate": {"the_vault:texture": 10 }, "model": "the_vault:item/helmet/plated_4_helmet"},
+    {"predicate": {"the_vault:texture": 11 }, "model": "the_vault:item/helmet/plated_4_dark_helmet"},
+    {"predicate": {"the_vault:vault_rarity": 4 }, "model": "the_vault:item/helmet/scrappy_helmet"}
+  ]
+}

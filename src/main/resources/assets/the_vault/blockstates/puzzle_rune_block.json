@@ -1,0 +1,43 @@
+{
+  "variants": {
+    "facing=south,color=yellow,rune_placed=true": {"model": "the_vault:block/yellow_puzzle_rune_block_filled"},
+    "facing=east,color=yellow,rune_placed=true": {"model": "the_vault:block/yellow_puzzle_rune_block_filled", "y": 270},
+    "facing=north,color=yellow,rune_placed=true": {"model": "the_vault:block/yellow_puzzle_rune_block_filled", "y": 180},
+    "facing=west,color=yellow,rune_placed=true": {"model": "the_vault:block/yellow_puzzle_rune_block_filled", "y": 90},
+
+    "facing=south,color=pink,rune_placed=true": {"model": "the_vault:block/pink_puzzle_rune_block_filled"},
+    "facing=east,color=pink,rune_placed=true": {"model": "the_vault:block/pink_puzzle_rune_block_filled", "y": 270},
+    "facing=north,color=pink,rune_placed=true": {"model": "the_vault:block/pink_puzzle_rune_block_filled", "y": 180},
+    "facing=west,color=pink,rune_placed=true": {"model": "the_vault:block/pink_puzzle_rune_block_filled", "y": 90},
+
+    "facing=south,color=green,rune_placed=true": {"model": "the_vault:block/green_puzzle_rune_block_filled"},
+    "facing=east,color=green,rune_placed=true": {"model": "the_vault:block/green_puzzle_rune_block_filled", "y": 270},
+    "facing=north,color=green,rune_placed=true": {"model": "the_vault:block/green_puzzle_rune_block_filled", "y": 180},
+    "facing=west,color=green,rune_placed=true": {"model": "the_vault:block/green_puzzle_rune_block_filled", "y": 90},
+
+    "facing=south,color=blue,rune_placed=true": {"model": "the_vault:block/blue_puzzle_rune_block_filled"},
+    "facing=east,color=blue,rune_placed=true": {"model": "the_vault:block/blue_puzzle_rune_block_filled", "y": 270},
+    "facing=north,color=blue,rune_placed=true": {"model": "the_vault:block/blue_puzzle_rune_block_filled", "y": 180},
+    "facing=west,color=blue,rune_placed=true": {"model": "the_vault:block/blue_puzzle_rune_block_filled", "y": 90},
+
+    "facing=south,color=yellow,rune_placed=false": {"model": "the_vault:block/yellow_puzzle_rune_block_empty"},
+    "facing=east,color=yellow,rune_placed=false": {"model": "the_vault:block/yellow_puzzle_rune_block_empty", "y": 270},
+    "facing=north,color=yellow,rune_placed=false": {"model": "the_vault:block/yellow_puzzle_rune_block_empty", "y": 180},
+    "facing=west,color=yellow,rune_placed=false": {"model": "the_vault:block/yellow_puzzle_rune_block_empty", "y": 90},
+
+    "facing=south,color=pink,rune_placed=false": {"model": "the_vault:block/pink_puzzle_rune_block_empty"},
+    "facing=east,color=pink,rune_placed=false": {"model": "the_vault:block/pink_puzzle_rune_block_empty", "y": 270},
+    "facing=north,color=pink,rune_placed=false": {"model": "the_vault:block/pink_puzzle_rune_block_empty", "y": 180},
+    "facing=west,color=pink,rune_placed=false": {"model": "the_vault:block/pink_puzzle_rune_block_empty", "y": 90},
+
+    "facing=south,color=green,rune_placed=false": {"model": "the_vault:block/green_puzzle_rune_block_empty"},
+    "facing=east,color=green,rune_placed=false": {"model": "the_vault:block/green_puzzle_rune_block_empty", "y": 270},
+    "facing=north,color=green,rune_placed=false": {"model": "the_vault:block/green_puzzle_rune_block_empty", "y": 180},
+    "facing=west,color=green,rune_placed=false": {"model": "the_vault:block/green_puzzle_rune_block_empty", "y": 90},
+
+    "facing=south,color=blue,rune_placed=false": {"model": "the_vault:block/blue_puzzle_rune_block_empty"},
+    "facing=east,color=blue,rune_placed=false": {"model": "the_vault:block/blue_puzzle_rune_block_empty", "y": 270},
+    "facing=north,color=blue,rune_placed=false": {"model": "the_vault:block/blue_puzzle_rune_block_empty", "y": 180},
+    "facing=west,color=blue,rune_placed=false": {"model": "the_vault:block/blue_puzzle_rune_block_empty", "y": 90}
+  }
+}

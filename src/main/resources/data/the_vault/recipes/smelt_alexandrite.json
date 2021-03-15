@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "the_vault:ore_alexandrite"
+  },
+  "result": "the_vault:gem_alexandrite",
+  "experience": 1.0,
+  "cookingtime": 200
+}

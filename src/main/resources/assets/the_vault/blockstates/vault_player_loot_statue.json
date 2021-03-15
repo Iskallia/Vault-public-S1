@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=south": {
+      "model": "the_vault:block/vault_player_loot_statue"
+    },
+    "facing=north": {
+      "model": "the_vault:block/vault_player_loot_statue",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "the_vault:block/vault_player_loot_statue",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "the_vault:block/vault_player_loot_statue",
+      "y": 90
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:vault_diamond"},
+    {"item": "the_vault:vault_diamond"},
+    {"item": "the_vault:vault_diamond"},
+    {"item": "the_vault:vault_diamond"},
+    {"item": "the_vault:vault_diamond"},
+    {"item": "the_vault:vault_diamond"},
+    {"item": "the_vault:vault_diamond"},
+    {"item": "the_vault:vault_diamond"},
+    {"item": "the_vault:vault_diamond"}
+  ],
+  "result": {
+    "item": "the_vault:vault_diamond_block",
+    "count": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "completion=0": {
+      "model": "the_vault:block/obelisk_0"
+    },
+    "completion=1": {
+      "model": "the_vault:block/obelisk_1"
+    },
+    "completion=2": {
+      "model": "the_vault:block/obelisk_2"
+    },
+    "completion=3": {
+      "model": "the_vault:block/obelisk_3"
+    },
+    "completion=4": {
+      "model": "the_vault:block/obelisk_4"
+    }
+  }
+}

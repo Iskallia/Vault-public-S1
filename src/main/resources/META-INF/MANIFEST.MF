@@ -1,0 +1,1 @@
+MixinConnector: iskallia.vault.MixinConnector

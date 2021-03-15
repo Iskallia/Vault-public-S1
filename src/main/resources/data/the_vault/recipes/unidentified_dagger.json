@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X ",
+    " X",
+    " #"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "item": "the_vault:vault_ingot"
+    }
+  },
+  "result": {
+    "item": "the_vault:dagger"
+  }
+}

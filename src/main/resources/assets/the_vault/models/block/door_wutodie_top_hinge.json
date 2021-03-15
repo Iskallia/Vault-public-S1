@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_rh",
+  "textures": {
+    "top": "the_vault:block/door_wutodie_top",
+    "bottom": "the_vault:block/door_wutodie_bottom"
+  }
+}

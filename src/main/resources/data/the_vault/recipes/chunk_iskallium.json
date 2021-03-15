@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:cluster_iskallium"},
+    {"item": "the_vault:cluster_iskallium"},
+    {"item": "the_vault:cluster_iskallium"},
+    {"item": "the_vault:cluster_iskallium"},
+    {"item": "the_vault:cluster_iskallium"},
+    {"item": "the_vault:cluster_iskallium"},
+    {"item": "the_vault:cluster_iskallium"},
+    {"item": "the_vault:cluster_iskallium"},
+    {"item": "the_vault:cluster_iskallium"}
+  ],
+  "result": {
+    "item": "the_vault:chunk_iskallium",
+    "count": 1
+  }
+}

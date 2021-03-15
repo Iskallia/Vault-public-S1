@@ -1,0 +1,12 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "the_vault:item/yellow_puzzle_rune_block"
+  },
+  "overrides": [
+    {"predicate": {"the_vault:puzzle_color": 0}, "model": "the_vault:item/yellow_puzzle_rune_block"},
+    {"predicate": {"the_vault:puzzle_color": 1}, "model": "the_vault:item/pink_puzzle_rune_block"},
+    {"predicate": {"the_vault:puzzle_color": 2}, "model": "the_vault:item/green_puzzle_rune_block"},
+    {"predicate": {"the_vault:puzzle_color": 3}, "model": "the_vault:item/blue_puzzle_rune_block"}
+  ]
+}

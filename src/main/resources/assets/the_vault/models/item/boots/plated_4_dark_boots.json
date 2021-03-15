@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "the_vault:item/boots/plated_4_dark_boots"
+  }
+}

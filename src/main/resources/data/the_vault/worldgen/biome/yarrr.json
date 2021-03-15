@@ -1,0 +1,27 @@
+{
+  "surface_builder": "minecraft:stone",
+  "depth": 0.1,
+  "scale": 0.2,
+  "temperature": 2,
+  "downfall": 0,
+  "precipitation": "none",
+  "category": "none",
+  "player_spawn_friendly": true,
+  "effects": {
+    "sky_color": 16740352,
+    "fog_color": 16740352,
+    "water_color": 4159204,
+    "water_fog_color": 16740352,
+    "particle": {
+      "options": {
+        "type": "minecraft:crimson_spore"
+      },
+      "probability": 0.005
+    }
+  },
+  "starts": [],
+  "spawners": {},
+  "spawn_costs": {},
+  "carvers": {},
+  "features": []
+}
