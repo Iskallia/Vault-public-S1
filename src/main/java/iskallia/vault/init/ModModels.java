@@ -190,7 +190,7 @@ public class ModModels {
             return (type == null ? base : base + "_" + type) + ".png";
         }
 
-        private static <T extends VaultGearModel<?>> GearModel register(String textureName, Class<T> modelClass) {
+        private static <T extends VaultGearModel<? extends LivingEntity>> GearModel register(String textureName, Class<T> modelClass) {
             try {
                 GearModel gearModel = new GearModel();
                 gearModel.displayName = textureName;
