@@ -29,7 +29,7 @@ logoFile="logo2.png" #optional
 # A text field displayed in the mod UI
 credits="iskall85 the architect and the incredible team behind it, Team Iskallia." #optional
 # A text field displayed in the mod UI
-authors="Captain Wutax, iGoodie, jmilthedude" #optional
+authors="KaptainWutax, iGoodie, jmilthedude, Kumara22" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 Run Vaults.
