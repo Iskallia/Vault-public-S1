@@ -21,18 +21,22 @@ version="${file.jarVersion}" #mandatory
 # A display name for the mod
 displayName="The Vault" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
-updateJSONURL="http://myurl.me/" #optional
+#updateJSONURL="" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
-displayURL="http://example.com/" #optional
+displayURL="iskall85.com" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="examplemod.png" #optional
+logoFile="logo2.png" #optional
 # A text field displayed in the mod UI
-credits="Thanks for this example mod goes to Java" #optional
+credits="iskall85 the architect and the incredible team behind it, Team Iskallia." #optional
 # A text field displayed in the mod UI
-authors="Love, Cheese and small house plants" #optional
+authors="Captain Wutax, iGoodie, jmilthedude" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Something something.
+Run Vaults.
+Collect Resources.
+Level up skills.
+Unlock mods.
+Get Artifacts.
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.the_vault]] #optional
