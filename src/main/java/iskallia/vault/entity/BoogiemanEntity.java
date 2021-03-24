@@ -47,6 +47,7 @@ public class BoogiemanEntity extends ZombieEntity implements VaultBoss {
     @Override
     protected void applyEntityAI() {
         super.applyEntityAI();
+        //this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, ArenaFighterEntity.class, false));
 
         this.goalSelector.addGoal(1, TeleportGoal.builder(this).start(entity -> {
             return entity.getAttackTarget() != null && entity.ticksExisted % 60 == 0;
@@ -56,7 +57,7 @@ public class BoogiemanEntity extends ZombieEntity implements VaultBoss {
             entity.playSound(ModSounds.BOSS_TP_SFX, 1.0F, 1.0F);
         }).build());
 
-        this.goalSelector.addGoal(1, new SnowStormGoal<>(this, 96, 10));
+        this.goalSelector.addGoal(1, new ThrowProjectilesGoal<>(this, 96, 10, FighterEntity.SNOWBALLS));
         this.goalSelector.addGoal(1, new AOEGoal<>(this, e -> !(e instanceof VaultBoss)));
 
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, false));
@@ -77,6 +78,7 @@ public class BoogiemanEntity extends ZombieEntity implements VaultBoss {
         this.bossInfo.setVisible(true);
 
         if (raid != null) {
+            raid.addBoss(this);
             EntityScaler.scaleVault(this, raid.level, new Random(), EntityScaler.Type.BOSS);
 
             if (raid.playerBossName != null) {

@@ -10,6 +10,7 @@ import iskallia.vault.skill.talent.TalentNode;
 import iskallia.vault.skill.talent.TalentTree;
 import iskallia.vault.world.data.PlayerSetsData;
 import iskallia.vault.world.data.PlayerTalentsData;
+import iskallia.vault.world.raid.VaultRaid;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -35,8 +36,9 @@ public class ParryTalent extends PlayerTalent {
 
     @SubscribeEvent
     public static void onPlayerDamage(LivingAttackEvent event) {
-        if (event.getEntityLiving().world.isRemote) return;
-        if (!(event.getEntityLiving() instanceof ServerPlayerEntity)) return;
+        if(event.getEntityLiving().world.isRemote)return;
+        if(!(event.getEntityLiving() instanceof ServerPlayerEntity))return;
+        if(event.getSource() == VaultRaid.VAULT_FAILED)return;
 
         ServerPlayerEntity player = (ServerPlayerEntity) event.getEntityLiving();
         float totalParryChance = 0.0F;

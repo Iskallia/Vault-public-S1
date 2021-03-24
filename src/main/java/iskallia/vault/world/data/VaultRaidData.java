@@ -1,6 +1,7 @@
 package iskallia.vault.world.data;
 
 import iskallia.vault.Vault;
+import iskallia.vault.init.ModConfigs;
 import iskallia.vault.init.ModFeatures;
 import iskallia.vault.init.ModStructures;
 import iskallia.vault.item.CrystalData;
@@ -61,34 +62,48 @@ public class VaultRaidData extends WorldSavedData {
         return this.activeRaids.get(player.getUniqueID());
     }
 
-    public VaultRaid startNew(ServerPlayerEntity player, ItemVaultCrystal crystal) {
-        return this.startNew(player, crystal.getRarity().ordinal(), "", new CrystalData(null));
+    public VaultRaid startNew(ServerPlayerEntity player, ItemVaultCrystal crystal, boolean isFinalVault) {
+        return this.startNew(player, crystal.getRarity().ordinal(), "", new CrystalData(null), isFinalVault);
     }
 
-    public VaultRaid startNew(ServerPlayerEntity player, int rarity, String playerBossName, CrystalData data) {
-        player.sendStatusMessage(new StringTextComponent("Generating vault, please wait...").mergeStyle(TextFormatting.GREEN), true);
+    public VaultRaid startNew(ServerPlayerEntity player, int rarity, String playerBossName, CrystalData data, boolean isFinalVault) {
+        return this.startNew(Collections.singletonList(player), Collections.emptyList(), rarity, playerBossName, data, isFinalVault);
+    }
 
-        VaultRaid raid = new VaultRaid(player, new MutableBoundingBox(
+    public VaultRaid startNew(List<ServerPlayerEntity> players, List<ServerPlayerEntity> spectators, int rarity, String playerBossName, CrystalData data, boolean isFinalVault) {
+        players.forEach(player -> player.sendStatusMessage(new StringTextComponent("Generating vault, please wait...").mergeStyle(TextFormatting.GREEN), true));
+
+        int level = players.stream()
+                .map(player -> PlayerVaultStatsData.get(player.getServerWorld()).getVaultStats(player).getVaultLevel())
+                .max(Integer::compareTo).get();
+
+        VaultRaid raid = new VaultRaid(players, spectators, new MutableBoundingBox(
                 this.xOffset, 0, 0, this.xOffset += VaultRaid.REGION_SIZE, 256, VaultRaid.REGION_SIZE
-        ), PlayerVaultStatsData.get(player.getServerWorld()).getVaultStats(player).getVaultLevel(), rarity, playerBossName);
+        ), level, rarity, playerBossName);
 
+        raid.isFinalVault = isFinalVault;
 
-        if (this.activeRaids.containsKey(player.getUniqueID())) {
-            this.activeRaids.get(player.getUniqueID()).ticksLeft = 0;
-        }
+        players.forEach(player -> {
+            if(this.activeRaids.containsKey(player.getUniqueID())) {
+                this.activeRaids.get(player.getUniqueID()).ticksLeft = 0;
+            }
+        });
 
-        this.activeRaids.put(raid.getPlayerId(), raid);
+        raid.getPlayerIds().forEach(uuid -> {
+            this.activeRaids.put(uuid, raid);
+        });
+
         this.markDirty();
 
-        ServerWorld world = player.getServer().getWorld(Vault.VAULT_KEY);
+        ServerWorld world = players.get(0).getServer().getWorld(Vault.VAULT_KEY);
 
-        player.getServer().runAsync(() -> {
+        players.get(0).getServer().runAsync(() -> {
             try {
                 ChunkPos chunkPos = new ChunkPos((raid.box.minX + raid.box.getXSize() / 2) >> 4, (raid.box.minZ + raid.box.getZSize() / 2) >> 4);
 
                 StructureSeparationSettings settings = new StructureSeparationSettings(1, 0, -1);
 
-                StructureStart<?> start = ModFeatures.VAULT_FEATURE.func_242771_a(world.func_241828_r(),
+                StructureStart<?> start = (raid.isFinalVault ? ModFeatures.FINAL_VAULT_FEATURE : ModFeatures.VAULT_FEATURE).func_242771_a(world.func_241828_r(),
                         world.getChunkProvider().generator, world.getChunkProvider().generator.getBiomeProvider(),
                         world.getStructureTemplateManager(), world.getSeed(), chunkPos,
                         BiomeRegistry.PLAINS, 0, settings);
@@ -102,7 +117,7 @@ public class VaultRaidData extends WorldSavedData {
                     }
                 }
 
-                raid.start(world, player, chunkPos, data);
+                raid.start(world, chunkPos, data);
             } catch(Exception e) {
                 e.printStackTrace();
             }
@@ -121,7 +136,7 @@ public class VaultRaidData extends WorldSavedData {
         for (VaultRaid raid : this.activeRaids.values()) {
             if(raid.isComplete()) {
                 raid.syncTicksLeft(world.getServer());
-                tasks.add(() -> this.remove(world, raid.playerId));
+                tasks.add(() -> raid.playerIds.forEach(uuid -> this.remove(world, uuid)));
                 removed = true;
             }
         }
@@ -145,8 +160,8 @@ public class VaultRaidData extends WorldSavedData {
         this.activeRaids.clear();
 
         nbt.getList("ActiveRaids", Constants.NBT.TAG_COMPOUND).forEach(raidNBT -> {
-            VaultRaid raid = VaultRaid.fromNBT((CompoundNBT) raidNBT);
-            this.activeRaids.put(raid.getPlayerId(), raid);
+            VaultRaid raid = VaultRaid.fromNBT((CompoundNBT)raidNBT);
+            raid.getPlayerIds().forEach(uuid -> this.activeRaids.put(uuid, raid));
         });
 
         this.xOffset = nbt.getInt("XOffset");

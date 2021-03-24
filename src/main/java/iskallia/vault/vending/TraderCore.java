@@ -44,7 +44,7 @@ public class TraderCore implements INBTSerializable {
     }
 
     public String getName() {
-        return this.NAME == null ? "player" : this.NAME;
+        return this.NAME == null ? "Trader" : this.NAME;
     }
 
     public void setName(String name) {

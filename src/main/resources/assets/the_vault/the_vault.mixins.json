@@ -5,18 +5,21 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "the_vault.refmap.json",
   "mixins": [
-    "AttributeInstanceMixin",
-    "EnchantmentMixin",
-    "ItemRendererMixin",
-    "ItemStackMixin",
-    "LivingEntityMixin",
+    "MixinAttributeInstance",
+    "MixinCUpdateStructureBlockPacket",
+    "MixinEnchantment",
+    "MixinItemRenderer",
+    "MixinItemStack",
+    "MixinLivingEntity",
     "MixinPlayerInventory",
     "MixinRepairContainer",
-    "MixinServerWorld"
+    "MixinServerWorld",
+    "MixinStructureBlockTileEntity"
   ],
   "client": [
-    "ElytraLayerMixin",
     "MixinAnvilScreen",
+    "MixinBossOverlayGui",
+    "MixinElytraLayer",
     "MixinEnchantedBookItem",
     "MixinItem"
   ],

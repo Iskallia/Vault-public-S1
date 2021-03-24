@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Enchantment.class)
-public abstract class EnchantmentMixin {
+public abstract class MixinEnchantment {
 
 	@Inject(method = "canApply", at = @At("HEAD"), cancellable = true)
 	private void canApply(ItemStack stack, CallbackInfoReturnable<Boolean> ci) {

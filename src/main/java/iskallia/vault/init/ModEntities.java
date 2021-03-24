@@ -26,6 +26,8 @@ public class ModEntities {
     public static EntityType<VaultFighterEntity> VAULT_FIGHTER;
     public static EntityType<EternalEntity> ETERNAL;
     public static EntityType<TreasureGoblinEntity> TREASURE_GOBLIN;
+    public static EntityType<FinalBossEntity> FINAL_BOSS;
+    public static EntityType<FinalDummyEntity> FINAL_DUMMY;
 
     public static void register(RegistryEvent.Register<EntityType<?>> event) {
         FIGHTER = register("fighter", EntityType.Builder.create(FighterEntity::new, EntityClassification.MONSTER)
@@ -46,6 +48,10 @@ public class ModEntities {
                 .size(0.6F, 1.95F), ZombieEntity::func_234342_eQ_, event);
         TREASURE_GOBLIN = register("treasure_goblin", EntityType.Builder.create(TreasureGoblinEntity::new, EntityClassification.CREATURE)
                 .size(1f, 1f), ZombieEntity::func_234342_eQ_, event);
+        FINAL_BOSS = register("final_boss", EntityType.Builder.create(FinalBossEntity::new, EntityClassification.MONSTER)
+                .size(0.6F, 1.95F), FinalBossEntity::getAttributes, event);
+        FINAL_DUMMY = register("final_dummy", EntityType.Builder.create(FinalDummyEntity::new, EntityClassification.MONSTER)
+                .size(0.6F, 1.95F), FinalDummyEntity::getAttributes, event);
     }
 
     public static <T extends LivingEntity> EntityType<T> register(String name, EntityType.Builder<T> builder, Supplier<AttributeModifierMap.MutableAttribute> attributes, RegistryEvent.Register<EntityType<?>> event) {
@@ -66,6 +72,8 @@ public class ModEntities {
             RenderingRegistry.registerEntityRenderingHandler(VAULT_FIGHTER, FighterRenderer::new);
             RenderingRegistry.registerEntityRenderingHandler(ETERNAL, EternalRenderer::new);
             RenderingRegistry.registerEntityRenderingHandler(TREASURE_GOBLIN, TreasureGoblinRenderer::new);
+            RenderingRegistry.registerEntityRenderingHandler(FINAL_BOSS, FighterRenderer::new);
+            RenderingRegistry.registerEntityRenderingHandler(FINAL_DUMMY, VaultGuardianRenderer::new);
         }
     }
 

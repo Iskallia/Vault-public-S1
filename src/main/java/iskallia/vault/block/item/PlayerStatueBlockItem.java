@@ -2,11 +2,17 @@ package iskallia.vault.block.item;
 
 import iskallia.vault.init.ModBlocks;
 import iskallia.vault.init.ModItems;
+import iskallia.vault.util.StatueType;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -40,37 +46,28 @@ public class PlayerStatueBlockItem extends BlockItem {
             StringTextComponent text = new StringTextComponent(" Nickname: " + nickname);
             text.setStyle(Style.EMPTY.setColor(Color.fromInt(0xFF_ff9966)));
             tooltip.add(text);
+        } else {
+            tooltip.add(new StringTextComponent(""));
+            tooltip.add(new StringTextComponent("Statue: "));
+            StringTextComponent tip = new StringTextComponent(" Right-click to generate trade!");
+            tip.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFAA00)));
+            tooltip.add(tip);
+            return;
         }
 
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }
 
-    public static ItemStack forArenaChampion(String nickname) {
-        ItemStack itemStack = new ItemStack(ModBlocks.PLAYER_STATUE_BLOCK_ITEM);
-
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.putString("PlayerNickname", nickname);
-        nbt.putBoolean("HasCrown", true);
-
-        CompoundNBT stackNBT = new CompoundNBT();
-        stackNBT.put("BlockEntityTag", nbt);
-        itemStack.setTag(stackNBT);
-
-        return itemStack;
+    @Override
+    protected boolean canPlace(BlockItemUseContext p_195944_1_, BlockState p_195944_2_) {
+        return false;
     }
 
-    public static ItemStack forVaultBoss(String nickname) {
-        ItemStack itemStack = new ItemStack(ModBlocks.PLAYER_STATUE_BLOCK_ITEM);
-
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.putString("PlayerNickname", nickname);
-        nbt.putBoolean("HasCrown", false);
-
-        CompoundNBT stackNBT = new CompoundNBT();
-        stackNBT.put("BlockEntityTag", nbt);
-        itemStack.setTag(stackNBT);
-
-        return itemStack;
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        if (handIn == Hand.OFF_HAND) return super.onItemRightClick(worldIn, playerIn, handIn);
+        ItemStack statue = LootStatueBlockItem.getStatueBlockItem(playerIn.getName().getString(), StatueType.values()[worldIn.rand.nextInt(StatueType.values().length)], false, true);
+        playerIn.setHeldItem(Hand.MAIN_HAND, statue);
+        return super.onItemRightClick(worldIn, playerIn, handIn);
     }
-
 }

@@ -16,9 +16,10 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class VaultCrateContainer extends Container {
 
-    private TileEntity tileEntity;
+    public IItemHandler crateInventory;
     private PlayerEntity playerEntity;
     private IItemHandler playerInventory;
+    private TileEntity tileEntity;
 
     public VaultCrateContainer(int windowId, World world, BlockPos pos, PlayerInventory playerInventory, PlayerEntity player) {
         super(ModContainers.VAULT_CRATE_CONTAINER, windowId);
@@ -28,29 +29,26 @@ public class VaultCrateContainer extends Container {
 
         if (tileEntity != null) {
             tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-                int i = 3;
-                int j = 9;
+                this.crateInventory = h;
+                int i = (6 - 4) * 18;
 
-                for (int k = 0; k < 3; ++k) {
-                    for (int l = 0; l < 9; ++l) {
-                        this.addSlot(new SlotItemHandler(h, l + k * 9, 8 + l * 18, 18 + k * 18));
+                for(int j = 0; j < 6; ++j) {
+                    for(int k = 0; k < 9; ++k) {
+                        this.addSlot(new SlotItemHandler(h, k + j * 9, 8 + k * 18, 18 + j * 18));
                     }
                 }
 
-                for (int i1 = 0; i1 < 3; ++i1) {
-                    for (int k1 = 0; k1 < 9; ++k1) {
-                        this.addSlot(new Slot(playerInventory, k1 + i1 * 9 + 9, 8 + k1 * 18, 84 + i1 * 18));
+                for(int l = 0; l < 3; ++l) {
+                    for(int j1 = 0; j1 < 9; ++j1) {
+                        this.addSlot(new Slot(playerInventory, j1 + l * 9 + 9, 8 + j1 * 18, 103 + l * 18 + i));
                     }
                 }
 
-                for (int j1 = 0; j1 < 9; ++j1) {
-                    this.addSlot(new Slot(playerInventory, j1, 8 + j1 * 18, 142));
+                for(int i1 = 0; i1 < 9; ++i1) {
+                    this.addSlot(new Slot(playerInventory, i1, 8 + i1 * 18, 161 + i));
                 }
             });
         }
-
-        //layoutPlayerInventorySlots(10, 70);
-
     }
 
     @Override
@@ -60,11 +58,11 @@ public class VaultCrateContainer extends Container {
         if (slot != null && slot.getHasStack()) {
             ItemStack stackInSlot = slot.getStack();
             stack = stackInSlot.copy();
-            if (index < 27) {
-                if (!this.mergeItemStack(stackInSlot, 27, this.inventorySlots.size(), true)) {
+            if (index < this.crateInventory.getSlots()) {
+                if (!this.mergeItemStack(stackInSlot, this.crateInventory.getSlots(), this.inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.mergeItemStack(stackInSlot, 0, 27, false)) {
+            } else if (!this.mergeItemStack(stackInSlot, 0, this.crateInventory.getSlots(), false)) {
                 return ItemStack.EMPTY;
             }
 
@@ -80,17 +78,8 @@ public class VaultCrateContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
+    public boolean canInteractWith(PlayerEntity player) {
         return true;
-    }
-
-    private void layoutPlayerInventorySlots(int leftCol, int topRow) {
-        // Player inventory
-        addSlotBox(playerInventory, 9, leftCol, topRow, 9, 18, 3, 18);
-
-        // Hotbar
-        topRow += 58;
-        addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
     }
 
     private int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {

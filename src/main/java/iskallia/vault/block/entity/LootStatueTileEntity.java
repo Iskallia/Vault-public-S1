@@ -82,7 +82,7 @@ public class LootStatueTileEntity extends TileEntity implements ITickableTileEnt
     }
 
     public boolean addChip() {
-        if (chipCount >= ModConfigs.STATUE_LOOT.getMaxAccelerationChips()) {
+        if(chipCount >= ModConfigs.STATUE_LOOT.getMaxAccelerationChips()) {
             return false;
         }
         chipCount++;
@@ -200,7 +200,7 @@ public class LootStatueTileEntity extends TileEntity implements ITickableTileEnt
         nbt.putString("PlayerNickname", nickname == null ? "" : nickname);
         nbt.putInt("Interval", getInterval());
         nbt.putInt("CurrentTick", getCurrentTick());
-        nbt.putInt("StatueType", getStatueType() == null ? 0 : getStatueType().ordinal());
+        nbt.putInt("StatueType", getStatueType().ordinal());
         nbt.put("LootItem", getLootItem().serializeNBT());
         nbt.putBoolean("HasCrown", hasCrown());
         nbt.putInt("ChipCount", chipCount);

@@ -1667,7 +1667,7 @@
   {
     "rolls": {
       "min": 1,
-      "max": 1
+      "max": 2
     },
     "bonus_rolls": {
       "min": 0,
@@ -1676,7 +1676,7 @@
     "entries": [
       {
         "type": "minecraft:item",
-        "weight": 1,
+        "weight": 2,
         "name": "the_vault:helmet",
         "functions": [
           {
@@ -1694,13 +1694,13 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.3
           }
         ]
       },
       {
         "type": "minecraft:item",
-        "weight": 1,
+        "weight": 2,
         "name": "the_vault:chestplate",
         "functions": [
           {
@@ -1718,13 +1718,13 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.3
           }
         ]
       },
       {
         "type": "minecraft:item",
-        "weight": 1,
+        "weight": 2,
         "name": "the_vault:leggings",
         "functions": [
           {
@@ -1742,13 +1742,13 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.3
           }
         ]
       },
       {
         "type": "minecraft:item",
-        "weight": 1,
+        "weight": 2,
         "name": "the_vault:boots",
         "functions": [
           {
@@ -1766,13 +1766,13 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.3
           }
         ]
       },
       {
         "type": "minecraft:item",
-        "weight": 1,
+        "weight": 2,
         "name": "the_vault:sword",
         "functions": [
           {
@@ -1790,13 +1790,13 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.3
           }
         ]
       },
       {
         "type": "minecraft:item",
-        "weight": 1,
+        "weight": 2,
         "name": "the_vault:axe",
         "functions": [
           {
@@ -1814,13 +1814,13 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.3
           }
         ]
       },
       {
         "type": "minecraft:item",
-        "weight": 1,
+        "weight": 2,
         "name": "the_vault:dagger",
         "functions": [
           {
@@ -1838,13 +1838,13 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.3
           }
         ]
       },
       {
         "type": "minecraft:item",
-        "weight": 2,
+        "weight": 4,
         "name": "the_vault:etching",
         "functions": [
           {
@@ -1853,12 +1853,16 @@
               "min": 1,
               "max": 1
             }
+          },
+          {
+            "function": "set_nbt",
+            "tag": "{Vault:{Attributes:[{Id:\"the_vault:gear_roll_type\",BaseValue:\"TREASURE_ONLY\"}]}}"
           }
         ],
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.2
+            "chance": 0.4
           }
         ]
       },
@@ -1871,7 +1875,7 @@
             "function": "minecraft:set_count",
             "count": {
               "min": 1,
-              "max": 1
+              "max": 6
             }
           }
         ],
@@ -1891,7 +1895,7 @@
             "function": "minecraft:set_count",
             "count": {
               "min": 1,
-              "max": 1
+              "max": 8
             }
           }
         ],
@@ -1910,8 +1914,8 @@
           {
             "function": "minecraft:set_count",
             "count": {
-              "min": 1,
-              "max": 1
+              "min": 6,
+              "max": 22
             }
           }
         ],

@@ -1,9 +1,9 @@
 package iskallia.vault.entity;
 
 import iskallia.vault.entity.ai.RegenAfterAWhile;
-import iskallia.vault.entity.ai.SnowStormGoal;
 import iskallia.vault.entity.ai.TeleportGoal;
 import iskallia.vault.entity.ai.TeleportRandomly;
+import iskallia.vault.entity.ai.ThrowProjectilesGoal;
 import iskallia.vault.init.ModSounds;
 import iskallia.vault.world.raid.VaultRaid;
 import net.minecraft.entity.EntityType;
@@ -57,7 +57,7 @@ public class BlueBlazeEntity extends BlazeEntity implements VaultBoss {
             entity.playSound(ModSounds.BOSS_TP_SFX, 1.0F, 1.0F);
         }).build());
 
-        this.goalSelector.addGoal(1, new SnowStormGoal<>(this, 96, 10));
+        this.goalSelector.addGoal(1, new ThrowProjectilesGoal<>(this, 96, 10, FighterEntity.SNOWBALLS));
 
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, false));
         this.getAttribute(Attributes.FOLLOW_RANGE).setBaseValue(100.0D);
@@ -72,6 +72,7 @@ public class BlueBlazeEntity extends BlazeEntity implements VaultBoss {
         this.bossInfo.setVisible(true);
 
         if (raid != null) {
+            raid.addBoss(this);
             EntityScaler.scaleVault(this, raid.level, new Random(), EntityScaler.Type.BOSS);
 
             if (raid.playerBossName != null) {

@@ -1,6 +1,7 @@
 package iskallia.vault.init;
 
 import iskallia.vault.Vault;
+import iskallia.vault.block.PuzzleRuneBlock;
 import iskallia.vault.item.gear.VaultGear;
 import iskallia.vault.item.gear.attribute.*;
 import iskallia.vault.skill.talent.type.EffectTalent;
@@ -58,6 +59,9 @@ public class ModAttributes {
 	public static ItemAttribute<Integer, IntegerAttribute> MIN_VAULT_LEVEL;
 	public static ItemAttribute<VaultGear.RollType, EnumAttribute<VaultGear.RollType>> GEAR_ROLL_TYPE;
 
+	//Other Attributes
+	public static ItemAttribute<PuzzleRuneBlock.Color, EnumAttribute<PuzzleRuneBlock.Color>> PUZZLE_COLOR;
+
 	public static void register(RegistryEvent.Register<Attribute> event) {
 		CRIT_CHANCE = register(event.getRegistry(), "generic.crit_chance", new RangedAttribute("attribute.name.generic.crit_chance", 0.0D, 0.0D, 1.0D)).setShouldWatch(true);
 		CRIT_MULTIPLIER = register(event.getRegistry(), "generic.crit_multiplier", new RangedAttribute("attribute.name.generic.crit_multiplier", 0.0D, 0.0D, 1024.0D)).setShouldWatch(true);
@@ -97,6 +101,8 @@ public class ModAttributes {
 		EXTRA_EFFECTS = register(new ResourceLocation(Vault.MOD_ID, "extra_effects"), EffectAttribute::new);
 		MIN_VAULT_LEVEL = register(new ResourceLocation(Vault.MOD_ID, "min_vault_level"), IntegerAttribute::new);
 		GEAR_ROLL_TYPE = register(new ResourceLocation(Vault.MOD_ID, "gear_roll_type"), () -> new EnumAttribute<>(VaultGear.RollType.class));
+
+		PUZZLE_COLOR = register(new ResourceLocation(Vault.MOD_ID, "key_color"), () -> new EnumAttribute<>(PuzzleRuneBlock.Color.class));
 	}
 
 	/* ------------------------------------------- */

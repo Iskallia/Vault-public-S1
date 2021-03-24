@@ -106,7 +106,7 @@ public class ItemTraderCore extends Item {
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         CompoundNBT nbt = stack.getOrCreateTag();
         if (nbt.contains("core")) {
-            TraderCore core = null;
+            TraderCore core;
             try {
                 core = NBTSerializer.deserialize(TraderCore.class, (CompoundNBT) nbt.get("core"));
             } catch (Exception e) {
@@ -115,7 +115,14 @@ public class ItemTraderCore extends Item {
             }
 
             Trade trade = core.getTrade();
-            if(trade == null) return;
+            if (trade == null) {
+                tooltip.add(new StringTextComponent(""));
+                tooltip.add(new StringTextComponent("Trader: "));
+                StringTextComponent tip = new StringTextComponent(" Right-click to generate trade!");
+                tip.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFAA00)));
+                tooltip.add(tip);
+                return;
+            }
             if (!trade.isValid()) return;
 
             Product buy = trade.getBuy();
@@ -171,6 +178,13 @@ public class ItemTraderCore extends Item {
                 comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFAA00)));
                 tooltip.add(comp);
             }
+        } else {
+            tooltip.add(new StringTextComponent(""));
+            tooltip.add(new StringTextComponent("Trader: "));
+            StringTextComponent tip = new StringTextComponent(" Right-click to generate trade!");
+            tip.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFAA00)));
+            tooltip.add(tip);
+            return;
         }
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }
@@ -200,9 +214,10 @@ public class ItemTraderCore extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand handIn) {
         if (worldIn.isRemote) return super.onItemRightClick(worldIn, player, handIn);
+        if (handIn == Hand.OFF_HAND) return super.onItemRightClick(worldIn, player, handIn);
+        ItemStack stack = player.getHeldItemMainhand();
 
         if (player.isSneaking()) {
-            ItemStack stack = player.getHeldItemMainhand();
             CompoundNBT nbt = new CompoundNBT();
             nbt.putInt("RenameType", RenameType.TRADER_CORE.ordinal());
             nbt.put("Data", stack.serializeNBT());
@@ -224,13 +239,35 @@ public class ItemTraderCore extends Item {
                         buffer.writeCompoundTag(nbt);
                     }
             );
+        } else {
+            CompoundNBT nbt = stack.getOrCreateTag();
+            if (nbt.contains("core", Constants.NBT.TAG_COMPOUND)) {
+                TraderCore core;
+                try {
+                    core = NBTSerializer.deserialize(TraderCore.class, nbt.getCompound("core"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return super.onItemRightClick(worldIn, player, handIn);
+                }
+                if (core.getTrade() == null) {
+                    String name = "Trader";
+                    if (core.getName() != null && !core.getName().isEmpty()) {
+                        name = core.getName();
+                    }
+                    ItemStack newTraderCore = generate(name, 1, false, CoreType.COMMON);
+                    player.setHeldItem(Hand.MAIN_HAND, newTraderCore);
+                }
+            } else {
+                ItemStack newTraderCore = generate("Trader", 1, false, CoreType.COMMON);
+                player.setHeldItem(Hand.MAIN_HAND, newTraderCore);
+            }
         }
         return super.onItemRightClick(worldIn, player, handIn);
     }
 
     public static String getTraderName(ItemStack stack) {
         CompoundNBT nbt = stack.getOrCreateTag();
-        TraderCore core = null;
+        TraderCore core;
         try {
             core = NBTSerializer.deserialize(TraderCore.class, (CompoundNBT) nbt.get("core"));
         } catch (Exception e) {
@@ -242,7 +279,7 @@ public class ItemTraderCore extends Item {
 
     public static void updateTraderName(ItemStack stack, String newName) {
         CompoundNBT nbt = stack.getOrCreateTag();
-        TraderCore core = null;
+        TraderCore core;
         try {
             core = NBTSerializer.deserialize(TraderCore.class, (CompoundNBT) nbt.get("core"));
             core.setName(newName);
@@ -268,7 +305,9 @@ public class ItemTraderCore extends Item {
             this.displayName = displayName;
         }
 
-        public StringTextComponent getDisplayName() { return this.displayName; }
+        public StringTextComponent getDisplayName() {
+            return this.displayName;
+        }
 
     }
 }

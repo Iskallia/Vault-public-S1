@@ -25,6 +25,8 @@ public class VaultGeneralConfig extends Config {
 	@Expose private List<String> ITEM_BLACKLIST;
 	@Expose private List<String> BLOCK_BLACKLIST;
 	@Expose private Map<Integer, String> MONTHS_TO_TAG_COLOR;
+	@Expose public float VAULT_EXIT_TNL_MIN;
+	@Expose public float VAULT_EXIT_TNL_MAX;
 
 	@Override
 	public String getName() {
@@ -61,6 +63,9 @@ public class VaultGeneralConfig extends Config {
 		this.MONTHS_TO_TAG_COLOR.put(13, TextFormatting.YELLOW.name());
 		this.MONTHS_TO_TAG_COLOR.put(25, TextFormatting.GOLD.name());
 		this.MONTHS_TO_TAG_COLOR.put(48, TextFormatting.RED.name());
+
+		this.VAULT_EXIT_TNL_MIN = 0.0F;
+		this.VAULT_EXIT_TNL_MAX = 0.0F;
 	}
 
 	public TextFormatting getTagFormat(int months) {

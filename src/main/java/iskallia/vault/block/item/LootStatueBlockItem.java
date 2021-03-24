@@ -43,33 +43,43 @@ public class LootStatueBlockItem extends BlockItem {
     }
 
     public static ItemStack forVaultBoss(String nickname, int variant, boolean hasCrown) {
-        return getStatueBlockItem(nickname, variant, hasCrown, new ItemStack(ModBlocks.VAULT_PLAYER_LOOT_STATUE));
+        return getStatueBlockItem(nickname, StatueType.values()[variant], hasCrown, false);
     }
 
     public static ItemStack forArenaChampion(String nickname, int variant, boolean hasCrown) {
-        return getStatueBlockItem(nickname, variant, hasCrown, new ItemStack(ModBlocks.ARENA_PLAYER_LOOT_STATUE));
+        return getStatueBlockItem(nickname, StatueType.values()[variant], hasCrown, false);
     }
 
     public static ItemStack forGift(String nickname, int variant, boolean hasCrown) {
-        StatueType type = StatueType.values()[variant];
-        switch (type) {
-            case GIFT_NORMAL:
-                return getStatueBlockItem(nickname, variant, hasCrown, new ItemStack(ModBlocks.GIFT_NORMAL_STATUE));
-            case GIFT_MEGA:
-                return getStatueBlockItem(nickname, variant, hasCrown, new ItemStack(ModBlocks.GIFT_MEGA_STATUE));
-        }
-        return ItemStack.EMPTY;
+        return getStatueBlockItem(nickname, StatueType.values()[variant], hasCrown, false);
+
     }
 
-    private static ItemStack getStatueBlockItem(String nickname, int variant, boolean hasCrown, ItemStack itemStack) {
+    public static ItemStack getStatueBlockItem(String nickname, StatueType type, boolean hasCrown, boolean blankStatue) {
 
-        StatueType type = StatueType.values()[variant];
+        ItemStack itemStack = ItemStack.EMPTY;
+        switch (type) {
+            case GIFT_NORMAL:
+                itemStack = new ItemStack(ModBlocks.GIFT_NORMAL_STATUE);
+                break;
+            case GIFT_MEGA:
+                itemStack = new ItemStack(ModBlocks.GIFT_MEGA_STATUE);
+                break;
+            case VAULT_BOSS:
+                itemStack = new ItemStack(ModBlocks.VAULT_PLAYER_LOOT_STATUE);
+                break;
+            case ARENA_CHAMPION:
+                itemStack = new ItemStack(ModBlocks.ARENA_PLAYER_LOOT_STATUE);
+                break;
+        }
 
         CompoundNBT nbt = new CompoundNBT();
         nbt.putString("PlayerNickname", nickname);
-        nbt.putInt("StatueType", variant);
+        nbt.putInt("StatueType", type.ordinal());
         nbt.putInt("Interval", ModConfigs.STATUE_LOOT.getInterval(type));
-        ItemStack loot = ModConfigs.STATUE_LOOT.randomLoot(type);
+        ItemStack loot;
+        if (blankStatue) loot = ModConfigs.STATUE_LOOT.getLoot();
+        else loot = ModConfigs.STATUE_LOOT.randomLoot(type);
         nbt.put("LootItem", loot.serializeNBT());
         nbt.putBoolean("HasCrown", hasCrown);
 

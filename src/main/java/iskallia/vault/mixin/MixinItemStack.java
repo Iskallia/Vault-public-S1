@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 @Mixin(value = ItemStack.class, priority = 1001)
-public abstract class ItemStackMixin {
+public abstract class MixinItemStack {
 
 	@Shadow public abstract boolean isDamageable();
 	@Shadow public abstract int getDamage();
