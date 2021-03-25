@@ -20,9 +20,8 @@ import javax.annotation.Nullable;
 
 public class VaultCrateTileEntity extends TileEntity {
 
-
     private ItemStackHandler itemHandler = createHandler();
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
+    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> this.itemHandler);
 
     public VaultCrateTileEntity() {
         super(ModBlocks.VAULT_CRATE_TILE_ENTITY);
@@ -43,13 +42,13 @@ public class VaultCrateTileEntity extends TileEntity {
 
     @Override
     public void read(BlockState state, CompoundNBT nbt) {
+        nbt.getCompound("inv").remove("Size");
         itemHandler.deserializeNBT(nbt.getCompound("inv"));
         super.read(state, nbt);
     }
 
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(27) {
-
+        return new ItemStackHandler(54) {
             @Override
             protected void onContentsChanged(int slot) {
                 sendUpdates();
@@ -57,7 +56,7 @@ public class VaultCrateTileEntity extends TileEntity {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if (Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock ||
+                if(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock ||
                         Block.getBlockFromItem(stack.getItem()) instanceof VaultCrateBlock) {
                     return false;
                 }
@@ -67,12 +66,10 @@ public class VaultCrateTileEntity extends TileEntity {
             @Nonnull
             @Override
             public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-
                 return super.insertItem(slot, stack, simulate);
             }
         };
     }
-
 
     @Nonnull
     @Override

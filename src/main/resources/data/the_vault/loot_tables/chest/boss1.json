@@ -129,66 +129,6 @@
         {
           "type": "minecraft:item",
           "weight": 4,
-          "name": "the_vault:bit_10000",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 1
-              }
-            }
-          ],
-          "conditions": [
-            {
-              "condition": "minecraft:random_chance",
-              "chance": 0.7
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
-          "name": "the_vault:bit_5000",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 2
-              }
-            }
-          ],
-          "conditions": [
-            {
-              "condition": "minecraft:random_chance",
-              "chance": 0.7
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
-          "name": "the_vault:bit_1000",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 3,
-                "max": 10
-              }
-            }
-          ],
-          "conditions": [
-            {
-              "condition": "minecraft:random_chance",
-              "chance": 0.8
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 4,
           "name": "minecraft:netherite_ingot",
           "functions": [
             {
@@ -491,7 +431,7 @@
           "conditions": [
             {
               "condition": "minecraft:random_chance",
-              "chance": 0.07
+              "chance": 0.03
             }
           ]
         }
@@ -1051,7 +991,7 @@
 			},
 			{
 			  "type": "minecraft:item",
-			  "weight": 5,
+			  "weight": 2,
 			  "name": "the_vault:vault_stew_mystery",
 			  "functions": [
 				{
@@ -1065,7 +1005,7 @@
 			  "conditions": [
 				{
 				  "condition": "minecraft:random_chance",
-				  "chance": 0.8
+				  "chance": 0.3
 				}
 			  ]
 			},
@@ -1762,7 +1702,7 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.1
           }
         ]
       },
@@ -1786,7 +1726,7 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.1
           }
         ]
       },
@@ -1810,7 +1750,7 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.1
           }
         ]
       },
@@ -1834,7 +1774,7 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.1
           }
         ]
       },
@@ -1858,7 +1798,7 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.1
           }
         ]
       },
@@ -1882,7 +1822,7 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.1
           }
         ]
       },
@@ -1906,7 +1846,7 @@
         "conditions": [
           {
             "condition": "minecraft:random_chance",
-            "chance": 0.05
+            "chance": 0.1
           }
         ]
       },
@@ -1921,6 +1861,10 @@
               "min": 1,
               "max": 1
             }
+          },
+          {
+            "function": "set_nbt",
+            "tag": "{Vault:{Attributes:[{Id:\"the_vault:gear_roll_type\",BaseValue:\"TREASURE_ONLY\"}]}}"
           }
         ],
         "conditions": [
@@ -1959,7 +1903,7 @@
             "function": "minecraft:set_count",
             "count": {
               "min": 1,
-              "max": 1
+              "max": 4
             }
           }
         ],

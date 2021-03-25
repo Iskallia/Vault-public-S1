@@ -1,16 +1,20 @@
 package iskallia.vault.entity;
 
+import iskallia.vault.entity.ai.ThrowProjectilesGoal;
 import iskallia.vault.init.ModNetwork;
 import iskallia.vault.network.message.FighterSizeMessage;
 import iskallia.vault.util.SkinProfile;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.monster.BlazeEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.projectile.SnowballEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.*;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.BossInfo;
@@ -27,11 +31,23 @@ import java.util.regex.Pattern;
 
 public class FighterEntity extends ZombieEntity {
 
+	public static final ThrowProjectilesGoal.Projectile SNOWBALLS = (world1, shooter) -> {
+		return new SnowballEntity(world1, shooter) {
+			@Override
+			protected void onEntityHit(EntityRayTraceResult raycast) {
+				Entity entity = raycast.getEntity();
+				if(entity == shooter)return;
+				int i = entity instanceof BlazeEntity ? 3 : 1;
+				entity.attackEntityFrom(DamageSource.causeIndirectDamage(this, shooter), (float)i);
+			}
+		};
+	};
+
 	public SkinProfile skin;
 	public String lastName = "Fighter";
 	public float sizeMultiplier = 1.0F;
 
-	public final ServerBossInfo bossInfo;
+	public ServerBossInfo bossInfo;
 
 	public FighterEntity(EntityType<? extends ZombieEntity> type, World world) {
 		super(type, world);

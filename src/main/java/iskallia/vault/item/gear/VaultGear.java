@@ -550,7 +550,7 @@ public interface VaultGear<T extends Item> extends net.minecraftforge.common.ext
                 "Grants +20% parry chance"
         ),
         TREASURE_HUNTER("Leave no chest behind!",
-                "Grants better loot chance (+2 Luck)"
+                "Grants better loot chance (+3 Luck)"
         );
 
         String lore;

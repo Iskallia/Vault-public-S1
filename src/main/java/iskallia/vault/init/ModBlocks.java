@@ -22,6 +22,7 @@ import static iskallia.vault.init.ModItems.VAULT_MOD_GROUP;
 public class ModBlocks {
 
     public static final VaultPortalBlock VAULT_PORTAL = new VaultPortalBlock();
+    public static final FinalVaultPortalBlock FINAL_VAULT_PORTAL = new FinalVaultPortalBlock();
     public static final VaultAltarBlock VAULT_ALTAR = new VaultAltarBlock();
     public static final OreBlock ALEXANDRITE_ORE = new VaultOreBlock();
     public static final OreBlock BENITOITE_ORE = new VaultOreBlock();
@@ -44,6 +45,7 @@ public class ModBlocks {
     public static final DoorBlock GORGINITE_DOOR = new VaultDoorBlock(ModItems.GORGINITE_KEY);
     public static final DoorBlock SPARKLETINE_DOOR = new VaultDoorBlock(ModItems.SPARKLETINE_KEY);
     public static final DoorBlock WUTODIE_DOOR = new VaultDoorBlock(ModItems.WUTODIE_KEY);
+    public static final VaultRuneBlock VAULT_RUNE_BLOCK = new VaultRuneBlock();
     public static final VaultArtifactBlock ARTIFACT_1 = new VaultArtifactBlock(1);
     public static final VaultArtifactBlock ARTIFACT_2 = new VaultArtifactBlock(2);
     public static final VaultArtifactBlock ARTIFACT_3 = new VaultArtifactBlock(3);
@@ -81,6 +83,7 @@ public class ModBlocks {
     public static final Block VAULT_DIAMOND_BLOCK = new Block(AbstractBlock.Properties.from(Blocks.DIAMOND_BLOCK));
     public static final GlobalTraderBlock GLOBAL_TRADER = new GlobalTraderBlock();
     public static final MazeBlock MAZE_BLOCK = new MazeBlock();
+    public static final PuzzleRuneBlock PUZZLE_RUNE_BLOCK = new PuzzleRuneBlock();
 
     /*~~~~~~~~~~ Block Items ~~~~~~~~~~*/
 
@@ -93,10 +96,13 @@ public class ModBlocks {
     public static final VendingMachineBlockItem VENDING_MACHINE_BLOCK_ITEM = new VendingMachineBlockItem(VENDING_MACHINE);
     public static final AdvancedVendingMachineBlockItem ADVANCED_VENDING_BLOCK_ITEM = new AdvancedVendingMachineBlockItem(ADVANCED_VENDING_MACHINE);
     public static final GlobalTraderBlockItem GLOBAL_TRADER_BLOCK_ITEM = new GlobalTraderBlockItem(GLOBAL_TRADER);
+    public static final PuzzleRuneBlock.Item PUZZLE_RUNE_BLOCK_ITEM = new PuzzleRuneBlock.Item(PUZZLE_RUNE_BLOCK, new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
     /*~~~~~~~~~~ Tile Entities ~~~~~~~~~~*/
 
     public static final TileEntityType<VaultAltarTileEntity> VAULT_ALTAR_TILE_ENTITY =
             TileEntityType.Builder.create(VaultAltarTileEntity::new, VAULT_ALTAR).build(null);
+    public static final TileEntityType<VaultRuneTileEntity> VAULT_RUNE_TILE_ENTITY =
+            TileEntityType.Builder.create(VaultRuneTileEntity::new, VAULT_RUNE_BLOCK).build(null);
     public static final TileEntityType<VaultCrateTileEntity> VAULT_CRATE_TILE_ENTITY =
             TileEntityType.Builder.create(VaultCrateTileEntity::new, VAULT_CRATE, VAULT_CRATE_ARENA).build(null);
     public static final TileEntityType<VaultPortalTileEntity> VAULT_PORTAL_TILE_ENTITY =
@@ -121,6 +127,7 @@ public class ModBlocks {
 
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         registerBlock(event, VAULT_PORTAL, Vault.id("vault_portal"));
+        registerBlock(event, FINAL_VAULT_PORTAL, Vault.id("final_vault_portal"));
         registerBlock(event, VAULT_ALTAR, Vault.id("vault_altar"));
         registerBlock(event, ALEXANDRITE_ORE, Vault.id("ore_alexandrite"));
         registerBlock(event, BENITOITE_ORE, Vault.id("ore_benitoite"));
@@ -143,6 +150,7 @@ public class ModBlocks {
         registerBlock(event, GORGINITE_DOOR, Vault.id("door_gorginite"));
         registerBlock(event, SPARKLETINE_DOOR, Vault.id("door_sparkletine"));
         registerBlock(event, WUTODIE_DOOR, Vault.id("door_wutodie"));
+        registerBlock(event, VAULT_RUNE_BLOCK, Vault.id("vault_rune_block"));
         registerBlock(event, ARTIFACT_1, Vault.id("artifact_1"));
         registerBlock(event, ARTIFACT_2, Vault.id("artifact_2"));
         registerBlock(event, ARTIFACT_3, Vault.id("artifact_3"));
@@ -180,10 +188,12 @@ public class ModBlocks {
         registerBlock(event, VAULT_DIAMOND_BLOCK, Vault.id("vault_diamond_block"));
         registerBlock(event, GLOBAL_TRADER, Vault.id("global_trader"));
         registerBlock(event, MAZE_BLOCK, Vault.id("maze_block"));
+        registerBlock(event, PUZZLE_RUNE_BLOCK, Vault.id("puzzle_rune_block"));
     }
 
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
         registerTileEntity(event, VAULT_ALTAR_TILE_ENTITY, Vault.id("vault_altar_tile_entity"));
+        registerTileEntity(event, VAULT_RUNE_TILE_ENTITY, Vault.id("vault_rune_tile_entity"));
         registerTileEntity(event, VAULT_CRATE_TILE_ENTITY, Vault.id("vault_crate_tile_entity"));
         registerTileEntity(event, VAULT_PORTAL_TILE_ENTITY, Vault.id("vault_portal_tile_entity"));
         registerTileEntity(event, PLAYER_STATUE_TILE_ENTITY, Vault.id("player_statue_tile_entity"));
@@ -198,6 +208,7 @@ public class ModBlocks {
 
     public static void registerTileEntityRenderers() {
         ClientRegistry.bindTileEntityRenderer(ModBlocks.VAULT_ALTAR_TILE_ENTITY, VaultAltarRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModBlocks.VAULT_RUNE_TILE_ENTITY, VaultRuneRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModBlocks.PLAYER_STATUE_TILE_ENTITY, PlayerStatueRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModBlocks.VENDING_MACHINE_TILE_ENTITY, VendingMachineRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModBlocks.ADVANCED_VENDING_MACHINE_TILE_ENTITY, AdvancedVendingRenderer::new);
@@ -209,6 +220,7 @@ public class ModBlocks {
 
     public static void registerBlockItems(RegistryEvent.Register<Item> event) {
         registerBlockItem(event, VAULT_PORTAL);
+        registerBlockItem(event, FINAL_VAULT_PORTAL);
         registerBlockItem(event, VAULT_ALTAR, 1);
         registerBlockItem(event, ALEXANDRITE_ORE);
         registerBlockItem(event, BENITOITE_ORE);
@@ -231,6 +243,7 @@ public class ModBlocks {
         registerTallBlockItem(event, GORGINITE_DOOR);
         registerTallBlockItem(event, SPARKLETINE_DOOR);
         registerTallBlockItem(event, WUTODIE_DOOR);
+        registerBlockItem(event, VAULT_RUNE_BLOCK);
         registerBlockItem(event, ARTIFACT_1, 1);
         registerBlockItem(event, ARTIFACT_2, 1);
         registerBlockItem(event, ARTIFACT_3, 1);
@@ -267,6 +280,7 @@ public class ModBlocks {
         registerBlockItem(event, KEY_PRESS);
         registerBlockItem(event, VAULT_DIAMOND_BLOCK);
         registerBlockItem(event, GLOBAL_TRADER, GLOBAL_TRADER_BLOCK_ITEM);
+        registerBlockItem(event, PUZZLE_RUNE_BLOCK, PUZZLE_RUNE_BLOCK_ITEM);
     }
 
     /* --------------------------------------------- */

@@ -41,10 +41,11 @@ public class VaultCrateBlock extends Block {
     }
 
     public static ItemStack getCrateWithLoot(VaultCrateBlock crateType, NonNullList<ItemStack> items) {
-        if (items.size() > 27) {
-            Vault.LOGGER.error("Attempted to get a crate with more than 27 items. Check crate loot table.");
-            return ItemStack.EMPTY;
+        if(items.size() > 54) {
+            Vault.LOGGER.error("Attempted to get a crate with more than 54 items. Check crate loot table.");
+            items = NonNullList.from(ItemStack.EMPTY, items.stream().limit(54).toArray(ItemStack[]::new));
         }
+
         ItemStack crate = new ItemStack(crateType);
         CompoundNBT nbt = new CompoundNBT();
         ItemStackHelper.saveAllItems(nbt, items);

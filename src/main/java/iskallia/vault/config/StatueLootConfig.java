@@ -154,4 +154,8 @@ public class StatueLootConfig extends Config {
     public int getIntervalDecrease(int chipCount) {
         return INTERVAL_DECREASE_PER_CHIP.get(chipCount);
     }
+
+    public ItemStack getLoot() {
+        return getRandom(GIFT_NORMAL_STATUE_LOOT);
+    }
 }

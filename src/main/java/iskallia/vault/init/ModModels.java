@@ -99,6 +99,10 @@ public class ModModels {
             return (float) ModAttributes.GEAR_SET.get(stack).map(attribute -> attribute.getValue(stack)).map(Enum::ordinal).orElse(-1);
         };
 
+        public static IItemPropertyGetter PUZZLE_COLOR = (stack, world, entity) -> {
+            return (float) ModAttributes.PUZZLE_COLOR.get(stack).map(attribute -> attribute.getValue(stack)).map(Enum::ordinal).orElse(-1);
+        };
+
         public static void register() {
             registerItemProperty(ModItems.SWORD, "texture", GEAR_TEXTURE);
             registerItemProperty(ModItems.AXE, "texture", GEAR_TEXTURE);
@@ -119,6 +123,9 @@ public class ModModels {
             registerItemProperty(ModItems.ETCHING, "vault_rarity", GEAR_RARITY);
 
             registerItemProperty(ModItems.ETCHING, "vault_set", ETCHING);
+
+            registerItemProperty(ModItems.PUZZLE_RUNE, "puzzle_color", PUZZLE_COLOR);
+            registerItemProperty(ModBlocks.PUZZLE_RUNE_BLOCK_ITEM, "puzzle_color", PUZZLE_COLOR);
         }
 
         public static void registerItemProperty(Item item, String name, IItemPropertyGetter property) {

@@ -55,6 +55,7 @@ public class ModConfigs {
     public static SetsConfig SETS;
     public static GlobalTraderConfig GLOBAL_TRADER;
     public static PlayerExpConfig PLAYER_EXP;
+    public static FinalVaultGeneralConfig FINAL_VAULT_GENERAL;
 
     public static void register() {
         ABILITIES = (AbilitiesConfig) new AbilitiesConfig().readConfig();
@@ -104,6 +105,7 @@ public class ModConfigs {
         SETS = (SetsConfig) new SetsConfig().readConfig();
         GLOBAL_TRADER = (GlobalTraderConfig) new GlobalTraderConfig().readConfig();
         PLAYER_EXP = (PlayerExpConfig) new PlayerExpConfig().readConfig();
+        FINAL_VAULT_GENERAL = (FinalVaultGeneralConfig) new FinalVaultGeneralConfig().readConfig();
         Vault.LOGGER.info("Vault Configs are loaded successfully!");
     }
 

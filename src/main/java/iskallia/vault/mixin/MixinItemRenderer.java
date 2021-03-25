@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemRenderer.class)
-public abstract class ItemRendererMixin {
+public abstract class MixinItemRenderer {
 
 	@Shadow protected abstract void draw(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha);
 

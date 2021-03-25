@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ModifiableAttributeInstance.class)
-public abstract class AttributeInstanceMixin {
+public abstract class MixinAttributeInstance {
 
 	@Redirect(method = "computeValue", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/attributes/Attribute;clampValue(D)D"))
 	private double computeValue(Attribute attribute, double value) {

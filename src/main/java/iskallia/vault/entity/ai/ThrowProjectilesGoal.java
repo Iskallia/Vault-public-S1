@@ -3,29 +3,31 @@ package iskallia.vault.entity.ai;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.monster.BlazeEntity;
-import net.minecraft.entity.projectile.SnowballEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
 
-public class SnowStormGoal<T extends MobEntity> extends GoalTask<T> {
+import java.util.Random;
+
+public class ThrowProjectilesGoal<T extends MobEntity> extends GoalTask<T> {
 
 	private final int chance;
 	private final int count;
+	private final Projectile projectile;
 
 	private ItemStack oldStack;
 	private int progress;
 
-	public SnowStormGoal(T entity, int chance, int count) {
+	public ThrowProjectilesGoal(T entity, int chance, int count, Projectile projectile) {
 		super(entity);
 		this.chance = chance;
 		this.count = count;
+		this.projectile = projectile;
 	}
 
 	@Override
@@ -47,31 +49,37 @@ public class SnowStormGoal<T extends MobEntity> extends GoalTask<T> {
 	@Override
 	public void tick() {
 		if(this.getWorld().rand.nextInt(3) == 0) {
-			SnowballEntity snowball = new SnowballEntity(this.getWorld(), this.getEntity()) {
-				@Override
-				protected void onEntityHit(EntityRayTraceResult raycast) {
-					Entity entity = raycast.getEntity();
-					if(entity == SnowStormGoal.this.getEntity())return;
-					int i = entity instanceof BlazeEntity ? 3 : 1;
-					entity.attackEntityFrom(DamageSource.causeIndirectDamage(this, SnowStormGoal.this.getEntity()), (float)i);
-				}
-			};
+			Entity throwEntity = this.projectile.create(this.getWorld(), this.getEntity());
 
 			LivingEntity target = this.getEntity().getAttackTarget();
 
 			if(target != null) {
 				double d0 = target.getPosYEye() - (double) 1.1F;
 				double d1 = target.getPosX() - this.getEntity().getPosX();
-				double d2 = d0 - snowball.getPosY();
+				double d2 = d0 - throwEntity.getPosY();
 				double d3 = target.getPosZ() - this.getEntity().getPosZ();
 				float f = MathHelper.sqrt(d1 * d1 + d3 * d3) * 0.2F;
-				snowball.shoot(d1, d2 + (double) f, d3, 1.6F, 4.0F);
+				shoot(throwEntity, d1, d2 + (double) f, d3, 1.6F, 4.0F, this.getWorld().rand);
 				this.getWorld().playSound(null, this.getEntity().getPosition(), SoundEvents.ENTITY_SNOW_GOLEM_SHOOT, SoundCategory.HOSTILE, 1.0F, 0.4F / (this.getWorld().rand.nextFloat() * 0.4F + 0.8F));
-				this.getWorld().addEntity(snowball);
+				this.getWorld().addEntity(throwEntity);
 			}
 
 			this.progress++;
 		}
+	}
+
+	public void shoot(Entity projectile, double x, double y, double z, float velocity, float inaccuracy, Random rand) {
+		Vector3d vector3d = (new Vector3d(x, y, z)).normalize().add(
+				rand.nextGaussian() * (double)0.0075F * (double)inaccuracy,
+				rand.nextGaussian() * (double)0.0075F * (double)inaccuracy,
+				rand.nextGaussian() * (double)0.0075F * (double)inaccuracy).scale(velocity);
+
+		projectile.setMotion(vector3d);
+		float f = MathHelper.sqrt(Entity.horizontalMag(vector3d));
+		projectile.rotationYaw = (float)(MathHelper.atan2(vector3d.x, vector3d.z) * (double)(180F / (float)Math.PI));
+		projectile.rotationPitch = (float)(MathHelper.atan2(vector3d.y, f) * (double)(180F / (float)Math.PI));
+		projectile.prevRotationYaw = projectile.rotationYaw;
+		projectile.prevRotationPitch = projectile.rotationPitch;
 	}
 
 	@Override
@@ -79,6 +87,10 @@ public class SnowStormGoal<T extends MobEntity> extends GoalTask<T> {
 		this.getEntity().setItemStackToSlot(EquipmentSlotType.OFFHAND, this.oldStack);
 		this.oldStack = ItemStack.EMPTY;
 		this.progress = 0;
+	}
+
+	public interface Projectile {
+		Entity create(World world, LivingEntity shooter);
 	}
 
 }

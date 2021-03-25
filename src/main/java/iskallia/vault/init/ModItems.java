@@ -98,6 +98,7 @@ public class ModItems {
     public static RelicPartItem EARTH_RELIC = new RelicPartItem(VAULT_MOD_GROUP, Vault.id("relic_earth"));
     public static RelicPartItem WATER_RELIC = new RelicPartItem(VAULT_MOD_GROUP, Vault.id("relic_water"));
 
+    public static ItemVaultRune VAULT_RUNE = new ItemVaultRune(VAULT_MOD_GROUP, Vault.id("vault_rune"));
     public static ObeliskInscriptionItem OBELISK_INSCRIPTION = new ObeliskInscriptionItem(VAULT_MOD_GROUP, Vault.id("obelisk_inscription"));
     public static ItemTraderCore TRADER_CORE = new ItemTraderCore(VAULT_MOD_GROUP, Vault.id("trader_core"));
     public static ItemTraderCore TRADER_CORE_OMEGA = new ItemTraderCore(VAULT_MOD_GROUP, Vault.id("trader_core_omega"));
@@ -200,6 +201,8 @@ public class ModItems {
     public static EtchingItem ETCHING = new EtchingItem(Vault.id("etching"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
     public static BasicItem ETCHING_FRAGMENT = new BasicItem(Vault.id("etching_fragment"), new Item.Properties().group(VAULT_MOD_GROUP));
 
+    public static PuzzleRuneItem PUZZLE_RUNE = new PuzzleRuneItem(Vault.id("puzzle_rune"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
+
     public static BasicItem INFUSED_ETERNAL_SOUL = new BasicItem(Vault.id("infused_eternal_soul"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
 
     public static void registerItems(RegistryEvent.Register<Item> event) {
@@ -280,6 +283,7 @@ public class ModItems {
         registry.register(REVERENCE_EDGE_RELIC);
         registry.register(WINGS_OF_EQUITY_RELIC);
 
+        registry.register(VAULT_RUNE);
         registry.register(OBELISK_INSCRIPTION);
         registry.register(TRADER_CORE);
         registry.register(TRADER_CORE_RAFFLE);
@@ -376,6 +380,7 @@ public class ModItems {
         registry.register(ETCHING);
         registry.register(ETCHING_FRAGMENT);
 
+        registry.register(PUZZLE_RUNE);
         registry.register(INFUSED_ETERNAL_SOUL);
     }
 

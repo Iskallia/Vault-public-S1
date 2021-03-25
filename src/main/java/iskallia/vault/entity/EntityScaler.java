@@ -15,40 +15,40 @@ import java.util.function.Function;
 
 public class EntityScaler {
 
-    public static void scaleVault(LivingEntity entity, int level, Random random, Type type) {
-        VaultMobsConfig.Level overrides = ModConfigs.VAULT_MOBS.getForLevel(level);
+	public static void scaleVault(LivingEntity entity, int level, Random random, Type type) {
+		VaultMobsConfig.Level overrides = ModConfigs.VAULT_MOBS.getForLevel(level);
 
-        for (EquipmentSlotType slot : EquipmentSlotType.values()) {
-            if (slot.getSlotType() == EquipmentSlotType.Group.HAND) {
-                if (!entity.getItemStackFromSlot(slot).isEmpty()) continue;
-            }
+		for(EquipmentSlotType slot: EquipmentSlotType.values()) {
+			if(slot.getSlotType() == EquipmentSlotType.Group.HAND) {
+				if(!entity.getItemStackFromSlot(slot).isEmpty())continue;
+			}
 
-            ItemStack loot = new ItemStack(type.loot.apply(overrides, slot));
+			ItemStack loot = new ItemStack(type.loot.apply(overrides, slot));
 
-            for (int i = 0; i < type.trials.apply(overrides); i++) {
-                EnchantmentHelper.addRandomEnchantment(random, loot,
-                        EnchantmentHelper.calcItemStackEnchantability(random, type.level.apply(overrides), 15, loot), true);
-            }
+			for(int i = 0; i < type.trials.apply(overrides); i++) {
+				EnchantmentHelper.addRandomEnchantment(random, loot,
+						EnchantmentHelper.calcItemStackEnchantability(random, type.level.apply(overrides), 15, loot), true);
+			}
 
-            entity.setItemStackToSlot(slot, loot);
-        }
-    }
+			entity.setItemStackToSlot(slot, loot);
+		}
+	}
 
     public enum Type {
         MOB(VaultMobsConfig.Level::getForMob, level -> level.MOB_MISC.ENCH_TRIALS, level -> level.MOB_MISC.ENCH_LEVEL),
         BOSS(VaultMobsConfig.Level::getForBoss, level -> level.BOSS_MISC.ENCH_TRIALS, level -> level.BOSS_MISC.ENCH_LEVEL);
 
-        private final BiFunction<VaultMobsConfig.Level, EquipmentSlotType, Item> loot;
-        private final Function<VaultMobsConfig.Level, Integer> trials;
-        private final Function<VaultMobsConfig.Level, Integer> level;
+		private final BiFunction<VaultMobsConfig.Level, EquipmentSlotType, Item> loot;
+		private final Function<VaultMobsConfig.Level, Integer> trials;
+		private final Function<VaultMobsConfig.Level, Integer> level;
 
-        Type(BiFunction<VaultMobsConfig.Level, EquipmentSlotType, Item> loot,
-             Function<VaultMobsConfig.Level, Integer> trials,
-             Function<VaultMobsConfig.Level, Integer> level) {
-            this.loot = loot;
-            this.trials = trials;
-            this.level = level;
-        }
-    }
+		Type(BiFunction<VaultMobsConfig.Level, EquipmentSlotType, Item> loot,
+		     Function<VaultMobsConfig.Level, Integer> trials,
+		     Function<VaultMobsConfig.Level, Integer> level) {
+			this.loot = loot;
+			this.trials = trials;
+			this.level = level;
+		}
+	}
 
 }

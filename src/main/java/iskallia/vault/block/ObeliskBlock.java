@@ -79,8 +79,8 @@ public class ObeliskBlock extends Block {
         if (newState.get(COMPLETION) == 4) {
             VaultRaid raid = VaultRaidData.get((ServerWorld) world).getAt(pos);
 
-            if (raid != null) {
-                spawnBoss(raid, (ServerWorld) world, pos, EntityScaler.Type.BOSS);
+            if(raid != null) {
+                spawnBoss(raid, (ServerWorld)world, pos, EntityScaler.Type.BOSS);
             }
 
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
@@ -92,29 +92,30 @@ public class ObeliskBlock extends Block {
     public void spawnBoss(VaultRaid raid, ServerWorld world, BlockPos pos, EntityScaler.Type type) {
         LivingEntity boss;
 
-        if (type == EntityScaler.Type.BOSS) {
+        if(type == EntityScaler.Type.BOSS) {
             boss = ModConfigs.VAULT_MOBS.getForLevel(raid.level).BOSS_POOL.getRandom(world.getRandom()).create(world);
         } else {
             return;
         }
 
-        if (boss instanceof FighterEntity) ((FighterEntity) boss).changeSize(2.0F);
+        if(boss instanceof FighterEntity)((FighterEntity)boss).changeSize(2.0F);
         boss.setLocationAndAngles(pos.getX() + 0.5D, pos.getY() + 0.2D, pos.getZ() + 0.5D, 0.0F, 0.0F);
         world.summonEntity(boss);
 
         boss.getTags().add("VaultBoss");
+        raid.addBoss(boss);
 
-        if (boss instanceof FighterEntity) {
-            ((FighterEntity) boss).bossInfo.setVisible(true);
+        if(boss instanceof FighterEntity) {
+            ((FighterEntity)boss).bossInfo.setVisible(true);
         }
 
-        if (boss instanceof VaultBoss) {
-            ((VaultBoss) boss).getServerBossInfo().setVisible(true);
+        if(boss instanceof VaultBoss) {
+            ((VaultBoss)boss).getServerBossInfo().setVisible(true);
         }
 
         EntityScaler.scaleVault(boss, raid.level, new Random(), EntityScaler.Type.BOSS);
 
-        if (raid.playerBossName != null) {
+        if(raid.playerBossName != null) {
             boss.setCustomName(new StringTextComponent(raid.playerBossName));
         } else {
             boss.setCustomName(new StringTextComponent("Boss"));

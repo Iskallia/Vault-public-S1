@@ -54,6 +54,7 @@ public class Plated4ArmorModel<T extends LivingEntity> extends VaultGearModel<T>
         RightArm.setTextureOffset(0, 16).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, 1.0F, false);
         RightArm.setTextureOffset(36, 32).addBox(-5.0F, -4.25F, -3.5F, 7.0F, 5.0F, 7.0F, 0.0F, true);
         RightArm.setTextureOffset(0, 55).addBox(-6.25F, -6.25F, -3.5F, 5.0F, 2.0F, 7.0F, 0.0F, true);
+        RightArm.setTextureOffset(0, 55).addBox(-6.25F, -6.25F, -3.5F, 5.0F, 2.0F, 7.0F, 0.0F, true);
         RightArm.setTextureOffset(20, 52).addBox(-5.0F, 5.0F, -3.5F, 5.0F, 2.0F, 7.0F, 0.0F, true);
 
         LeftArm = new ModelRenderer(this);
@@ -70,7 +71,6 @@ public class Plated4ArmorModel<T extends LivingEntity> extends VaultGearModel<T>
         LeftBoot = new ModelRenderer(this);
         LeftBoot.setRotationPoint(1.9F, 12.0F, 0.0F);
         LeftBoot.setTextureOffset(48, 57).addBox(-2.0F, 9.0F, -2.0F, 4.0F, 3.0F, 4.0F, 1.0F, true);
-
 
         Belt = new ModelRenderer(this);
         Belt.setRotationPoint(0.0F, 0.0F, 0.0F);

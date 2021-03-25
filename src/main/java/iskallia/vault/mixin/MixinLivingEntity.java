@@ -31,9 +31,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import javax.annotation.Nullable;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity {
+public abstract class MixinLivingEntity extends Entity {
 
-	public LivingEntityMixin(EntityType<?> entityType, World world) {
+	public MixinLivingEntity(EntityType<?> entityType, World world) {
 		super(entityType, world);
 	}
 

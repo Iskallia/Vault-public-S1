@@ -15,9 +15,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ElytraLayer.class)
-public abstract class ElytraLayerMixin<T extends LivingEntity, M extends EntityModel<T>> extends LayerRenderer<T, M>  {
+public abstract class MixinElytraLayer<T extends LivingEntity, M extends EntityModel<T>> extends LayerRenderer<T, M>  {
 
-	public ElytraLayerMixin(IEntityRenderer<T, M> renderer) {
+	public MixinElytraLayer(IEntityRenderer<T, M> renderer) {
 		super(renderer);
 	}
 

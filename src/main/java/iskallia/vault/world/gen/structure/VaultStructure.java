@@ -136,6 +136,11 @@ public class VaultStructure extends Structure<VaultStructure.Config> {
 
                 ), JigsawPattern.PlacementBehaviour.RIGID));
 
+        public static final JigsawPattern FINAL_START = JigsawPatternRegistry.func_244094_a(
+                new JigsawPattern(Vault.id("final_vault/start"), new ResourceLocation("empty"), ImmutableList.of(
+                        Pair.of(JigsawPiece.func_242861_b(Vault.sId("final_vault/start"), ProcessorLists.field_244101_a), 1)
+                ), JigsawPattern.PlacementBehaviour.RIGID));
+
         public static void init() {
 
         }

@@ -18,6 +18,7 @@ import net.minecraftforge.event.RegistryEvent;
 public class ModFeatures {
 
     public static StructureFeature<VaultStructure.Config, ? extends Structure<VaultStructure.Config>> VAULT_FEATURE;
+    public static StructureFeature<VaultStructure.Config, ? extends Structure<VaultStructure.Config>> FINAL_VAULT_FEATURE;
     public static StructureFeature<ArenaStructure.Config, ? extends Structure<ArenaStructure.Config>> ARENA_FEATURE;
     public static ConfiguredFeature<?, ?> VAULT_ORE;
     public static ConfiguredFeature<?, ?> BREADCRUMB_CHEST;
@@ -25,6 +26,7 @@ public class ModFeatures {
 
     public static void registerStructureFeatures() {
         VAULT_FEATURE = register("vault", ModStructures.VAULT.func_236391_a_(new VaultStructure.Config(() -> VaultStructure.Pools.START, 6)));
+        FINAL_VAULT_FEATURE = register("final_vault", ModStructures.VAULT.func_236391_a_(new VaultStructure.Config(() -> VaultStructure.Pools.FINAL_START, 6)));
         ARENA_FEATURE = register("arena", ModStructures.ARENA.func_236391_a_(new ArenaStructure.Config(() -> ArenaStructure.Pools.START, 8)));
     }
 

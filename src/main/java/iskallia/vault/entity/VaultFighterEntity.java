@@ -28,7 +28,7 @@ public class VaultFighterEntity extends FighterEntity {
 			VaultRaid raid = VaultRaidData.get((ServerWorld)this.world).getAt(this.getPosition());
 
 			if(raid != null) {
-				ServerPlayerEntity player = ((ServerWorld)world).getServer().getPlayerList().getPlayerByUUID(raid.playerId);
+				ServerPlayerEntity player = ((ServerWorld)world).getServer().getPlayerList().getPlayerByUUID(raid.playerIds.get(0));
 				String name = player != null ? player.getName().getString() : "";
 				this.setCustomName(new StringTextComponent(name));
 			}

@@ -94,7 +94,8 @@ public class ItemVaultCrystal extends Item {
 
                 context.getItem().shrink(1);
 
-                IFormattableTextComponent text = new StringTextComponent(context.getPlayer().getName().getString()).mergeStyle(TextFormatting.GREEN);
+                IFormattableTextComponent text = new StringTextComponent("");
+                text.append(new StringTextComponent(context.getPlayer().getName().getString()).mergeStyle(TextFormatting.GREEN));
                 text.append(new StringTextComponent(" has created a "));
                 String rarityName = crystal.getRarity().name().toLowerCase();
                 rarityName = rarityName.substring(0, 1).toUpperCase() + rarityName.substring(1);

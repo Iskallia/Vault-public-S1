@@ -53,8 +53,9 @@ public abstract class VaultGearModel<T extends LivingEntity> extends BipedModel<
         } else if (this.slotType == EquipmentSlotType.LEGS) {
             Belt.copyModelAngles(bipedBody);
             Belt.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            matrixStack.translate(0, 0.15f, 0);
-            //matrixStack.scale(0.8f, 0.8f, 0.8f);
+//            matrixStack.translate(0, 0.15f, 0);
+//            float scale = 0.9f;
+//            matrixStack.scale(scale, scale, scale);
             RightLeg.copyModelAngles(this.bipedRightLeg);
             RightLeg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
             LeftLeg.copyModelAngles(this.bipedLeftLeg);
