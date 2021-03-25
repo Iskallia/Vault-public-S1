@@ -1,5 +1,6 @@
 package iskallia.vault.effect;
 
+import iskallia.vault.init.ModConfigs;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifierManager;
@@ -16,13 +17,15 @@ public class GhostWalkEffect extends Effect {
 
     public GhostWalkEffect(EffectType typeIn, int liquidColorIn, ResourceLocation id) {
         super(typeIn, liquidColorIn);
-        this.attributeModifiers = new AttributeModifier[6];
-
         setRegistryName(id);
 
+    }
+
+    private void initializeAttributeModifiers() {
+        this.attributeModifiers = new AttributeModifier[ModConfigs.ABILITIES.RAMPAGE.getMaxLevel()];
         for (int i = 0; i < this.attributeModifiers.length; i++) {
-            this.attributeModifiers[i] = new AttributeModifier(id.toString(),
-                    (i + 1) * 0.2f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            this.attributeModifiers[i] = new AttributeModifier(this.getRegistryName().toString(),
+                    (i + 1) * 0.2f, AttributeModifier.Operation.ADDITION);
         }
     }
 
@@ -34,7 +37,7 @@ public class GhostWalkEffect extends Effect {
     @Override
     public void applyAttributesModifiersToEntity(LivingEntity entityLivingBaseIn, AttributeModifierManager attributeMapIn, int amplifier) {
         ModifiableAttributeInstance movementSpeed = entityLivingBaseIn.getAttribute(Attributes.MOVEMENT_SPEED);
-
+        initializeAttributeModifiers();
         if (movementSpeed != null) {
             AttributeModifier attributeModifier = this.attributeModifiers[MathHelper.clamp(amplifier + 1, 0, this.attributeModifiers.length - 1)];
             movementSpeed.applyNonPersistentModifier(attributeModifier);

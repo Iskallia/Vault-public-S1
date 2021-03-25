@@ -17,14 +17,10 @@ public class RampageEffect extends Effect {
 
     public RampageEffect(EffectType typeIn, int liquidColorIn, ResourceLocation id) {
         super(typeIn, liquidColorIn);
-        this.attributeModifiers = new AttributeModifier[9];
+        //this.attributeModifiers = new AttributeModifier[ModConfigs.ABILITIES.RAMPAGE.getMaxLevel()];
 
         setRegistryName(id);
 
-        for (int i = 0; i < this.attributeModifiers.length; i++) {
-            this.attributeModifiers[i] = new AttributeModifier(id.toString(),
-                    (i + 1) * 0.2f, AttributeModifier.Operation.ADDITION);
-        }
     }
 
     @Override
@@ -35,6 +31,9 @@ public class RampageEffect extends Effect {
     @Override
     public void applyAttributesModifiersToEntity(LivingEntity livingEntity, AttributeModifierManager attributeMapIn, int amplifier) {
         RampageAbility rampageAbility = ModConfigs.ABILITIES.RAMPAGE.getAbility(amplifier + 1);
+
+        initializeAttributeModifiers();
+
         if (rampageAbility == null) return;
 
         int damageIncrease = rampageAbility.getDamageIncrease();
@@ -45,6 +44,14 @@ public class RampageEffect extends Effect {
             damage.applyNonPersistentModifier(this.attributeModifiers[amplifier]);
         }
         super.applyAttributesModifiersToEntity(livingEntity, attributeMapIn, amplifier);
+    }
+
+    private void initializeAttributeModifiers() {
+        this.attributeModifiers = new AttributeModifier[ModConfigs.ABILITIES.RAMPAGE.getMaxLevel()];
+        for (int i = 0; i < this.attributeModifiers.length; i++) {
+            this.attributeModifiers[i] = new AttributeModifier(this.getRegistryName().toString(),
+                    (i + 1) * 0.2f, AttributeModifier.Operation.ADDITION);
+        }
     }
 
     @Override
