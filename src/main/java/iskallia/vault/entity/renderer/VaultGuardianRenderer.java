@@ -2,7 +2,6 @@ package iskallia.vault.entity.renderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import iskallia.vault.Vault;
-import iskallia.vault.entity.FinalDummyEntity;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PiglinRenderer;
 import net.minecraft.entity.MobEntity;
@@ -20,11 +19,6 @@ public class VaultGuardianRenderer extends PiglinRenderer {
     protected void preRenderCallback(MobEntity entity, MatrixStack matrixStack, float partialTickTime) {
         super.preRenderCallback(entity, matrixStack, partialTickTime);
 
-        if(entity instanceof FinalDummyEntity) {
-            float size = ((FinalDummyEntity) entity).sizeMultiplier;
-            matrixStack.scale(size, size, size);
-            return;
-        }
 
         matrixStack.scale(1.5f, 1.5f, 1.5f);
     }
