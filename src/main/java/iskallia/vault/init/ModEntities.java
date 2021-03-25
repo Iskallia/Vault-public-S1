@@ -30,34 +30,34 @@ public class ModEntities {
     public static EntityType<FinalDummyEntity> FINAL_DUMMY;
 
     public static void register(RegistryEvent.Register<EntityType<?>> event) {
-        FIGHTER = register("fighter", EntityType.Builder.create(FighterEntity::new, EntityClassification.MONSTER)
-                .size(0.6F, 1.95F), ZombieEntity::func_234342_eQ_, event);
-        MONSTER_EYE = register("monster_eye", EntityType.Builder.create(MonsterEyeEntity::new, EntityClassification.MONSTER)
-                .size(2.04F * 2, 2.04F * 2), ZombieEntity::func_234342_eQ_, event);
-        ROBOT = register("robot", EntityType.Builder.create(RobotEntity::new, EntityClassification.MONSTER)
-                .size(1.4F * 2, 2.7F * 2), ZombieEntity::func_234342_eQ_, event);
-        BLUE_BLAZE = register("blue_blaze", EntityType.Builder.create(BlueBlazeEntity::new, EntityClassification.MONSTER)
-                .size(0.6F * 2, 1.8F * 2), ZombieEntity::func_234342_eQ_, event);
-        BOOGIEMAN = register("boogieman", EntityType.Builder.create(BoogiemanEntity::new, EntityClassification.MONSTER)
-                .size(0.6F * 2, 1.95F * 2), ZombieEntity::func_234342_eQ_, event);
-        VAULT_GUARDIAN = register("vault_guardian", EntityType.Builder.create(VaultGuardianEntity::new, EntityClassification.MONSTER)
-                .size(1.3F, 2.95F), ZombieEntity::func_234342_eQ_, event);
-        VAULT_FIGHTER = register("vault_fighter", EntityType.Builder.create(VaultFighterEntity::new, EntityClassification.MONSTER)
-                .size(0.6F, 1.95F), ZombieEntity::func_234342_eQ_, event);
-        ETERNAL = register("eternal", EntityType.Builder.create(EternalEntity::new, EntityClassification.CREATURE)
-                .size(0.6F, 1.95F), ZombieEntity::func_234342_eQ_, event);
-        TREASURE_GOBLIN = register("treasure_goblin", EntityType.Builder.create(TreasureGoblinEntity::new, EntityClassification.CREATURE)
-                .size(1f, 1f), ZombieEntity::func_234342_eQ_, event);
-        FINAL_BOSS = register("final_boss", EntityType.Builder.create(FinalBossEntity::new, EntityClassification.MONSTER)
-                .size(0.6F, 1.95F), FinalBossEntity::getAttributes, event);
-        FINAL_DUMMY = register("final_dummy", EntityType.Builder.create(FinalDummyEntity::new, EntityClassification.MONSTER)
-                .size(0.6F, 1.95F), FinalDummyEntity::getAttributes, event);
+        FIGHTER = register("fighter", EntityType.Builder.of(FighterEntity::new, EntityClassification.MONSTER)
+                .sized(0.6F, 1.95F), ZombieEntity::createAttributes, event);
+        MONSTER_EYE = register("monster_eye", EntityType.Builder.of(MonsterEyeEntity::new, EntityClassification.MONSTER)
+                .sized(2.04F * 2, 2.04F * 2), ZombieEntity::createAttributes, event);
+        ROBOT = register("robot", EntityType.Builder.of(RobotEntity::new, EntityClassification.MONSTER)
+                .sized(1.4F * 2, 2.7F * 2), ZombieEntity::createAttributes, event);
+        BLUE_BLAZE = register("blue_blaze", EntityType.Builder.of(BlueBlazeEntity::new, EntityClassification.MONSTER)
+                .sized(0.6F * 2, 1.8F * 2), ZombieEntity::createAttributes, event);
+        BOOGIEMAN = register("boogieman", EntityType.Builder.of(BoogiemanEntity::new, EntityClassification.MONSTER)
+                .sized(0.6F * 2, 1.95F * 2), ZombieEntity::createAttributes, event);
+        VAULT_GUARDIAN = register("vault_guardian", EntityType.Builder.of(VaultGuardianEntity::new, EntityClassification.MONSTER)
+                .sized(1.3F, 2.95F), ZombieEntity::createAttributes, event);
+        VAULT_FIGHTER = register("vault_fighter", EntityType.Builder.of(VaultFighterEntity::new, EntityClassification.MONSTER)
+                .sized(0.6F, 1.95F), ZombieEntity::createAttributes, event);
+        ETERNAL = register("eternal", EntityType.Builder.of(EternalEntity::new, EntityClassification.CREATURE)
+                .sized(0.6F, 1.95F), ZombieEntity::createAttributes, event);
+        TREASURE_GOBLIN = register("treasure_goblin", EntityType.Builder.of(TreasureGoblinEntity::new, EntityClassification.CREATURE)
+                .sized(1f, 1f), ZombieEntity::createAttributes, event);
+        FINAL_BOSS = register("final_boss", EntityType.Builder.of(FinalBossEntity::new, EntityClassification.MONSTER)
+                .sized(0.6F, 1.95F), FinalBossEntity::getCustomAttributes, event);
+        FINAL_DUMMY = register("final_dummy", EntityType.Builder.of(FinalDummyEntity::new, EntityClassification.MONSTER)
+                .sized(0.6F, 1.95F), FinalDummyEntity::getCustomAttributes, event);
     }
 
     public static <T extends LivingEntity> EntityType<T> register(String name, EntityType.Builder<T> builder, Supplier<AttributeModifierMap.MutableAttribute> attributes, RegistryEvent.Register<EntityType<?>> event) {
         EntityType<T> entityType = builder.build(Vault.sId(name));
         event.getRegistry().register(entityType.setRegistryName(Vault.id(name)));
-        if (attributes != null) GlobalEntityTypeAttributes.put(entityType, attributes.get().create());
+        if (attributes != null) GlobalEntityTypeAttributes.put(entityType, attributes.get().build());
         return entityType;
     }
 

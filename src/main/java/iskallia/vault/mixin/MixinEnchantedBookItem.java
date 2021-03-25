@@ -20,15 +20,15 @@ import java.util.List;
 @Mixin(EnchantedBookItem.class)
 public class MixinEnchantedBookItem {
 
-    @Inject(method = "addInformation", at = @At("TAIL"))
+    @Inject(method = "appendHoverText", at = @At("TAIL"))
     public void appendOverlevelBookExplanation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag, CallbackInfo ci) {
         if (stack.getItem() == Items.ENCHANTED_BOOK) {
             if (OverlevelEnchantHelper.getOverlevels(stack) != -1) {
                 tooltip.add(new StringTextComponent(""));
                 tooltip.add(new StringTextComponent("Upgrades an equipment's EXISTING")
-                        .setStyle(Style.EMPTY.setColor(Color.fromHex("#FFFFFF")).setItalic(true)));
+                        .setStyle(Style.EMPTY.withColor(Color.parseColor("#FFFFFF")).withItalic(true)));
                 tooltip.add(new StringTextComponent("enchantment level when used on Anvil.")
-                        .setStyle(Style.EMPTY.setColor(Color.fromHex("#FFFFFF")).setItalic(true)));
+                        .setStyle(Style.EMPTY.withColor(Color.parseColor("#FFFFFF")).withItalic(true)));
             }
         }
     }

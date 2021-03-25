@@ -30,7 +30,7 @@ public class PlayerVaultStatsData extends WorldSavedData {
     }
 
     public PlayerVaultStats getVaultStats(PlayerEntity player) {
-        return getVaultStats(player.getUniqueID());
+        return getVaultStats(player.getUUID());
     }
 
     public PlayerVaultStats getVaultStats(UUID uuid) {
@@ -42,60 +42,60 @@ public class PlayerVaultStatsData extends WorldSavedData {
     public PlayerVaultStatsData setVaultLevel(ServerPlayerEntity player, int level) {
         this.getVaultStats(player).setVaultLevel(player.getServer(), level);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerVaultStatsData addVaultExp(ServerPlayerEntity player, int exp) {
         this.getVaultStats(player).addVaultExp(player.getServer(), exp);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerVaultStatsData spendSkillPts(ServerPlayerEntity player, int amount) {
         this.getVaultStats(player).spendSkillPoints(player.getServer(), amount);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerVaultStatsData spendKnowledgePts(ServerPlayerEntity player, int amount) {
         this.getVaultStats(player).spendKnowledgePoints(player.getServer(), amount);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerVaultStatsData addSkillPoint(ServerPlayerEntity player, int amount) {
         this.getVaultStats(player)
                 .addSkillPoints(amount)
-                .sync(player.getServerWorld().getServer());
+                .sync(player.getLevel().getServer());
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerVaultStatsData addKnowledgePoints(ServerPlayerEntity player, int amount) {
         this.getVaultStats(player)
                 .addKnowledgePoints(amount)
-                .sync(player.getServerWorld().getServer());
+                .sync(player.getLevel().getServer());
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerVaultStatsData reset(ServerPlayerEntity player) {
         this.getVaultStats(player).reset(player.getServer());
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     /* ------------------------------- */
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         ListNBT playerList = nbt.getList("PlayerEntries", Constants.NBT.TAG_STRING);
         ListNBT statEntries = nbt.getList("StatEntries", Constants.NBT.TAG_COMPOUND);
 
@@ -110,7 +110,7 @@ public class PlayerVaultStatsData extends WorldSavedData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         ListNBT playerList = new ListNBT();
         ListNBT statsList = new ListNBT();
 
@@ -126,8 +126,8 @@ public class PlayerVaultStatsData extends WorldSavedData {
     }
 
     public static PlayerVaultStatsData get(ServerWorld world) {
-        return world.getServer().func_241755_D_()
-                .getSavedData().getOrCreate(PlayerVaultStatsData::new, DATA_NAME);
+        return world.getServer().overworld()
+                .getDataStorage().computeIfAbsent(PlayerVaultStatsData::new, DATA_NAME);
     }
 
 }

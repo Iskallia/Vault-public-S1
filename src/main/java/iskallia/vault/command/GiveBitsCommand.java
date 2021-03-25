@@ -48,7 +48,7 @@ public class GiveBitsCommand extends Command {
     }
 
     private int receivedSub(CommandContext<CommandSource> context, int amount) throws CommandSyntaxException {
-        dropBits(context.getSource().asPlayer(), amount);
+        dropBits(context.getSource().getPlayerOrException(), amount);
         return 0;
     }
 

@@ -51,28 +51,28 @@ public class GearDebugCommand extends Command {
     private int giveHelmet(CommandContext<CommandSource> context, int model) throws CommandSyntaxException {
         ItemStack helmetStack = new ItemStack(ModItems.HELMET);
         configureGear(helmetStack, model);
-        EntityHelper.giveItem(context.getSource().asPlayer(), helmetStack);
+        EntityHelper.giveItem(context.getSource().getPlayerOrException(), helmetStack);
         return 0;
     }
 
     private int giveChestplate(CommandContext<CommandSource> context, int model) throws CommandSyntaxException {
         ItemStack chestStack = new ItemStack(ModItems.CHESTPLATE);
         configureGear(chestStack, model);
-        EntityHelper.giveItem(context.getSource().asPlayer(), chestStack);
+        EntityHelper.giveItem(context.getSource().getPlayerOrException(), chestStack);
         return 0;
     }
 
     private int giveLeggings(CommandContext<CommandSource> context, int model) throws CommandSyntaxException {
         ItemStack leggingsStack = new ItemStack(ModItems.LEGGINGS);
         configureGear(leggingsStack, model);
-        EntityHelper.giveItem(context.getSource().asPlayer(), leggingsStack);
+        EntityHelper.giveItem(context.getSource().getPlayerOrException(), leggingsStack);
         return 0;
     }
 
     private int giveBoots(CommandContext<CommandSource> context, int model) throws CommandSyntaxException {
         ItemStack bootsStack = new ItemStack(ModItems.BOOTS);
         configureGear(bootsStack, model);
-        EntityHelper.giveItem(context.getSource().asPlayer(), bootsStack);
+        EntityHelper.giveItem(context.getSource().getPlayerOrException(), bootsStack);
         return 0;
     }
 

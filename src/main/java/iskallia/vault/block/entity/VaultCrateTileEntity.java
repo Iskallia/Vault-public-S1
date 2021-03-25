@@ -29,22 +29,22 @@ public class VaultCrateTileEntity extends TileEntity {
 
 
     public void sendUpdates() {
-        this.world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
-        this.world.notifyNeighborsOfStateChange(pos, this.getBlockState().getBlock());
-        markDirty();
+        this.level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        this.level.updateNeighborsAt(worldPosition, this.getBlockState().getBlock());
+        setChanged();
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         compound.put("inv", itemHandler.serializeNBT());
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void load(BlockState state, CompoundNBT nbt) {
         nbt.getCompound("inv").remove("Size");
         itemHandler.deserializeNBT(nbt.getCompound("inv"));
-        super.read(state, nbt);
+        super.load(state, nbt);
     }
 
     private ItemStackHandler createHandler() {
@@ -56,8 +56,8 @@ public class VaultCrateTileEntity extends TileEntity {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock ||
-                        Block.getBlockFromItem(stack.getItem()) instanceof VaultCrateBlock) {
+                if(Block.byItem(stack.getItem()) instanceof ShulkerBoxBlock ||
+                        Block.byItem(stack.getItem()) instanceof VaultCrateBlock) {
                     return false;
                 }
                 return true;

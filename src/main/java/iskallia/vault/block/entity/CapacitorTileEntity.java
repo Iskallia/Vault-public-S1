@@ -24,7 +24,7 @@ public class CapacitorTileEntity extends TileEntity {
         return new CapacitorEnergyStorage(1000000000, 10000) {
             @Override
             protected void onEnergyChanged() {
-                markDirty();
+                setChanged();
             }
         };
     }
@@ -41,21 +41,21 @@ public class CapacitorTileEntity extends TileEntity {
 
 
     public void sendUpdates() {
-        this.world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
-        this.world.notifyNeighborsOfStateChange(pos, this.getBlockState().getBlock());
-        markDirty();
+        this.level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        this.level.updateNeighborsAt(worldPosition, this.getBlockState().getBlock());
+        setChanged();
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         compound.put("energy", energyStorage.serializeNBT());
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void load(BlockState state, CompoundNBT nbt) {
         energyStorage.deserializeNBT(nbt.getCompound("energy"));
-        super.read(state, nbt);
+        super.load(state, nbt);
     }
 
 

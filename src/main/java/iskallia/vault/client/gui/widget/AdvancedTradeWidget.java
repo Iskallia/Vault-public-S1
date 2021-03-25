@@ -47,7 +47,7 @@ public class AdvancedTradeWidget extends Widget {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
 
-        minecraft.getTextureManager().bindTexture(AdvancedVendingMachineScreen.HUD_RESOURCE);
+        minecraft.getTextureManager().bind(AdvancedVendingMachineScreen.HUD_RESOURCE);
 
         Trade trade = traderCode.getTrade();
         ItemStack buy = trade.getBuy().toStack();
@@ -62,10 +62,10 @@ public class AdvancedTradeWidget extends Widget {
             blit(matrixStack, x, y,
                     277, 96, BUTTON_WIDTH, BUTTON_HEIGHT, 512, 256);
             RenderSystem.disableDepthTest();
-            itemRenderer.renderItemIntoGUI(buy,
+            itemRenderer.renderGuiItem(buy,
                     5 + x + tradeBoundaries.x0,
                     6 + y + tradeBoundaries.y0 - yOFfset);
-            itemRenderer.renderItemIntoGUI(sell,
+            itemRenderer.renderGuiItem(sell,
                     55 + x + tradeBoundaries.x0,
                     6 + y + tradeBoundaries.y0 - yOFfset);
             return;
@@ -73,22 +73,22 @@ public class AdvancedTradeWidget extends Widget {
 
         boolean isHovered = isHovered(mouseX, mouseY);
 
-        boolean isSelected = parentScreen.getContainer().getSelectedTrade() == this.traderCode;
+        boolean isSelected = parentScreen.getMenu().getSelectedTrade() == this.traderCode;
 
         blit(matrixStack, x, y,
                 277, isHovered || isSelected ? 68 : 40, BUTTON_WIDTH, BUTTON_HEIGHT, 512, 256);
 
         RenderSystem.disableDepthTest();
-        itemRenderer.renderItemIntoGUI(buy,
+        itemRenderer.renderGuiItem(buy,
                 5 + x + tradeBoundaries.x0,
                 6 + y + tradeBoundaries.y0 - yOFfset);
-        itemRenderer.renderItemIntoGUI(sell,
+        itemRenderer.renderGuiItem(sell,
                 55 + x + tradeBoundaries.x0,
                 6 + y + tradeBoundaries.y0 - yOFfset);
 
-        minecraft.fontRenderer.drawString(matrixStack,
+        minecraft.font.draw(matrixStack,
                 buy.getCount() + "", x + 23, y + 10, 0xFF_FFFFFF);
-        minecraft.fontRenderer.drawString(matrixStack,
+        minecraft.font.draw(matrixStack,
                 sell.getCount() + "", x + 73, y + 10, 0xFF_FFFFFF);
         RenderSystem.enableDepthTest();
     }

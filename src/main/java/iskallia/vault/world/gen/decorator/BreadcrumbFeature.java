@@ -23,16 +23,16 @@ public class BreadcrumbFeature extends Feature<NoFeatureConfig> {
 	}
 
 	@Override
-	public boolean func_241855_a(ISeedReader world, ChunkGenerator gen, Random rand, BlockPos pos, NoFeatureConfig config) {
+	public boolean place(ISeedReader world, ChunkGenerator gen, Random rand, BlockPos pos, NoFeatureConfig config) {
 		for(int i = 0; i < 128; i++) {
 			int x = rand.nextInt(16);
 			int z = rand.nextInt(16);
 			int y = rand.nextInt(256);
-			BlockPos c = pos.add(x, y, z);
+			BlockPos c = pos.offset(x, y, z);
 
-			if(world.getBlockState(c).getBlock() == Blocks.AIR && world.getBlockState(c.down()).isSolid()) {
-				world.setBlockState(c, Blocks.CHEST.getDefaultState(), 2);
-				TileEntity te = world.getTileEntity(c);
+			if(world.getBlockState(c).getBlock() == Blocks.AIR && world.getBlockState(c.below()).canOcclude()) {
+				world.setBlock(c, Blocks.CHEST.defaultBlockState(), 2);
+				TileEntity te = world.getBlockEntity(c);
 
 				if(te instanceof ChestTileEntity) {
 					((ChestTileEntity)te).setLootTable(Vault.id("chest/breadcrumb"), 0);
@@ -46,7 +46,7 @@ public class BreadcrumbFeature extends Feature<NoFeatureConfig> {
 	}
 
 	public static void register(RegistryEvent.Register<Feature<?>> event) {
-		INSTANCE = new BreadcrumbFeature(NoFeatureConfig.field_236558_a_);
+		INSTANCE = new BreadcrumbFeature(NoFeatureConfig.CODEC);
 		INSTANCE.setRegistryName(Vault.id("breadcrumb_chest"));
 		event.getRegistry().register(INSTANCE);
 	}

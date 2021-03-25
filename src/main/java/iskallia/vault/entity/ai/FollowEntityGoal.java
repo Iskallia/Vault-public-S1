@@ -27,27 +27,27 @@ public class FollowEntityGoal<T extends MobEntity, O extends LivingEntity> exten
 	public FollowEntityGoal(T entity, double speed, float minDist, float maxDist, boolean teleportToLeaves, Supplier<Optional<O>> ownerSupplier) {
 		super(entity);
 		this.followSpeed = speed;
-		this.navigator = entity.getNavigator();
+		this.navigator = entity.getNavigation();
 		this.minDist = minDist;
 		this.maxDist = maxDist;
 		this.teleportToLeaves = teleportToLeaves;
 		this.ownerSupplier = ownerSupplier;
 
-		this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 
-		if(!(this.getEntity().getNavigator() instanceof GroundPathNavigator) && !(this.getEntity().getNavigator() instanceof FlyingPathNavigator)) {
+		if(!(this.getEntity().getNavigation() instanceof GroundPathNavigator) && !(this.getEntity().getNavigation() instanceof FlyingPathNavigator)) {
 			throw new IllegalArgumentException("Unsupported mob type for FollowOwnerGoal");
 		}
 	}
 
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		O owner = this.ownerSupplier.get().orElse(null);
 
 		if (owner == null) {
 			return false;
 		} else if(owner.isSpectator()) {
 			return false;
-		} else if(owner.getDistanceSq(this.getEntity()) < (double)(this.minDist * this.minDist)) {
+		} else if(owner.distanceToSqr(this.getEntity()) < (double)(this.minDist * this.minDist)) {
 			return false;
 		} else {
 			this.owner = owner;
@@ -55,35 +55,35 @@ public class FollowEntityGoal<T extends MobEntity, O extends LivingEntity> exten
 		}
 	}
 
-	public boolean shouldContinueExecuting() {
-		if(this.navigator.noPath()) {
+	public boolean canContinueToUse() {
+		if(this.navigator.isDone()) {
 			return false;
 		}
 
-		return this.getEntity().getDistanceSq(this.owner) > (double)(this.maxDist * this.maxDist);
+		return this.getEntity().distanceToSqr(this.owner) > (double)(this.maxDist * this.maxDist);
 	}
 
-	public void startExecuting() {
+	public void start() {
 		this.timeToRecalcPath = 0;
-		this.oldWaterCost = this.getEntity().getPathPriority(PathNodeType.WATER);
-		this.getEntity().setPathPriority(PathNodeType.WATER, 0.0F);
+		this.oldWaterCost = this.getEntity().getPathfindingMalus(PathNodeType.WATER);
+		this.getEntity().setPathfindingMalus(PathNodeType.WATER, 0.0F);
 	}
 
-	public void resetTask() {
+	public void stop() {
 		this.owner = null;
-		this.navigator.clearPath();
-		this.getEntity().setPathPriority(PathNodeType.WATER, this.oldWaterCost);
+		this.navigator.stop();
+		this.getEntity().setPathfindingMalus(PathNodeType.WATER, this.oldWaterCost);
 	}
 
 	public void tick() {
-		this.getEntity().getLookController().setLookPositionWithEntity(this.owner, 10.0F, (float)this.getEntity().getVerticalFaceSpeed());
+		this.getEntity().getLookControl().setLookAt(this.owner, 10.0F, (float)this.getEntity().getMaxHeadXRot());
 		if(--this.timeToRecalcPath > 0)return;
 
-		if(!this.getEntity().getLeashed() && !this.getEntity().isPassenger()) {
-			if(this.getEntity().getDistanceSq(this.owner) >= 144.0D) {
+		if(!this.getEntity().isLeashed() && !this.getEntity().isPassenger()) {
+			if(this.getEntity().distanceToSqr(this.owner) >= 144.0D) {
 				this.tryToTeleportNearEntity();
 			} else {
-				this.navigator.tryMoveToEntityLiving(this.owner, this.followSpeed);
+				this.navigator.moveTo(this.owner, this.followSpeed);
 			}
 		}
 
@@ -91,7 +91,7 @@ public class FollowEntityGoal<T extends MobEntity, O extends LivingEntity> exten
 	}
 
 	private void tryToTeleportNearEntity() {
-		BlockPos blockpos = this.owner.getPosition();
+		BlockPos blockpos = this.owner.blockPosition();
 
 		for(int i = 0; i < 10; ++i) {
 			int j = this.nextInt(-3, 3);
@@ -105,29 +105,29 @@ public class FollowEntityGoal<T extends MobEntity, O extends LivingEntity> exten
 	}
 
 	private boolean tryToTeleportToLocation(int x, int y, int z) {
-		if (Math.abs((double)x - this.owner.getPosX()) < 2.0D && Math.abs((double)z - this.owner.getPosZ()) < 2.0D) {
+		if (Math.abs((double)x - this.owner.getX()) < 2.0D && Math.abs((double)z - this.owner.getZ()) < 2.0D) {
 			return false;
 		} else if (!this.isTeleportFriendlyBlock(new BlockPos(x, y, z))) {
 			return false;
 		} else {
-			this.getEntity().setLocationAndAngles((double)x + 0.5D, y, (double)z + 0.5D, this.getEntity().rotationYaw, this.getEntity().rotationPitch);
-			this.navigator.clearPath();
+			this.getEntity().moveTo((double)x + 0.5D, y, (double)z + 0.5D, this.getEntity().yRot, this.getEntity().xRot);
+			this.navigator.stop();
 			return true;
 		}
 	}
 
 	private boolean isTeleportFriendlyBlock(BlockPos pos) {
-		PathNodeType pathnodetype = WalkNodeProcessor.func_237231_a_(this.getWorld(), pos.toMutable());
+		PathNodeType pathnodetype = WalkNodeProcessor.getBlockPathTypeStatic(this.getWorld(), pos.mutable());
 
 		if(pathnodetype != PathNodeType.WALKABLE) {
 			return false;
 		} else {
-			BlockState blockstate = this.getWorld().getBlockState(pos.down());
+			BlockState blockstate = this.getWorld().getBlockState(pos.below());
 			if(!this.teleportToLeaves && blockstate.getBlock() instanceof LeavesBlock) {
 				return false;
 			} else {
-				BlockPos blockpos = pos.subtract(this.getEntity().getPosition());
-				return this.getWorld().hasNoCollisions(this.getEntity(), this.getEntity().getBoundingBox().offset(blockpos));
+				BlockPos blockpos = pos.subtract(this.getEntity().blockPosition());
+				return this.getWorld().noCollision(this.getEntity(), this.getEntity().getBoundingBox().move(blockpos));
 			}
 		}
 	}

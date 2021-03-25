@@ -37,33 +37,33 @@ public abstract class MixinLivingEntity extends Entity {
 		super(entityType, world);
 	}
 
-	@Shadow public abstract EffectInstance getActivePotionEffect(Effect potionIn);
+	@Shadow public abstract EffectInstance getEffect(Effect potionIn);
 
 	@Shadow @Nullable public abstract ModifiableAttributeInstance getAttribute(Attribute attribute);
 
-	@Shadow public abstract boolean isPotionActive(Effect potionIn);
+	@Shadow public abstract boolean hasEffect(Effect potionIn);
 
-	@Redirect(method = "registerAttributes", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/attributes/AttributeModifierMap;createMutableAttribute()Lnet/minecraft/entity/ai/attributes/AttributeModifierMap$MutableAttribute;"))
-	private static AttributeModifierMap.MutableAttribute registerAttributes() {
-		return AttributeModifierMap.createMutableAttribute()
-				.createMutableAttribute(ModAttributes.CRIT_CHANCE)
-				.createMutableAttribute(ModAttributes.CRIT_MULTIPLIER)
-				.createMutableAttribute(ModAttributes.TP_CHANCE)
-				.createMutableAttribute(ModAttributes.TP_INDIRECT_CHANCE)
-				.createMutableAttribute(ModAttributes.TP_RANGE)
-				.createMutableAttribute(ModAttributes.POTION_RESISTANCE);
+	@Redirect(method = "createLivingAttributes", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/attributes/AttributeModifierMap;builder()Lnet/minecraft/entity/ai/attributes/AttributeModifierMap$MutableAttribute;"))
+	private static AttributeModifierMap.MutableAttribute createLivingAttributes() {
+		return AttributeModifierMap.builder()
+				.add(ModAttributes.CRIT_CHANCE)
+				.add(ModAttributes.CRIT_MULTIPLIER)
+				.add(ModAttributes.TP_CHANCE)
+				.add(ModAttributes.TP_INDIRECT_CHANCE)
+				.add(ModAttributes.TP_RANGE)
+				.add(ModAttributes.POTION_RESISTANCE);
 	}
 
-	@Redirect(method = "applyPotionDamageCalculations", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F"))
-	protected float applyPotionDamageCalculations(float a, float b) {
-		if(!this.world.isRemote && (LivingEntity)(Object)this instanceof PlayerEntity) {
-			int resistance = this.isPotionActive(Effects.RESISTANCE) ? 0 : this.getActivePotionEffect(Effects.RESISTANCE).getAmplifier() + 1;
+	@Redirect(method = "getDamageAfterMagicAbsorb", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F"))
+	protected float getDamageAfterMagicAbsorb(float a, float b) {
+		if(!this.level.isClientSide && (LivingEntity)(Object)this instanceof PlayerEntity) {
+			int resistance = this.hasEffect(Effects.DAMAGE_RESISTANCE) ? 0 : this.getEffect(Effects.DAMAGE_RESISTANCE).getAmplifier() + 1;
 			float damageCancel = (resistance * 5) / 25.0F;
 			float damage = a * 25 / (25 - resistance * 5);
 
 			ServerPlayerEntity player = (ServerPlayerEntity)(Object)this;
 
-			TalentTree abilities = PlayerTalentsData.get(player.getServerWorld()).getTalents(player);
+			TalentTree abilities = PlayerTalentsData.get(player.getLevel()).getTalents(player);
 
 			for(TalentNode<?> node : abilities.getNodes()) {
 				if(!(node.getTalent() instanceof CarapaceTalent))continue;
@@ -71,7 +71,7 @@ public abstract class MixinLivingEntity extends Entity {
 				damageCancel += talent.getResistanceBonus();
 			}
 
-			SetTree sets = PlayerSetsData.get(player.getServerWorld()).getSets(player);
+			SetTree sets = PlayerSetsData.get(player.getLevel()).getSets(player);
 
 			for(SetNode<?> node : sets.getNodes()) {
 				if(!(node.getSet() instanceof GolemSet))continue;
@@ -85,11 +85,11 @@ public abstract class MixinLivingEntity extends Entity {
 		return Math.max(a, b);
 	}
 
-	@Inject(method = "addPotionEffect", at = @At("HEAD"), cancellable = true)
-	private void addPotionEffect(EffectInstance effect, CallbackInfoReturnable<Boolean> ci) {
+	@Inject(method = "addEffect", at = @At("HEAD"), cancellable = true)
+	private void addEffect(EffectInstance effect, CallbackInfoReturnable<Boolean> ci) {
 		ModifiableAttributeInstance attribute = this.getAttribute(ModAttributes.POTION_RESISTANCE);
 		if(attribute == null)return;
-		if(this.rand.nextDouble() >= attribute.getValue())return;
+		if(this.random.nextDouble() >= attribute.getValue())return;
 		ci.setReturnValue(false);
 	}
 

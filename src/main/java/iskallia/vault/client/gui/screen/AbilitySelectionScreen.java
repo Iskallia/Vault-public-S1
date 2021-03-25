@@ -30,8 +30,8 @@ public class AbilitySelectionScreen extends Screen {
 
         Minecraft minecraft = Minecraft.getInstance();
 
-        float midX = minecraft.getMainWindow().getScaledWidth() / 2f;
-        float midY = minecraft.getMainWindow().getScaledHeight() / 2f;
+        float midX = minecraft.getWindow().getGuiScaledWidth() / 2f;
+        float midY = minecraft.getWindow().getGuiScaledHeight() / 2f;
         float radius = 60;
 
         List<AbilityNode<?>> learnedAbilities = AbilitiesOverlay.learnedAbilities;
@@ -64,23 +64,23 @@ public class AbilitySelectionScreen extends Screen {
         for (AbilitySelectionWidget widget : getAbilitiesAsWidgets()) {
             if (widget.isMouseOver(mouseX, mouseY)) {
                 requestSwap(widget.getAbilityNode());
-                closeScreen();
+                onClose();
                 return true;
             }
         }
 
-        closeScreen();
+        onClose();
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == ModKeybinds.abilityWheelKey.getKey().getKeyCode()) {
+        if (keyCode == ModKeybinds.abilityWheelKey.getKey().getValue()) {
             Minecraft minecraft = Minecraft.getInstance();
 
-            double guiScaleFactor = minecraft.getMainWindow().getGuiScaleFactor();
-            double mouseX = minecraft.mouseHelper.getMouseX() / guiScaleFactor;
-            double mouseY = minecraft.mouseHelper.getMouseY() / guiScaleFactor;
+            double guiScaleFactor = minecraft.getWindow().getGuiScale();
+            double mouseX = minecraft.mouseHandler.xpos() / guiScaleFactor;
+            double mouseY = minecraft.mouseHandler.ypos() / guiScaleFactor;
 
             for (AbilitySelectionWidget widget : getAbilitiesAsWidgets()) {
                 if (widget.isMouseOver(mouseX, mouseY)) {
@@ -89,7 +89,7 @@ public class AbilitySelectionScreen extends Screen {
                 }
             }
 
-            closeScreen();
+            onClose();
             return true;
         }
 
@@ -109,8 +109,8 @@ public class AbilitySelectionScreen extends Screen {
 
         Minecraft minecraft = Minecraft.getInstance();
 
-        float midX = minecraft.getMainWindow().getScaledWidth() / 2f;
-        float midY = minecraft.getMainWindow().getScaledHeight() / 2f;
+        float midX = minecraft.getWindow().getGuiScaledWidth() / 2f;
+        float midY = minecraft.getWindow().getGuiScaledHeight() / 2f;
         float radius = 60;
 
         List<AbilitySelectionWidget> abilitiesAsWidgets = getAbilitiesAsWidgets();
@@ -121,15 +121,15 @@ public class AbilitySelectionScreen extends Screen {
 
             if (!focusRendered && widget.isMouseOver(mouseX, mouseY)) {
                 String abilityName = widget.getAbilityNode().getName();
-                int abilityNameWidth = minecraft.fontRenderer.getStringWidth(abilityName);
-                minecraft.fontRenderer.drawStringWithShadow(matrixStack, abilityName,
+                int abilityNameWidth = minecraft.font.width(abilityName);
+                minecraft.font.drawShadow(matrixStack, abilityName,
                         midX - abilityNameWidth / 2f, midY - (radius + 35),
                         0x00_FFFFFF);
 
                 if (i == AbilitiesOverlay.focusedIndex) {
                     String text = "Currently Focused Ability";
-                    int textWidth = minecraft.fontRenderer.getStringWidth(text);
-                    minecraft.fontRenderer.drawStringWithShadow(matrixStack, text,
+                    int textWidth = minecraft.font.width(text);
+                    minecraft.font.drawShadow(matrixStack, text,
                             midX - textWidth / 2f, midY + (radius + 15),
                             0x00_ABEABE);
                 }

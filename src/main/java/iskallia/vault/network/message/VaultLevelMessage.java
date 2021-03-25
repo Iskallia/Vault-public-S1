@@ -58,7 +58,7 @@ public class VaultLevelMessage {
             VaultBarOverlay.expGainedAnimation.reset();
             VaultBarOverlay.expGainedAnimation.play();
 
-            Screen currentScreen = Minecraft.getInstance().currentScreen;
+            Screen currentScreen = Minecraft.getInstance().screen;
             if (currentScreen instanceof SkillTreeScreen) {
                 SkillTreeScreen skillTreeScreen = (SkillTreeScreen) currentScreen;
                 skillTreeScreen.refreshWidgets();

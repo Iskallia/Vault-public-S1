@@ -408,9 +408,9 @@ public abstract class VaultGearConfig extends Config {
 
 		SWORD.EXTRA_EFFECTS = (EffectAttribute.Generator)EffectAttribute.generator()
 				.add(new ArrayList<>(), PooledAttribute.Rolls.ofConstant(1), pool -> pool
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 1)
 						.add(Collections.singletonList(new EffectTalent(0, Effects.LUCK, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
@@ -446,9 +446,9 @@ public abstract class VaultGearConfig extends Config {
 
 		AXE.EXTRA_EFFECTS = (EffectAttribute.Generator)EffectAttribute.generator()
 				.add(new ArrayList<>(), PooledAttribute.Rolls.ofConstant(1), pool -> pool
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 1)
 						.add(Collections.singletonList(new EffectTalent(0, Effects.LUCK, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
@@ -484,9 +484,9 @@ public abstract class VaultGearConfig extends Config {
 
 		DAGGER.EXTRA_EFFECTS = (EffectAttribute.Generator)EffectAttribute.generator()
 				.add(new ArrayList<>(), PooledAttribute.Rolls.ofConstant(1), pool -> pool
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 1)
 						.add(Collections.singletonList(new EffectTalent(0, Effects.LUCK, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
@@ -522,9 +522,9 @@ public abstract class VaultGearConfig extends Config {
 
 		HELMET.EXTRA_EFFECTS = (EffectAttribute.Generator)EffectAttribute.generator()
 				.add(new ArrayList<>(), PooledAttribute.Rolls.ofConstant(1), pool -> pool
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 1)
 						.add(Collections.singletonList(new EffectTalent(0, Effects.LUCK, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
@@ -560,9 +560,9 @@ public abstract class VaultGearConfig extends Config {
 
 		CHESTPLATE.EXTRA_EFFECTS = (EffectAttribute.Generator)EffectAttribute.generator()
 				.add(new ArrayList<>(), PooledAttribute.Rolls.ofConstant(1), pool -> pool
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 1)
 						.add(Collections.singletonList(new EffectTalent(0, Effects.LUCK, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
@@ -598,9 +598,9 @@ public abstract class VaultGearConfig extends Config {
 
 		LEGGINGS.EXTRA_EFFECTS = (EffectAttribute.Generator)EffectAttribute.generator()
 				.add(new ArrayList<>(), PooledAttribute.Rolls.ofConstant(1), pool -> pool
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 1)
 						.add(Collections.singletonList(new EffectTalent(0, Effects.LUCK, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
@@ -636,9 +636,9 @@ public abstract class VaultGearConfig extends Config {
 
 		BOOTS.EXTRA_EFFECTS = (EffectAttribute.Generator)EffectAttribute.generator()
 				.add(new ArrayList<>(), PooledAttribute.Rolls.ofConstant(1), pool -> pool
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)
-						.add(Collections.singletonList(new EffectTalent(0, Effects.RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
+						.add(Collections.singletonList(new EffectTalent(0, Effects.DAMAGE_RESISTANCE, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 1)
 						.add(Collections.singletonList(new EffectTalent(0, Effects.LUCK, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD)),
 								EffectAttribute.of(EffectAttribute.Type.SET), 2)

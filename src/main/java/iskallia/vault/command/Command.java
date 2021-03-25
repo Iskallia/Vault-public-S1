@@ -16,7 +16,7 @@ public abstract class Command {
 	public abstract boolean isDedicatedServerOnly();
 
 	protected final void sendFeedback(CommandContext<CommandSource> context, String message, boolean showOps) {
-		context.getSource().sendFeedback(new StringTextComponent(message), showOps);
+		context.getSource().sendSuccess(new StringTextComponent(message), showOps);
 	}
 
 }

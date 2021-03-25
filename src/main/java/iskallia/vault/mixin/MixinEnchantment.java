@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Enchantment.class)
 public abstract class MixinEnchantment {
 
-	@Inject(method = "canApply", at = @At("HEAD"), cancellable = true)
-	private void canApply(ItemStack stack, CallbackInfoReturnable<Boolean> ci) {
+	@Inject(method = "canEnchant", at = @At("HEAD"), cancellable = true)
+	private void canEnchant(ItemStack stack, CallbackInfoReturnable<Boolean> ci) {
 		if(stack.getItem() instanceof VaultGear && !((VaultGear<?>)stack.getItem()).canApply(stack, (Enchantment)(Object)this)) {
 			ci.setReturnValue(false);
 		}

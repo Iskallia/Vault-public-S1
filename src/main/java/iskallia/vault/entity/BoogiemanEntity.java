@@ -25,7 +25,7 @@ import java.util.Random;
 public class BoogiemanEntity extends ZombieEntity implements VaultBoss {
 
     public TeleportRandomly<BoogiemanEntity> teleportTask = new TeleportRandomly<>(this, (entity, source, amount) -> {
-        if (!(source.getTrueSource() instanceof LivingEntity)) {
+        if (!(source.getEntity() instanceof LivingEntity)) {
             return 0.2D;
         }
 
@@ -42,17 +42,17 @@ public class BoogiemanEntity extends ZombieEntity implements VaultBoss {
     }
 
     @Override
-    protected void dropLoot(DamageSource damageSource, boolean attackedRecently) { }
+    protected void dropFromLootTable(DamageSource damageSource, boolean attackedRecently) { }
 
     @Override
-    protected void applyEntityAI() {
-        super.applyEntityAI();
+    protected void addBehaviourGoals() {
+        super.addBehaviourGoals();
         //this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, ArenaFighterEntity.class, false));
 
         this.goalSelector.addGoal(1, TeleportGoal.builder(this).start(entity -> {
-            return entity.getAttackTarget() != null && entity.ticksExisted % 60 == 0;
+            return entity.getTarget() != null && entity.tickCount % 60 == 0;
         }).to(entity -> {
-            return entity.getAttackTarget().getPositionVec().add((entity.rand.nextDouble() - 0.5D) * 8.0D, entity.rand.nextInt(16) - 8, (entity.rand.nextDouble() - 0.5D) * 8.0D);
+            return entity.getTarget().position().add((entity.random.nextDouble() - 0.5D) * 8.0D, entity.random.nextInt(16) - 8, (entity.random.nextDouble() - 0.5D) * 8.0D);
         }).then(entity -> {
             entity.playSound(ModSounds.BOSS_TP_SFX, 1.0F, 1.0F);
         }).build());
@@ -65,14 +65,14 @@ public class BoogiemanEntity extends ZombieEntity implements VaultBoss {
     }
 
     @Override
-    protected boolean shouldBurnInDay() {
+    protected boolean isSunSensitive() {
         return false;
     }
 
     @Override
     public void spawnInTheWorld(VaultRaid raid, ServerWorld world, BlockPos pos) {
-        this.setLocationAndAngles(pos.getX() + 0.5D, pos.getY() + 0.2D, pos.getZ() + 0.5D, 0.0F, 0.0F);
-        world.summonEntity(this);
+        this.moveTo(pos.getX() + 0.5D, pos.getY() + 0.2D, pos.getZ() + 0.5D, 0.0F, 0.0F);
+        world.addWithUUID(this);
 
         this.getTags().add("VaultBoss");
         this.bossInfo.setVisible(true);
@@ -88,9 +88,9 @@ public class BoogiemanEntity extends ZombieEntity implements VaultBoss {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
-        if (!(source.getTrueSource() instanceof PlayerEntity)
-                && !(source.getTrueSource() instanceof EternalEntity)
+    public boolean hurt(DamageSource source, float amount) {
+        if (!(source.getEntity() instanceof PlayerEntity)
+                && !(source.getEntity() instanceof EternalEntity)
                 && source != DamageSource.OUT_OF_WORLD) {
             return false;
         }
@@ -102,7 +102,7 @@ public class BoogiemanEntity extends ZombieEntity implements VaultBoss {
         }
 
         regenAfterAWhile.onDamageTaken();
-        return super.attackEntityFrom(source, amount);
+        return super.hurt(source, amount);
     }
 
     @Override
@@ -114,26 +114,26 @@ public class BoogiemanEntity extends ZombieEntity implements VaultBoss {
     public void tick() {
         super.tick();
 
-        if (!this.world.isRemote) {
+        if (!this.level.isClientSide) {
             this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
             this.regenAfterAWhile.tick();
         }
     }
 
     @Override
-    public void addTrackingPlayer(ServerPlayerEntity player) {
-        super.addTrackingPlayer(player);
+    public void startSeenByPlayer(ServerPlayerEntity player) {
+        super.startSeenByPlayer(player);
         this.bossInfo.addPlayer(player);
     }
 
     @Override
-    public void removeTrackingPlayer(ServerPlayerEntity player) {
-        super.removeTrackingPlayer(player);
+    public void stopSeenByPlayer(ServerPlayerEntity player) {
+        super.stopSeenByPlayer(player);
         this.bossInfo.removePlayer(player);
     }
 
     @Override
-    public SoundCategory getSoundCategory() {
+    public SoundCategory getSoundSource() {
         return SoundCategory.HOSTILE;
     }
 

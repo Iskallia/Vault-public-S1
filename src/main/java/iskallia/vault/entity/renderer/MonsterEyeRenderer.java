@@ -16,13 +16,13 @@ public class MonsterEyeRenderer extends SlimeRenderer {
     }
 
     @Override
-    protected void preRenderCallback(SlimeEntity entitylivingbase, MatrixStack matrixStack, float partialTickTime) {
-        super.preRenderCallback(entitylivingbase, matrixStack, partialTickTime);
+    protected void scale(SlimeEntity entitylivingbase, MatrixStack matrixStack, float partialTickTime) {
+        super.scale(entitylivingbase, matrixStack, partialTickTime);
         matrixStack.scale(2, 2, 2);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(SlimeEntity entity) {
+    public ResourceLocation getTextureLocation(SlimeEntity entity) {
         return TEXTURE;
     }
 

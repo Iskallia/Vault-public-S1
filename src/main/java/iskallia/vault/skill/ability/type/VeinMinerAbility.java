@@ -36,7 +36,7 @@ public class VeinMinerAbility extends PlayerAbility {
 
     @SubscribeEvent
     public static void onBlockMined(BlockEvent.BreakEvent event) {
-        if (!event.getWorld().isRemote()) {
+        if (!event.getWorld().isClientSide()) {
             ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
             AbilityTree abilityTree = PlayerAbilitiesData.get((ServerWorld) event.getWorld()).getAbilities(player);
 
@@ -68,10 +68,10 @@ public class VeinMinerAbility extends PlayerAbility {
     public static boolean floodMine(ServerPlayerEntity player, ServerWorld world, Block targetBlock, BlockPos pos, int limit) {
         if (world.getBlockState(pos).getBlock() != targetBlock) return false;
 
-        ItemStack heldItem = player.getHeldItem(player.getActiveHand());
+        ItemStack heldItem = player.getItemInHand(player.getUsedItemHand());
 
-        if (heldItem.isDamageable()) {
-            int usesLeft = heldItem.getMaxDamage() - heldItem.getDamage();
+        if (heldItem.isDamageableItem()) {
+            int usesLeft = heldItem.getMaxDamage() - heldItem.getDamageValue();
             if (usesLeft <= 1) return false; // Tool will break anyways, let the event handle that
         }
 
@@ -92,7 +92,7 @@ public class VeinMinerAbility extends PlayerAbility {
                     for (int z = -1; z <= 1; z++) {
                         if (x == 0 && y == 0 && z == 0) continue;
                         if (traversedBlocks >= limit) break floodLoop;
-                        BlockPos curPos = headPos.add(x, y, z);
+                        BlockPos curPos = headPos.offset(x, y, z);
                         if (world.getBlockState(curPos).getBlock() == targetBlock) {
                             itemDrops.addAll(destroyBlockAs(world, curPos, player));
                             positionQueue.add(curPos);
@@ -103,23 +103,23 @@ public class VeinMinerAbility extends PlayerAbility {
             }
         }
 
-        itemDrops.forEach(stack -> Block.spawnAsEntity(world, pos, stack));
+        itemDrops.forEach(stack -> Block.popResource(world, pos, stack));
         return true;
     }
 
     public static List<ItemStack> destroyBlockAs(ServerWorld world, BlockPos pos, PlayerEntity player) {
-        ItemStack heldItem = player.getHeldItem(player.getActiveHand());
+        ItemStack heldItem = player.getItemInHand(player.getUsedItemHand());
 
-        if (heldItem.isDamageable()) {
-            int usesLeft = heldItem.getMaxDamage() - heldItem.getDamage();
+        if (heldItem.isDamageableItem()) {
+            int usesLeft = heldItem.getMaxDamage() - heldItem.getDamageValue();
             if (usesLeft <= 1) {
                 return Collections.emptyList();
             }
-            heldItem.damageItem(1, player, playerEntity -> {});
+            heldItem.hurtAndBreak(1, player, playerEntity -> {});
         }
 
         List<ItemStack> drops = Block.getDrops(world.getBlockState(pos), world, pos,
-                world.getTileEntity(pos), player,
+                world.getBlockEntity(pos), player,
                 heldItem);
 
         world.destroyBlock(pos, false, player);

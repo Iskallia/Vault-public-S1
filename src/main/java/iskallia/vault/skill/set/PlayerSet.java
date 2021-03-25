@@ -41,7 +41,7 @@ public class PlayerSet {
 	}
 
 	public static boolean allMatch(PlayerEntity player, BiPredicate<EquipmentSlotType, ItemStack> predicate, EquipmentSlotType... slots) {
-		return Arrays.stream(slots).allMatch(slot -> predicate.test(slot, player.getItemStackFromSlot(slot)));
+		return Arrays.stream(slots).allMatch(slot -> predicate.test(slot, player.getItemBySlot(slot)));
 	}
 
 	public static boolean isActive(VaultGear.Set set, PlayerEntity player) {

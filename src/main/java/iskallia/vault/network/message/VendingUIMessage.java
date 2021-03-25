@@ -29,13 +29,13 @@ public class VendingUIMessage {
 
     public static void encode(VendingUIMessage message, PacketBuffer buffer) {
         buffer.writeInt(message.opcode.ordinal());
-        buffer.writeCompoundTag(message.payload);
+        buffer.writeNbt(message.payload);
     }
 
     public static VendingUIMessage decode(PacketBuffer buffer) {
         VendingUIMessage message = new VendingUIMessage();
         message.opcode = VendingUIMessage.Opcode.values()[buffer.readInt()];
-        message.payload = buffer.readCompoundTag();
+        message.payload = buffer.readNbt();
         return message;
     }
 
@@ -45,20 +45,20 @@ public class VendingUIMessage {
             if (message.opcode == Opcode.SELECT_TRADE) {
                 int index = message.payload.getInt("Index");
                 ServerPlayerEntity sender = context.getSender();
-                Container openContainer = sender.openContainer;
+                Container openContainer = sender.containerMenu;
                 if (openContainer instanceof VendingMachineContainer) {
                     VendingMachineContainer vendingMachineContainer = (VendingMachineContainer) openContainer;
                     vendingMachineContainer.selectTrade(index);
                 } else if (openContainer instanceof GlobalTraderContainer) {
                     GlobalTraderContainer globalTraderContainer = (GlobalTraderContainer) openContainer;
                     globalTraderContainer.selectTrade(index);
-                    GlobalTraderData.get((ServerWorld) sender.world).markDirty();
+                    GlobalTraderData.get((ServerWorld) sender.level).setDirty();
                 }
 
             } else if (message.opcode == Opcode.EJECT_CORE) {
                 int index = message.payload.getInt("Index");
                 ServerPlayerEntity sender = context.getSender();
-                Container openContainer = sender.openContainer;
+                Container openContainer = sender.containerMenu;
                 if (openContainer instanceof VendingMachineContainer) {
                     VendingMachineContainer vendingMachineContainer = (VendingMachineContainer) openContainer;
                     vendingMachineContainer.ejectCore(index);

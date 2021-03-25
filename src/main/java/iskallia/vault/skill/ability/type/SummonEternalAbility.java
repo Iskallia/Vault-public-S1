@@ -43,21 +43,21 @@ public class SummonEternalAbility extends PlayerAbility {
 
 	@Override
 	public void onAction(PlayerEntity player, boolean active) {
-		if(player.getEntityWorld().isRemote)return;
-		EternalsData.EternalGroup eternals = EternalsData.get((ServerWorld)player.world).getEternals(player);
+		if(player.getCommandSenderWorld().isClientSide)return;
+		EternalsData.EternalGroup eternals = EternalsData.get((ServerWorld)player.level).getEternals(player);
 
 		if(eternals.getEternals().isEmpty()) {
-			player.sendMessage(new StringTextComponent(TextFormatting.RED + "You have no eternals to summon."), player.getUniqueID());
-		} else if(player.getEntityWorld().getDimensionKey() != Vault.VAULT_KEY && this.isVaultOnly()) {
-			player.sendMessage(new StringTextComponent(TextFormatting.RED + "You can only summon eternals in the Vault!"), player.getUniqueID());
+			player.sendMessage(new StringTextComponent(TextFormatting.RED + "You have no eternals to summon."), player.getUUID());
+		} else if(player.getCommandSenderWorld().dimension() != Vault.VAULT_KEY && this.isVaultOnly()) {
+			player.sendMessage(new StringTextComponent(TextFormatting.RED + "You can only summon eternals in the Vault!"), player.getUUID());
 		} else {
 			for(int i = 0; i < this.getCount(); i++) {
-				EternalEntity eternal = eternals.getRandom(player.world.getRandom()).create(player.world);
-				eternal.setLocationAndAngles(player.getPosX(), player.getPosY(), player.getPosZ(), player.rotationYaw, player.rotationPitch);
-				eternal.setDespawnTime(player.getServer().getTickCounter() + this.getDespawnTime());
-				eternal.owner = player.getUniqueID();
+				EternalEntity eternal = eternals.getRandom(player.level.getRandom()).create(player.level);
+				eternal.moveTo(player.getX(), player.getY(), player.getZ(), player.yRot, player.xRot);
+				eternal.setDespawnTime(player.getServer().getTickCount() + this.getDespawnTime());
+				eternal.owner = player.getUUID();
 				eternal.setGlowing(true);
-				player.world.addEntity(eternal);
+				player.level.addFreshEntity(eternal);
 			}
 		}
 	}
@@ -65,7 +65,7 @@ public class SummonEternalAbility extends PlayerAbility {
 	@SubscribeEvent
 	public static void onDamage(LivingAttackEvent event) {
 		LivingEntity damagedEntity = event.getEntityLiving();
-		Entity dealerEntity = event.getSource().getTrueSource();
+		Entity dealerEntity = event.getSource().getEntity();
 
 		if (damagedEntity instanceof EternalEntity && dealerEntity instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) dealerEntity;

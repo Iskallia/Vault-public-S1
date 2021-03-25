@@ -21,14 +21,16 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.item.Item.Properties;
+
 public class ItemVaultCrystal extends Item {
 
     private VaultRarity vaultRarity;
 
     public ItemVaultCrystal(ItemGroup group, ResourceLocation id, VaultRarity vaultRarity) {
         super(new Properties()
-                .group(group)
-                .maxStackSize(1));
+                .tab(group)
+                .stacksTo(1));
 
         this.setRegistryName(id);
         this.vaultRarity = vaultRarity;
@@ -66,10 +68,10 @@ public class ItemVaultCrystal extends Item {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        if(context.getWorld().isRemote)return super.onItemUse(context);
+    public ActionResultType useOn(ItemUseContext context) {
+        if(context.getLevel().isClientSide)return super.useOn(context);
 
-        ItemStack stack = context.getPlayer().getHeldItemMainhand();
+        ItemStack stack = context.getPlayer().getMainHandItem();
         Item item = stack.getItem();
 
         if(item instanceof ItemVaultCrystal) {
@@ -77,13 +79,13 @@ public class ItemVaultCrystal extends Item {
 
             String playerBossName = "";
             CompoundNBT tag = stack.getOrCreateTag();
-            if (tag.keySet().contains("playerBossName")) {
+            if (tag.getAllKeys().contains("playerBossName")) {
                 playerBossName = tag.getString("playerBossName");
             }
 
-            BlockPos pos = context.getPos();
-            if (tryCreatePortal(crystal, context.getWorld(), pos, context.getFace(), playerBossName, getData(stack))) {
-                context.getWorld().playSound(null,
+            BlockPos pos = context.getClickedPos();
+            if (tryCreatePortal(crystal, context.getLevel(), pos, context.getClickedFace(), playerBossName, getData(stack))) {
+                context.getLevel().playSound(null,
                         pos.getX(),
                         pos.getY(),
                         pos.getZ(),
@@ -92,30 +94,30 @@ public class ItemVaultCrystal extends Item {
                         1f, 1f
                 );
 
-                context.getItem().shrink(1);
+                context.getItemInHand().shrink(1);
 
                 IFormattableTextComponent text = new StringTextComponent("");
-                text.append(new StringTextComponent(context.getPlayer().getName().getString()).mergeStyle(TextFormatting.GREEN));
+                text.append(new StringTextComponent(context.getPlayer().getName().getString()).withStyle(TextFormatting.GREEN));
                 text.append(new StringTextComponent(" has created a "));
                 String rarityName = crystal.getRarity().name().toLowerCase();
                 rarityName = rarityName.substring(0, 1).toUpperCase() + rarityName.substring(1);
 
-                text.append(new StringTextComponent(rarityName).mergeStyle(crystal.getRarity().color));
+                text.append(new StringTextComponent(rarityName).withStyle(crystal.getRarity().color));
                 text.append(new StringTextComponent(" Vault!"));
 
-                context.getWorld().getServer().getPlayerList().func_232641_a_(
-                        text, ChatType.CHAT, context.getPlayer().getUniqueID()
+                context.getLevel().getServer().getPlayerList().broadcastMessage(
+                        text, ChatType.CHAT, context.getPlayer().getUUID()
                 );
 
                 return ActionResultType.SUCCESS;
             }
 
         }
-        return super.onItemUse(context);
+        return super.useOn(context);
     }
 
     private boolean tryCreatePortal(ItemVaultCrystal crystal, World world, BlockPos pos, Direction facing, String playerBossName, CrystalData data) {
-        Optional<VaultPortalSize> optional = VaultPortalSize.getPortalSize(world, pos.offset(facing), Direction.Axis.X);
+        Optional<VaultPortalSize> optional = VaultPortalSize.getPortalSize(world, pos.relative(facing), Direction.Axis.X);
         if (optional.isPresent()) {
             optional.get().placePortalBlocks(crystal, playerBossName, data);
             return true;
@@ -124,12 +126,12 @@ public class ItemVaultCrystal extends Item {
     }
 
     @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
+    public ITextComponent getName(ItemStack stack) {
         if (stack.getItem() instanceof ItemVaultCrystal) {
             ItemVaultCrystal item = (ItemVaultCrystal) stack.getItem();
 
             CompoundNBT tag = stack.getOrCreateTag();
-            if (tag.keySet().contains("playerBossName")) {
+            if (tag.getAllKeys().contains("playerBossName")) {
                 return new StringTextComponent(item.getRarity().color + "Vault Crystal (" + tag.getString("playerBossName") + ")");
             }
 
@@ -145,7 +147,7 @@ public class ItemVaultCrystal extends Item {
             }
         }
 
-        return super.getDisplayName(stack);
+        return super.getName(stack);
     }
 
     public VaultRarity getRarity() {
@@ -157,9 +159,9 @@ public class ItemVaultCrystal extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         getData(stack).addInformation(world, tooltip, flag);
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, world, tooltip, flag);
     }
 
 }

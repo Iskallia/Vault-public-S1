@@ -80,7 +80,7 @@ public class ModBlocks {
     public static final CryoChamberBlock CRYO_CHAMBER = new CryoChamberBlock();
     public static final CapacitorBlock CAPACITOR = new CapacitorBlock();
     public static final KeyPressBlock KEY_PRESS = new KeyPressBlock();
-    public static final Block VAULT_DIAMOND_BLOCK = new Block(AbstractBlock.Properties.from(Blocks.DIAMOND_BLOCK));
+    public static final Block VAULT_DIAMOND_BLOCK = new Block(AbstractBlock.Properties.copy(Blocks.DIAMOND_BLOCK));
     public static final GlobalTraderBlock GLOBAL_TRADER = new GlobalTraderBlock();
     public static final MazeBlock MAZE_BLOCK = new MazeBlock();
     public static final PuzzleRuneBlock PUZZLE_RUNE_BLOCK = new PuzzleRuneBlock();
@@ -96,33 +96,33 @@ public class ModBlocks {
     public static final VendingMachineBlockItem VENDING_MACHINE_BLOCK_ITEM = new VendingMachineBlockItem(VENDING_MACHINE);
     public static final AdvancedVendingMachineBlockItem ADVANCED_VENDING_BLOCK_ITEM = new AdvancedVendingMachineBlockItem(ADVANCED_VENDING_MACHINE);
     public static final GlobalTraderBlockItem GLOBAL_TRADER_BLOCK_ITEM = new GlobalTraderBlockItem(GLOBAL_TRADER);
-    public static final PuzzleRuneBlock.Item PUZZLE_RUNE_BLOCK_ITEM = new PuzzleRuneBlock.Item(PUZZLE_RUNE_BLOCK, new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
+    public static final PuzzleRuneBlock.Item PUZZLE_RUNE_BLOCK_ITEM = new PuzzleRuneBlock.Item(PUZZLE_RUNE_BLOCK, new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(1));
     /*~~~~~~~~~~ Tile Entities ~~~~~~~~~~*/
 
     public static final TileEntityType<VaultAltarTileEntity> VAULT_ALTAR_TILE_ENTITY =
-            TileEntityType.Builder.create(VaultAltarTileEntity::new, VAULT_ALTAR).build(null);
+            TileEntityType.Builder.of(VaultAltarTileEntity::new, VAULT_ALTAR).build(null);
     public static final TileEntityType<VaultRuneTileEntity> VAULT_RUNE_TILE_ENTITY =
-            TileEntityType.Builder.create(VaultRuneTileEntity::new, VAULT_RUNE_BLOCK).build(null);
+            TileEntityType.Builder.of(VaultRuneTileEntity::new, VAULT_RUNE_BLOCK).build(null);
     public static final TileEntityType<VaultCrateTileEntity> VAULT_CRATE_TILE_ENTITY =
-            TileEntityType.Builder.create(VaultCrateTileEntity::new, VAULT_CRATE, VAULT_CRATE_ARENA).build(null);
+            TileEntityType.Builder.of(VaultCrateTileEntity::new, VAULT_CRATE, VAULT_CRATE_ARENA).build(null);
     public static final TileEntityType<VaultPortalTileEntity> VAULT_PORTAL_TILE_ENTITY =
-            TileEntityType.Builder.create(VaultPortalTileEntity::new, VAULT_PORTAL).build(null);
+            TileEntityType.Builder.of(VaultPortalTileEntity::new, VAULT_PORTAL).build(null);
     public static final TileEntityType<PlayerStatueTileEntity> PLAYER_STATUE_TILE_ENTITY =
-            TileEntityType.Builder.create(PlayerStatueTileEntity::new, PLAYER_STATUE).build(null);
+            TileEntityType.Builder.of(PlayerStatueTileEntity::new, PLAYER_STATUE).build(null);
     public static final TileEntityType<VendingMachineTileEntity> VENDING_MACHINE_TILE_ENTITY =
-            TileEntityType.Builder.create(VendingMachineTileEntity::new, VENDING_MACHINE).build(null);
+            TileEntityType.Builder.of(VendingMachineTileEntity::new, VENDING_MACHINE).build(null);
     public static final TileEntityType<AdvancedVendingTileEntity> ADVANCED_VENDING_MACHINE_TILE_ENTITY =
-            TileEntityType.Builder.create(AdvancedVendingTileEntity::new, ADVANCED_VENDING_MACHINE).build(null);
+            TileEntityType.Builder.of(AdvancedVendingTileEntity::new, ADVANCED_VENDING_MACHINE).build(null);
     public static final TileEntityType<RelicStatueTileEntity> RELIC_STATUE_TILE_ENTITY =
-            TileEntityType.Builder.create(RelicStatueTileEntity::new, RELIC_STATUE).build(null);
+            TileEntityType.Builder.of(RelicStatueTileEntity::new, RELIC_STATUE).build(null);
     public static final TileEntityType<LootStatueTileEntity> LOOT_STATUE_TILE_ENTITY =
-            TileEntityType.Builder.create(LootStatueTileEntity::new, GIFT_NORMAL_STATUE, GIFT_MEGA_STATUE, VAULT_PLAYER_LOOT_STATUE, ARENA_PLAYER_LOOT_STATUE).build(null);
+            TileEntityType.Builder.of(LootStatueTileEntity::new, GIFT_NORMAL_STATUE, GIFT_MEGA_STATUE, VAULT_PLAYER_LOOT_STATUE, ARENA_PLAYER_LOOT_STATUE).build(null);
     public static final TileEntityType<CryoChamberTileEntity> CRYO_CHAMBER_TILE_ENTITY =
-            TileEntityType.Builder.create(CryoChamberTileEntity::new, CRYO_CHAMBER).build(null);
+            TileEntityType.Builder.of(CryoChamberTileEntity::new, CRYO_CHAMBER).build(null);
     public static final TileEntityType<CapacitorTileEntity> CAPACITOR_TILE_ENTITY =
-            TileEntityType.Builder.create(CapacitorTileEntity::new, CAPACITOR).build(null);
+            TileEntityType.Builder.of(CapacitorTileEntity::new, CAPACITOR).build(null);
     public static final TileEntityType<GlobalTraderTileEntity> GLOBAL_TRADER_TILE_ENTITY =
-            TileEntityType.Builder.create(GlobalTraderTileEntity::new, GLOBAL_TRADER).build(null);
+            TileEntityType.Builder.of(GlobalTraderTileEntity::new, GLOBAL_TRADER).build(null);
 
 
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -296,15 +296,15 @@ public class ModBlocks {
     }
 
     private static void registerBlockItem(RegistryEvent.Register<Item> event, Block block) {
-        BlockItem blockItem = new BlockItem(block, new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
+        BlockItem blockItem = new BlockItem(block, new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
         blockItem.setRegistryName(block.getRegistryName());
         event.getRegistry().register(blockItem);
     }
 
     private static void registerBlockItem(RegistryEvent.Register<Item> event, Block block, int maxStackSize, boolean showGlint) {
-        BlockItem blockItem = new BlockItem(block, new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(maxStackSize)) {
+        BlockItem blockItem = new BlockItem(block, new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(maxStackSize)) {
             @Override
-            public boolean hasEffect(ItemStack stack) {
+            public boolean isFoil(ItemStack stack) {
                 return showGlint;
             }
         };
@@ -314,7 +314,7 @@ public class ModBlocks {
     }
 
     private static void registerBlockItem(RegistryEvent.Register<Item> event, Block block, int maxStackSize) {
-        BlockItem blockItem = new BlockItem(block, new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(maxStackSize));
+        BlockItem blockItem = new BlockItem(block, new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(maxStackSize));
         blockItem.setRegistryName(block.getRegistryName());
         event.getRegistry().register(blockItem);
     }
@@ -326,8 +326,8 @@ public class ModBlocks {
 
     private static void registerTallBlockItem(RegistryEvent.Register<Item> event, Block block) {
         TallBlockItem tallBlockItem = new TallBlockItem(block, new Item.Properties()
-                .group(VAULT_MOD_GROUP)
-                .maxStackSize(64));
+                .tab(VAULT_MOD_GROUP)
+                .stacksTo(64));
         tallBlockItem.setRegistryName(block.getRegistryName());
         event.getRegistry().register(tallBlockItem);
     }

@@ -65,14 +65,14 @@ public class VaultModifiers implements INBTSerializable<CompoundNBT> {
 
 	public void encode(PacketBuffer buffer) {
 		buffer.writeInt(this.modifiers.size());
-		this.modifiers.forEach(group -> buffer.writeString(group.getName()));
+		this.modifiers.forEach(group -> buffer.writeUtf(group.getName()));
 	}
 
 	public static VaultModifiers decode(PacketBuffer buffer) {
 		VaultModifiers res = new VaultModifiers();
 
 		for(int i = 0, count = buffer.readInt(); i < count; i++) {
-			res.modifiers.add(ModConfigs.VAULT_MODIFIERS.getByName(buffer.readString()));
+			res.modifiers.add(ModConfigs.VAULT_MODIFIERS.getByName(buffer.readUtf()));
 		}
 
 		return res;

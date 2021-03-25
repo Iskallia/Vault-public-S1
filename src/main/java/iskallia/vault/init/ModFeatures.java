@@ -25,9 +25,9 @@ public class ModFeatures {
     public static ConfiguredFeature<?, ?> VAULT_ROCK_ORE;
 
     public static void registerStructureFeatures() {
-        VAULT_FEATURE = register("vault", ModStructures.VAULT.func_236391_a_(new VaultStructure.Config(() -> VaultStructure.Pools.START, 6)));
-        FINAL_VAULT_FEATURE = register("final_vault", ModStructures.VAULT.func_236391_a_(new VaultStructure.Config(() -> VaultStructure.Pools.FINAL_START, 6)));
-        ARENA_FEATURE = register("arena", ModStructures.ARENA.func_236391_a_(new ArenaStructure.Config(() -> ArenaStructure.Pools.START, 8)));
+        VAULT_FEATURE = register("vault", ModStructures.VAULT.configured(new VaultStructure.Config(() -> VaultStructure.Pools.START, 6)));
+        FINAL_VAULT_FEATURE = register("final_vault", ModStructures.VAULT.configured(new VaultStructure.Config(() -> VaultStructure.Pools.FINAL_START, 6)));
+        ARENA_FEATURE = register("arena", ModStructures.ARENA.configured(new ArenaStructure.Config(() -> ArenaStructure.Pools.START, 8)));
     }
 
     public static void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
@@ -35,11 +35,11 @@ public class ModFeatures {
         BreadcrumbFeature.register(event);
         OverworldOreFeature.register(event);
 
-        VAULT_ORE = register("vault_ore", RegionOreFeature.INSTANCE.withConfiguration(new OreFeatureConfig(VaultRuleTest.INSTANCE, Blocks.DIORITE.getDefaultState(), 0)).func_242731_b(1));
-        BREADCRUMB_CHEST = register("breadcrumb_chest", BreadcrumbFeature.INSTANCE.withConfiguration(NoFeatureConfig.field_236559_b_));
-        VAULT_ROCK_ORE = register("vault_rock_ore", OverworldOreFeature.INSTANCE.withConfiguration(
-                new OreFeatureConfig(OreFeatureConfig.FillerBlockType.field_241882_a, ModBlocks.VAULT_ROCK_ORE.getDefaultState(), 1))
-                .withPlacement(Placement.field_242907_l.configure(new TopSolidRangeConfig(5, 0, 6))).func_242728_a());
+        VAULT_ORE = register("vault_ore", RegionOreFeature.INSTANCE.configured(new OreFeatureConfig(VaultRuleTest.INSTANCE, Blocks.DIORITE.defaultBlockState(), 0)).count(1));
+        BREADCRUMB_CHEST = register("breadcrumb_chest", BreadcrumbFeature.INSTANCE.configured(NoFeatureConfig.INSTANCE));
+        VAULT_ROCK_ORE = register("vault_rock_ore", OverworldOreFeature.INSTANCE.configured(
+                new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE, ModBlocks.VAULT_ROCK_ORE.defaultBlockState(), 1))
+                .decorated(Placement.RANGE.configured(new TopSolidRangeConfig(5, 0, 6))).squared());
     }
 
     private static <FC extends IFeatureConfig, F extends Feature<FC>> ConfiguredFeature<FC, F> register(String name, ConfiguredFeature<FC, F> feature) {

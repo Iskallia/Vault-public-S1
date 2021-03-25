@@ -26,25 +26,25 @@ public abstract class SkinnableTileEntity extends TileEntity {
     protected abstract void updateSkin();
 
     public void sendUpdates() {
-        this.world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0b11);
-        this.world.notifyNeighborsOfStateChange(pos, this.getBlockState().getBlock());
-        markDirty();
+        this.level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 0b11);
+        this.level.updateNeighborsAt(worldPosition, this.getBlockState().getBlock());
+        setChanged();
     }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-        read(state, tag);
+        load(state, tag);
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(pos, 1, getUpdateTag());
+        return new SUpdateTileEntityPacket(worldPosition, 1, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        CompoundNBT nbt = pkt.getNbtCompound();
+        CompoundNBT nbt = pkt.getTag();
         handleUpdateTag(getBlockState(), nbt);
     }
 }

@@ -30,36 +30,36 @@ public class ModContainers {
 
     public static void register(RegistryEvent.Register<ContainerType<?>> event) {
         SKILL_TREE_CONTAINER = createContainerType((windowId, inventory, buffer) -> {
-            UUID uniqueID = inventory.player.getUniqueID();
+            UUID uniqueID = inventory.player.getUUID();
             AbilityTree abilityTree = new AbilityTree(uniqueID);
-            abilityTree.deserializeNBT(Optional.ofNullable(buffer.readCompoundTag()).orElse(new CompoundNBT()));
+            abilityTree.deserializeNBT(Optional.ofNullable(buffer.readNbt()).orElse(new CompoundNBT()));
             TalentTree talentTree = new TalentTree(uniqueID);
-            talentTree.deserializeNBT(Optional.ofNullable(buffer.readCompoundTag()).orElse(new CompoundNBT()));
+            talentTree.deserializeNBT(Optional.ofNullable(buffer.readNbt()).orElse(new CompoundNBT()));
             ResearchTree researchTree = new ResearchTree(uniqueID);
-            researchTree.deserializeNBT(Optional.ofNullable(buffer.readCompoundTag()).orElse(new CompoundNBT()));
+            researchTree.deserializeNBT(Optional.ofNullable(buffer.readNbt()).orElse(new CompoundNBT()));
             return new SkillTreeContainer(windowId, abilityTree, talentTree, researchTree);
         });
 
         VAULT_CRATE_CONTAINER = createContainerType((windowId, inventory, buffer) -> {
-            World world = inventory.player.getEntityWorld();
+            World world = inventory.player.getCommandSenderWorld();
             BlockPos pos = buffer.readBlockPos();
             return new VaultCrateContainer(windowId, world, pos, inventory, inventory.player);
         });
 
         VENDING_MACHINE_CONTAINER = createContainerType((windowId, inventory, buffer) -> {
-            World world = inventory.player.getEntityWorld();
+            World world = inventory.player.getCommandSenderWorld();
             BlockPos pos = buffer.readBlockPos();
             return new VendingMachineContainer(windowId, world, pos, inventory, inventory.player);
         });
 
         ADVANCED_VENDING_MACHINE_CONTAINER = createContainerType((windowId, inventory, buffer) -> {
-            World world = inventory.player.getEntityWorld();
+            World world = inventory.player.getCommandSenderWorld();
             BlockPos pos = buffer.readBlockPos();
             return new AdvancedVendingContainer(windowId, world, pos, inventory, inventory.player);
         });
 
         RENAMING_CONTAINER = createContainerType((windowId, inventory, buffer) -> {
-            CompoundNBT nbt = buffer.readCompoundTag();
+            CompoundNBT nbt = buffer.readNbt();
             return new RenamingContainer(windowId, nbt == null ? new CompoundNBT() : nbt);
         });
 
@@ -69,9 +69,9 @@ public class ModContainers {
         });
 
         TRADER_CONTAINER = createContainerType((windowId, inventory, buffer) -> {
-            World world = inventory.player.getEntityWorld();
+            World world = inventory.player.getCommandSenderWorld();
             BlockPos pos = buffer.readBlockPos();
-            CompoundNBT nbt = buffer.readCompoundTag();
+            CompoundNBT nbt = buffer.readNbt();
             ListNBT playerTrades = nbt == null ? null : nbt.getList("PlayerTradesList", Constants.NBT.TAG_COMPOUND);
             return new GlobalTraderContainer(windowId, world, pos, inventory, inventory.player, playerTrades);
         });

@@ -31,7 +31,7 @@ public class StepHeightMessage {
 
 		context.enqueueWork(() -> {
 			if(Minecraft.getInstance().player != null) {
-				Minecraft.getInstance().player.stepHeight = message.stepHeight;
+				Minecraft.getInstance().player.maxUpStep = message.stepHeight;
 			}
 		});
 

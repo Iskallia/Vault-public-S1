@@ -10,6 +10,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import net.minecraft.item.Item.Properties;
+
 public class PuzzleRuneItem extends BasicItem {
 
 	public PuzzleRuneItem(ResourceLocation id, Properties properties) {
@@ -19,13 +21,13 @@ public class PuzzleRuneItem extends BasicItem {
 	@Override
 	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
 		PlayerEntity player = context.getPlayer();
-		World world = context.getWorld();
+		World world = context.getLevel();
 
-		if(player != null && player.isCreative() && !world.isRemote
-				&& world.getBlockState(context.getPos()).getBlockState().getBlock() != ModBlocks.PUZZLE_RUNE_BLOCK) {
+		if(player != null && player.isCreative() && !world.isClientSide
+				&& world.getBlockState(context.getClickedPos()).getBlockState().getBlock() != ModBlocks.PUZZLE_RUNE_BLOCK) {
 			ModAttributes.PUZZLE_COLOR.create(stack,
 					ModAttributes.PUZZLE_COLOR.getOrCreate(stack, PuzzleRuneBlock.Color.YELLOW).getValue(stack).next());
-			ItemRelicBoosterPack.successEffects(world, player.getPositionVec());
+			ItemRelicBoosterPack.successEffects(world, player.position());
 			return ActionResultType.SUCCESS;
 		}
 

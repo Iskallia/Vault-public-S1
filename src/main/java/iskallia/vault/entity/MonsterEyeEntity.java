@@ -24,7 +24,7 @@ import java.util.Random;
 public class MonsterEyeEntity extends SlimeEntity implements VaultBoss {
 
     public TeleportRandomly<MonsterEyeEntity> teleportTask = new TeleportRandomly<>(this, (entity, source, amount) -> {
-        if(!(source.getTrueSource() instanceof LivingEntity)) {
+        if(!(source.getEntity() instanceof LivingEntity)) {
             return 0.2D;
         }
 
@@ -37,13 +37,13 @@ public class MonsterEyeEntity extends SlimeEntity implements VaultBoss {
 
     public MonsterEyeEntity(EntityType<? extends SlimeEntity> type, World worldIn) {
         super(type, worldIn);
-        setSlimeSize(3, false);
+        setSize(3, false);
         bossInfo = new ServerBossInfo(getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS);
         regenAfterAWhile = new RegenAfterAWhile<>(this);
     }
 
     @Override
-    protected void dropLoot(DamageSource damageSource, boolean attackedRecently) { }
+    protected void dropFromLootTable(DamageSource damageSource, boolean attackedRecently) { }
 
     @Override
     protected void registerGoals() {
@@ -51,9 +51,9 @@ public class MonsterEyeEntity extends SlimeEntity implements VaultBoss {
         //this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, ArenaFighterEntity.class, false));
 
         this.goalSelector.addGoal(1, TeleportGoal.builder(this).start(entity -> {
-            return entity.getAttackTarget() != null && entity.ticksExisted % 60 == 0;
+            return entity.getTarget() != null && entity.tickCount % 60 == 0;
         }).to(entity -> {
-            return entity.getAttackTarget().getPositionVec().add((entity.rand.nextDouble() - 0.5D) * 8.0D, entity.rand.nextInt(16) - 8, (entity.rand.nextDouble() - 0.5D) * 8.0D);
+            return entity.getTarget().position().add((entity.random.nextDouble() - 0.5D) * 8.0D, entity.random.nextInt(16) - 8, (entity.random.nextDouble() - 0.5D) * 8.0D);
         }).then(entity -> {
             entity.playSound(ModSounds.BOSS_TP_SFX, 1.0F, 1.0F);
         }).build());
@@ -71,9 +71,9 @@ public class MonsterEyeEntity extends SlimeEntity implements VaultBoss {
     }
 
     public void spawnInTheWorld(VaultRaid raid, ServerWorld world, BlockPos pos, int size) {
-        this.setSlimeSize(size, false);
-        this.setLocationAndAngles(pos.getX() + 0.5D, pos.getY() + 0.2D, pos.getZ() + 0.5D, 0.0F, 0.0F);
-        world.summonEntity(this);
+        this.setSize(size, false);
+        this.moveTo(pos.getX() + 0.5D, pos.getY() + 0.2D, pos.getZ() + 0.5D, 0.0F, 0.0F);
+        world.addWithUUID(this);
 
         this.getTags().add("VaultBoss");
 
@@ -90,9 +90,9 @@ public class MonsterEyeEntity extends SlimeEntity implements VaultBoss {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
-        if(!(source.getTrueSource() instanceof PlayerEntity)
-                && !(source.getTrueSource() instanceof EternalEntity)
+    public boolean hurt(DamageSource source, float amount) {
+        if(!(source.getEntity() instanceof PlayerEntity)
+                && !(source.getEntity() instanceof EternalEntity)
                 && source != DamageSource.OUT_OF_WORLD) {
             return false;
         }
@@ -104,16 +104,16 @@ public class MonsterEyeEntity extends SlimeEntity implements VaultBoss {
         }
 
         regenAfterAWhile.onDamageTaken();
-        return super.attackEntityFrom(source, amount);
+        return super.hurt(source, amount);
     }
 
     @Override
     protected void dealDamage(LivingEntity entityIn) {
         if (this.isAlive()) {
-            int i = this.getSlimeSize();
-            if (this.getDistanceSq(entityIn) < 0.8D * (double) i * 0.8D * (double) i && this.canEntityBeSeen(entityIn) && entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), this.func_225512_er_())) {
-                this.playSound(SoundEvents.ENTITY_SLIME_ATTACK, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
-                this.applyEnchantments(this, entityIn);
+            int i = this.getSize();
+            if (this.distanceToSqr(entityIn) < 0.8D * (double) i * 0.8D * (double) i && this.canSee(entityIn) && entityIn.hurt(DamageSource.mobAttack(this), this.getAttackDamage())) {
+                this.playSound(SoundEvents.SLIME_ATTACK, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+                this.doEnchantDamageEffects(this, entityIn);
             }
         }
     }
@@ -125,8 +125,8 @@ public class MonsterEyeEntity extends SlimeEntity implements VaultBoss {
     }
 
     @Override
-    public int getSlimeSize() {
-        return shouldBlockSlimeSplit ? 0 : super.getSlimeSize();
+    public int getSize() {
+        return shouldBlockSlimeSplit ? 0 : super.getSize();
     }
 
     @Override
@@ -138,21 +138,21 @@ public class MonsterEyeEntity extends SlimeEntity implements VaultBoss {
     public void tick() {
         super.tick();
 
-        if (!this.world.isRemote) {
+        if (!this.level.isClientSide) {
             this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
             this.regenAfterAWhile.tick();
         }
     }
 
     @Override
-    public void addTrackingPlayer(ServerPlayerEntity player) {
-        super.addTrackingPlayer(player);
+    public void startSeenByPlayer(ServerPlayerEntity player) {
+        super.startSeenByPlayer(player);
         this.bossInfo.addPlayer(player);
     }
 
     @Override
-    public void removeTrackingPlayer(ServerPlayerEntity player) {
-        super.removeTrackingPlayer(player);
+    public void stopSeenByPlayer(ServerPlayerEntity player) {
+        super.stopSeenByPlayer(player);
         this.bossInfo.removePlayer(player);
     }
 

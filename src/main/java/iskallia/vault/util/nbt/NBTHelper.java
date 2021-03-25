@@ -21,7 +21,7 @@ public class NBTHelper {
         }
 
         for (int i = 0; i < uuidList.size(); i++) {
-            res.put(UUID.fromString(uuidList.get(i).getString()), mapper.apply((N) valuesList.get(i)));
+            res.put(UUID.fromString(uuidList.get(i).getAsString()), mapper.apply((N) valuesList.get(i)));
         }
 
         return res;

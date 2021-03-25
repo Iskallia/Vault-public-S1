@@ -40,15 +40,15 @@ public class RelicStatueRenderer extends TileEntityRenderer<RelicStatueTileEntit
         RelicSet relicSet = RelicSet.REGISTRY.get(statue.getRelicSet());
         BlockState state = statue.getBlockState();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0.5, 0, 0.5);
-        float horizontalAngle = state.get(RelicStatueBlock.FACING).getHorizontalAngle();
-        matrixStack.rotate(Vector3f.YN.rotationDegrees(180 + horizontalAngle));
+        float horizontalAngle = state.getValue(RelicStatueBlock.FACING).toYRot();
+        matrixStack.mulPose(Vector3f.YN.rotationDegrees(180 + horizontalAngle));
 
         if (relicSet == RelicSet.DRAGON) {
             matrixStack.translate(0, 0, 0.15);
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(90));
-            renderItem(matrixStack, buffer, combinedLight, combinedOverlay, 0.7f, 7f, Registry.ITEM.getOrDefault(Vault.id("statue_dragon")));
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
+            renderItem(matrixStack, buffer, combinedLight, combinedOverlay, 0.7f, 7f, Registry.ITEM.get(Vault.id("statue_dragon")));
         } else if (relicSet == RelicSet.MINER) {
             renderItem(matrixStack, buffer, combinedLight, combinedOverlay, 1.2f, 2f, RelicItem.withCustomModelData(0));
         } else if (relicSet == RelicSet.WARRIOR) {
@@ -69,42 +69,42 @@ public class RelicStatueRenderer extends TileEntityRenderer<RelicStatueTileEntit
             renderPlayer(matrixStack, state, vertexBuilder, combinedLight, combinedOverlay);
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public IVertexBuilder getPlayerVertexBuilder(ResourceLocation skinTexture, IRenderTypeBuffer buffer) {
-        RenderType renderType = PLAYER_MODEL.getRenderType(skinTexture);
+        RenderType renderType = PLAYER_MODEL.renderType(skinTexture);
         return buffer.getBuffer(renderType);
     }
 
     public void renderPlayer(MatrixStack matrixStack, BlockState blockState, IVertexBuilder vertexBuilder, int combinedLight, int combinedOverlay) {
-        Direction direction = blockState.get(PlayerStatueBlock.FACING);
+        Direction direction = blockState.getValue(PlayerStatueBlock.FACING);
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0, 1.6, 0);
         matrixStack.scale(0.4f, 0.4f, 0.4f);
 //        matrixStack.rotate(Vector3f.YN.rotationDegrees(direction.getHorizontalAngle() + 180));
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(180));
-        PLAYER_MODEL.bipedBody.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
-        PLAYER_MODEL.bipedLeftLeg.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
-        PLAYER_MODEL.bipedRightLeg.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
-        PLAYER_MODEL.bipedLeftArm.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
-        PLAYER_MODEL.bipedRightArm.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
+        PLAYER_MODEL.body.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        PLAYER_MODEL.leftLeg.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        PLAYER_MODEL.rightLeg.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        PLAYER_MODEL.leftArm.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        PLAYER_MODEL.rightArm.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
 
-        PLAYER_MODEL.bipedBodyWear.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
-        PLAYER_MODEL.bipedLeftLegwear.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
-        PLAYER_MODEL.bipedRightLegwear.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
-        PLAYER_MODEL.bipedLeftArmwear.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        PLAYER_MODEL.jacket.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        PLAYER_MODEL.leftPants.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        PLAYER_MODEL.rightPants.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        PLAYER_MODEL.leftSleeve.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0, 0, -0.62f);
-        PLAYER_MODEL.bipedRightArmwear.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
-        matrixStack.pop();
+        PLAYER_MODEL.rightSleeve.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        matrixStack.popPose();
 
-        PLAYER_MODEL.bipedHeadwear.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
-        PLAYER_MODEL.bipedHead.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        PLAYER_MODEL.hat.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
+        PLAYER_MODEL.head.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private void renderItem(MatrixStack matrixStack, IRenderTypeBuffer buffer, int lightLevel, int overlay,
@@ -115,15 +115,15 @@ public class RelicStatueRenderer extends TileEntityRenderer<RelicStatueTileEntit
     private void renderItem(MatrixStack matrixStack, IRenderTypeBuffer buffer, int lightLevel, int overlay,
                             float yOffset, float scale, ItemStack itemStack) {
         Minecraft minecraft = Minecraft.getInstance();
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0, yOffset, 0);
         matrixStack.scale(scale, scale, scale);
         IBakedModel ibakedmodel = minecraft
-                .getItemRenderer().getItemModelWithOverrides(itemStack, null, null);
+                .getItemRenderer().getModel(itemStack, null, null);
         minecraft.getItemRenderer()
-                .renderItem(itemStack, ItemCameraTransforms.TransformType.GROUND, true,
+                .render(itemStack, ItemCameraTransforms.TransformType.GROUND, true,
                         matrixStack, buffer, lightLevel, overlay, ibakedmodel);
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
 }

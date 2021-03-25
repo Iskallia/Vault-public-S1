@@ -20,11 +20,11 @@ public abstract class GoalTask<T extends LivingEntity> extends Goal {
 	}
 
 	public World getWorld() {
-		return this.getEntity().world;
+		return this.getEntity().level;
 	}
 
 	public Random getRandom() {
-		return ObjectUtils.firstNonNull(this.getWorld().getRandom(), this.getEntity().getRNG());
+		return ObjectUtils.firstNonNull(this.getWorld().getRandom(), this.getEntity().getRandom());
 	}
 
 }

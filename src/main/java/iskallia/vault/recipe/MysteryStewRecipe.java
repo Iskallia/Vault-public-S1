@@ -22,8 +22,8 @@ public class MysteryStewRecipe extends SpecialRecipe {
 		int gemCount = 0;
 		boolean hasBowl = false, hasDiamond = false, hasEye = false, hasPizza = false, hasSchroom = false, hasKiwi = false;
 
-		for(int i = 0; i < inv.getSizeInventory(); ++i) {
-			ItemStack stack = inv.getStackInSlot(i);
+		for(int i = 0; i < inv.getContainerSize(); ++i) {
+			ItemStack stack = inv.getItem(i);
 
 			if(stack.getItem() instanceof ItemVaultGem) {
 				if(++gemCount > 3)return false;
@@ -52,12 +52,12 @@ public class MysteryStewRecipe extends SpecialRecipe {
 	}
 
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv) {
+	public ItemStack assemble(CraftingInventory inv) {
 		return new ItemStack(ModItems.VAULT_STEW_MYSTERY);
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return width * height >= 9;
 	}
 

@@ -29,19 +29,19 @@ public class PlayerStatueTileEntity extends TileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         String nickname = skin.getLatestNickname();
         nbt.putString("PlayerNickname", nickname == null ? "" : nickname);
         nbt.putBoolean("HasCrown", hasCrown);
-        return super.write(nbt);
+        return super.save(nbt);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void load(BlockState state, CompoundNBT nbt) {
         String nickname = nbt.getString("PlayerNickname");
         skin.updateSkin(nickname);
         this.hasCrown = nbt.getBoolean("HasCrown");
-        super.read(state, nbt);
+        super.load(state, nbt);
     }
 
     @Override
@@ -57,24 +57,24 @@ public class PlayerStatueTileEntity extends TileEntity {
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-        read(state, tag);
+        load(state, tag);
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(pos, 1, getUpdateTag());
+        return new SUpdateTileEntityPacket(worldPosition, 1, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        CompoundNBT nbt = pkt.getNbtCompound();
+        CompoundNBT nbt = pkt.getTag();
         handleUpdateTag(getBlockState(), nbt);
     }
     public void sendUpdates() {
-        this.world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 0b11);
-        this.world.notifyNeighborsOfStateChange(pos, this.getBlockState().getBlock());
-        markDirty();
+        this.level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 0b11);
+        this.level.updateNeighborsAt(worldPosition, this.getBlockState().getBlock());
+        setChanged();
     }
 
 }

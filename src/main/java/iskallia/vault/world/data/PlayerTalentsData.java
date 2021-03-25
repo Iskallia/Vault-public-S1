@@ -37,7 +37,7 @@ public class PlayerTalentsData extends WorldSavedData {
     }
 
     public TalentTree getTalents(PlayerEntity player) {
-        return this.getTalents(player.getUniqueID());
+        return this.getTalents(player.getUUID());
     }
 
     public TalentTree getTalents(UUID uuid) {
@@ -49,26 +49,26 @@ public class PlayerTalentsData extends WorldSavedData {
     public PlayerTalentsData add(ServerPlayerEntity player, TalentNode<?>... nodes) {
         this.getTalents(player).add(player.getServer(), nodes);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerTalentsData remove(ServerPlayerEntity player, TalentNode<?>... nodes) {
         this.getTalents(player).remove(player.getServer(), nodes);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerTalentsData upgradeTalent(ServerPlayerEntity player, TalentNode<?> talentNode) {
         this.getTalents(player).upgradeTalent(player.getServer(), talentNode);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerTalentsData resetTalentTree(ServerPlayerEntity player) {
-        UUID uniqueID = player.getUniqueID();
+        UUID uniqueID = player.getUUID();
 
         TalentTree oldTalentTree = playerMap.get(uniqueID);
         if (oldTalentTree != null) {
@@ -81,7 +81,7 @@ public class PlayerTalentsData extends WorldSavedData {
         TalentTree talentTree = new TalentTree(uniqueID);
         this.playerMap.put(uniqueID, talentTree);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
@@ -102,14 +102,14 @@ public class PlayerTalentsData extends WorldSavedData {
     @SubscribeEvent
     public static void onTick(TickEvent.PlayerTickEvent event) {
         if (event.side == LogicalSide.SERVER) {
-            get((ServerWorld) event.player.world).getTalents(event.player);
+            get((ServerWorld) event.player.level).getTalents(event.player);
         }
     }
 
     /* ------------------------------- */
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         ListNBT playerList = nbt.getList("PlayerEntries", Constants.NBT.TAG_STRING);
         ListNBT talentList = nbt.getList("TalentEntries", Constants.NBT.TAG_COMPOUND);
 
@@ -124,7 +124,7 @@ public class PlayerTalentsData extends WorldSavedData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         ListNBT playerList = new ListNBT();
         ListNBT talentList = new ListNBT();
 
@@ -140,8 +140,8 @@ public class PlayerTalentsData extends WorldSavedData {
     }
 
     public static PlayerTalentsData get(ServerWorld world) {
-        return world.getServer().func_241755_D_()
-                .getSavedData().getOrCreate(PlayerTalentsData::new, DATA_NAME);
+        return world.getServer().overworld()
+                .getDataStorage().computeIfAbsent(PlayerTalentsData::new, DATA_NAME);
     }
 
 }

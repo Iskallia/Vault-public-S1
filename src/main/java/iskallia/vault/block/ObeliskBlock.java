@@ -37,24 +37,26 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Random;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class ObeliskBlock extends Block {
 
     public static final IntegerProperty COMPLETION = IntegerProperty.create("completion", 0, 4);
 
     public ObeliskBlock() {
-        super(Properties.create(Material.ROCK).sound(SoundType.METAL).hardnessAndResistance(-1.0F, 3600000.0F).noDrops());
-        this.setDefaultState(this.stateContainer.getBaseState().with(COMPLETION, 0));
+        super(Properties.of(Material.STONE).sound(SoundType.METAL).strength(-1.0F, 3600000.0F).noDrops());
+        this.registerDefaultState(this.stateDefinition.any().setValue(COMPLETION, 0));
     }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return Block.makeCuboidShape(4f, 0f, 4f, 12f, 32f, 12f);
+        return Block.box(4f, 0f, 4f, 12f, 32f, 12f);
 //        return super.getShape(state, worldIn, pos, context);
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        ItemStack heldStack = player.getHeldItem(hand);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        ItemStack heldStack = player.getItemInHand(hand);
 
         if (heldStack.getItem() instanceof ObeliskInscriptionItem) {
             if (!player.isCreative()) {
@@ -64,11 +66,11 @@ public class ObeliskBlock extends Block {
             return ActionResultType.PASS;
         }
 
-        BlockState newState = state.with(COMPLETION, MathHelper.clamp(state.get(COMPLETION) + 1, 0, 4));
-        world.setBlockState(pos, newState);
+        BlockState newState = state.setValue(COMPLETION, MathHelper.clamp(state.getValue(COMPLETION) + 1, 0, 4));
+        world.setBlockAndUpdate(pos, newState);
 
-        if (world.isRemote) {
-            if (newState.get(COMPLETION) == 4)
+        if (world.isClientSide) {
+            if (newState.getValue(COMPLETION) == 4)
                 startBossLoop();
 
             return ActionResultType.SUCCESS;
@@ -76,14 +78,14 @@ public class ObeliskBlock extends Block {
 
         this.spawnParticles(world, pos);
 
-        if (newState.get(COMPLETION) == 4) {
+        if (newState.getValue(COMPLETION) == 4) {
             VaultRaid raid = VaultRaidData.get((ServerWorld) world).getAt(pos);
 
             if(raid != null) {
                 spawnBoss(raid, (ServerWorld)world, pos, EntityScaler.Type.BOSS);
             }
 
-            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
 
         return ActionResultType.SUCCESS;
@@ -99,8 +101,8 @@ public class ObeliskBlock extends Block {
         }
 
         if(boss instanceof FighterEntity)((FighterEntity)boss).changeSize(2.0F);
-        boss.setLocationAndAngles(pos.getX() + 0.5D, pos.getY() + 0.2D, pos.getZ() + 0.5D, 0.0F, 0.0F);
-        world.summonEntity(boss);
+        boss.moveTo(pos.getX() + 0.5D, pos.getY() + 0.2D, pos.getZ() + 0.5D, 0.0F, 0.0F);
+        world.addWithUUID(boss);
 
         boss.getTags().add("VaultBoss");
         raid.addBoss(boss);
@@ -129,21 +131,21 @@ public class ObeliskBlock extends Block {
 
     private void spawnParticles(World world, BlockPos pos) {
         for (int i = 0; i < 20; ++i) {
-            double d0 = world.rand.nextGaussian() * 0.02D;
-            double d1 = world.rand.nextGaussian() * 0.02D;
-            double d2 = world.rand.nextGaussian() * 0.02D;
+            double d0 = world.random.nextGaussian() * 0.02D;
+            double d1 = world.random.nextGaussian() * 0.02D;
+            double d2 = world.random.nextGaussian() * 0.02D;
 
-            ((ServerWorld) world).spawnParticle(ParticleTypes.POOF,
-                    pos.getX() + world.rand.nextDouble() - d0,
-                    pos.getY() + world.rand.nextDouble() - d1,
-                    pos.getZ() + world.rand.nextDouble() - d2, 10, d0, d1, d2, 1.0D);
+            ((ServerWorld) world).sendParticles(ParticleTypes.POOF,
+                    pos.getX() + world.random.nextDouble() - d0,
+                    pos.getY() + world.random.nextDouble() - d1,
+                    pos.getZ() + world.random.nextDouble() - d2, 10, d0, d1, d2, 1.0D);
         }
 
-        world.playSound(null, pos, SoundEvents.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.playSound(null, pos, SoundEvents.END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
 
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(COMPLETION);
     }
 

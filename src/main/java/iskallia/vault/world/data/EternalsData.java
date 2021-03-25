@@ -39,7 +39,7 @@ public class EternalsData extends WorldSavedData {
     }
 
     public EternalGroup getEternals(PlayerEntity player) {
-        return this.getEternals(player.getUniqueID());
+        return this.getEternals(player.getUUID());
     }
 
     public EternalGroup getEternals(UUID player) {
@@ -74,7 +74,7 @@ public class EternalsData extends WorldSavedData {
 
     public UUID add(UUID owner, String name) {
         UUID eternalId = this.getEternals(owner).addEternal(name);
-        this.markDirty();
+        this.setDirty();
         return eternalId;
     }
 
@@ -100,7 +100,7 @@ public class EternalsData extends WorldSavedData {
     /* ---------------------------------------------- */
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         ListNBT playerList = nbt.getList("PlayerEntries", Constants.NBT.TAG_STRING);
         ListNBT eternalsList = nbt.getList("EternalEntries", Constants.NBT.TAG_COMPOUND);
 
@@ -115,7 +115,7 @@ public class EternalsData extends WorldSavedData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         ListNBT playerList = new ListNBT();
         ListNBT eternalsList = new ListNBT();
 
@@ -131,7 +131,7 @@ public class EternalsData extends WorldSavedData {
     }
 
     public static EternalsData get(ServerWorld world) {
-        return world.getServer().func_241755_D_().getSavedData().getOrCreate(EternalsData::new, DATA_NAME);
+        return world.getServer().overworld().getDataStorage().computeIfAbsent(EternalsData::new, DATA_NAME);
     }
 
     @Override

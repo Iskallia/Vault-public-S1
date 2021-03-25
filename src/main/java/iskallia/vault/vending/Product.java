@@ -84,7 +84,7 @@ public class Product implements INBTSerializable {
             return null;
         try {
             if (this.nbtCache == null)
-                this.nbtCache = JsonToNBT.getTagFromJson(this.nbt);
+                this.nbtCache = JsonToNBT.parseTag(this.nbt);
         } catch (Exception e) {
             this.nbtCache = null;
             System.out.println("Unknown NBT for item " + this.id + ".");

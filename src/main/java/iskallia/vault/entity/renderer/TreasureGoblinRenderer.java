@@ -17,13 +17,13 @@ public class TreasureGoblinRenderer extends MobRenderer<TreasureGoblinEntity, Tr
     }
 
     @Override
-    public ResourceLocation getEntityTexture(TreasureGoblinEntity entity) {
+    public ResourceLocation getTextureLocation(TreasureGoblinEntity entity) {
         return TREASURE_GOBLIN_TEXTURES;
     }
 
     @Override
-    protected void applyRotations(TreasureGoblinEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
-        super.applyRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
+    protected void setupRotations(TreasureGoblinEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
+        super.setupRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
     }
 
 }

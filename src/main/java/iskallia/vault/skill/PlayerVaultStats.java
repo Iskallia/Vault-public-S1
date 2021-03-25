@@ -82,22 +82,22 @@ public class PlayerVaultStats implements INBTSerializable<CompoundNBT> {
     }
 
     protected void fancyLevelUpEffects(ServerPlayerEntity player) {
-        World world = player.world;
+        World world = player.level;
 
-        Vector3d pos = player.getPositionVec();
+        Vector3d pos = player.position();
 
         for (int i = 0; i < 20; ++i) {
-            double d0 = world.rand.nextGaussian() * 1D;
-            double d1 = world.rand.nextGaussian() * 1D;
-            double d2 = world.rand.nextGaussian() * 1D;
+            double d0 = world.random.nextGaussian() * 1D;
+            double d1 = world.random.nextGaussian() * 1D;
+            double d2 = world.random.nextGaussian() * 1D;
 
-            ((ServerWorld) world).spawnParticle(ParticleTypes.TOTEM_OF_UNDYING,
-                    pos.getX() + world.rand.nextDouble() - 0.5,
-                    pos.getY() + world.rand.nextDouble() - 0.5 + 3,
-                    pos.getZ() + world.rand.nextDouble() - 0.5, 10, d0, d1, d2, 0.25D);
+            ((ServerWorld) world).sendParticles(ParticleTypes.TOTEM_OF_UNDYING,
+                    pos.x() + world.random.nextDouble() - 0.5,
+                    pos.y() + world.random.nextDouble() - 0.5 + 3,
+                    pos.z() + world.random.nextDouble() - 0.5, 10, d0, d1, d2, 0.25D);
         }
 
-        world.playSound(null, player.getPosition(), ModSounds.VAULT_LEVEL_UP_SFX, SoundCategory.PLAYERS,
+        world.playSound(null, player.blockPosition(), ModSounds.VAULT_LEVEL_UP_SFX, SoundCategory.PLAYERS,
                 1.0F, 2f);
     }
 
@@ -144,7 +144,7 @@ public class PlayerVaultStats implements INBTSerializable<CompoundNBT> {
         NetcodeUtils.runIfPresent(server, this.uuid, player -> {
             ModNetwork.CHANNEL.sendTo(
                     new VaultLevelMessage(this.vaultLevel, this.exp, this.getTnl(), this.unspentSkillPts, this.unspentKnowledgePts),
-                    player.connection.netManager,
+                    player.connection.connection,
                     NetworkDirection.PLAY_TO_CLIENT
             );
         });

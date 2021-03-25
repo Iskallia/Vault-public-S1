@@ -24,30 +24,32 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class RelicStatueBlock extends Block {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public static final VoxelShape SHAPE = Block.makeCuboidShape(2, 0, 2, 14, 16, 14);
+    public static final VoxelShape SHAPE = Block.box(2, 0, 2, 14, 16, 14);
 
     public RelicStatueBlock() {
-        super(Properties.create(Material.ROCK, MaterialColor.STONE)
-                .hardnessAndResistance(1.0F, 3600000.0F)
-                .notSolid());
+        super(Properties.of(Material.STONE, MaterialColor.STONE)
+                .strength(1.0F, 3600000.0F)
+                .noOcclusion());
 
-        this.setDefaultState(this.stateContainer.getBaseState()
-                .with(FACING, Direction.SOUTH));
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(FACING, Direction.SOUTH));
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState()
-                .with(FACING, context.getPlacementHorizontalFacing());
+        return this.defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection());
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
@@ -57,9 +59,9 @@ public class RelicStatueBlock extends Block {
     }
 
     @Override
-    public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
+    public void playerWillDestroy(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        if (!world.isClientSide) {
+            TileEntity tileEntity = world.getBlockEntity(pos);
             ItemStack itemStack = new ItemStack(getBlock());
 
             if (tileEntity instanceof RelicStatueTileEntity) {
@@ -73,11 +75,11 @@ public class RelicStatueBlock extends Block {
             }
 
             ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, itemStack);
-            itemEntity.setDefaultPickupDelay();
-            world.addEntity(itemEntity);
+            itemEntity.setDefaultPickUpDelay();
+            world.addFreshEntity(itemEntity);
         }
 
-        super.onBlockHarvested(world, pos, state, player);
+        super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override

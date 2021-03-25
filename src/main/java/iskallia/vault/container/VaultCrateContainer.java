@@ -23,7 +23,7 @@ public class VaultCrateContainer extends Container {
 
     public VaultCrateContainer(int windowId, World world, BlockPos pos, PlayerInventory playerInventory, PlayerEntity player) {
         super(ModContainers.VAULT_CRATE_CONTAINER, windowId);
-        tileEntity = world.getTileEntity(pos);
+        tileEntity = world.getBlockEntity(pos);
         this.playerEntity = player;
         this.playerInventory = new InvWrapper(playerInventory);
 
@@ -52,24 +52,24 @@ public class VaultCrateContainer extends Container {
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
         ItemStack stack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack stackInSlot = slot.getStack();
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack stackInSlot = slot.getItem();
             stack = stackInSlot.copy();
             if (index < this.crateInventory.getSlots()) {
-                if (!this.mergeItemStack(stackInSlot, this.crateInventory.getSlots(), this.inventorySlots.size(), true)) {
+                if (!this.moveItemStackTo(stackInSlot, this.crateInventory.getSlots(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.mergeItemStack(stackInSlot, 0, this.crateInventory.getSlots(), false)) {
+            } else if (!this.moveItemStackTo(stackInSlot, 0, this.crateInventory.getSlots(), false)) {
                 return ItemStack.EMPTY;
             }
 
             if (stackInSlot.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
         }
 
@@ -78,7 +78,7 @@ public class VaultCrateContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player) {
+    public boolean stillValid(PlayerEntity player) {
         return true;
     }
 

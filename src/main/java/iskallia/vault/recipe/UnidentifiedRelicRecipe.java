@@ -21,8 +21,8 @@ public class UnidentifiedRelicRecipe extends SpecialRecipe {
 		RelicPartItem relic = null;
 		int diamondCount = 0;
 
-		for(int i = 0; i < inv.getSizeInventory(); ++i) {
-			ItemStack stack = inv.getStackInSlot(i);
+		for(int i = 0; i < inv.getContainerSize(); ++i) {
+			ItemStack stack = inv.getItem(i);
 
 			if(stack.getItem() == ModItems.VAULT_DIAMOND) {
 				if(diamondCount++ == 8)return false;
@@ -38,12 +38,12 @@ public class UnidentifiedRelicRecipe extends SpecialRecipe {
 	}
 
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv) {
+	public ItemStack assemble(CraftingInventory inv) {
 		return new ItemStack(ModItems.UNIDENTIFIED_RELIC);
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return width * height >= 9;
 	}
 

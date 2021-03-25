@@ -22,7 +22,7 @@ public class UIHelper {
     renderOverflowHidden(MatrixStack matrixStack,
                          Consumer<MatrixStack> backgroundRenderer,
                          Consumer<MatrixStack> innerRenderer) {
-        matrixStack.push();
+        matrixStack.pushPose();
         RenderSystem.enableDepthTest();
         matrixStack.translate(0, 0, 950);
         RenderSystem.colorMask(false, false, false, false);
@@ -43,7 +43,7 @@ public class UIHelper {
         matrixStack.translate(0, 0, 950);
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
         RenderSystem.disableDepthTest();
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public static void
@@ -99,7 +99,7 @@ public class UIHelper {
                 u + lw + 3, v + th + 3,
                 rw, bh);
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(x + lw, y, 0);
         matrixStack.scale(horizontalGap, 1, 1);
         gui.blit(matrixStack, 0, 0,
@@ -110,9 +110,9 @@ public class UIHelper {
         gui.blit(matrixStack, 0, 0,
                 u + lw + 1, v + th + 3,
                 1, bh);
-        matrixStack.pop();
+        matrixStack.popPose();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(x, y + th, 0);
         matrixStack.scale(1, verticalGap, 1);
         gui.blit(matrixStack, 0, 0,
@@ -123,18 +123,18 @@ public class UIHelper {
         gui.blit(matrixStack, 0, 0,
                 u + lw + 3, v + th + 1,
                 rw, 1);
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public static void
     renderLabelAtRight(AbstractGui gui, MatrixStack matrixStack, String text, int x, int y) {
         Minecraft minecraft = Minecraft.getInstance();
-        minecraft.getTextureManager().bindTexture(UI_RESOURCE);
+        minecraft.getTextureManager().bind(UI_RESOURCE);
 
-        FontRenderer fontRenderer = minecraft.fontRenderer;
-        int textWidth = fontRenderer.getStringWidth(text);
+        FontRenderer fontRenderer = minecraft.font;
+        int textWidth = fontRenderer.width(text);
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(x, y, 0);
 
         float scale = 0.75f;
@@ -154,26 +154,26 @@ public class UIHelper {
         matrixStack.translate(-textWidth - 2 * gap - 6, 0, 0);
         gui.blit(matrixStack, 0, 0, 121, 36, 14, 24);
 
-        fontRenderer.drawString(matrixStack, text,
+        fontRenderer.draw(matrixStack, text,
                 14 + gap, 9, 0xFF_443a1b);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public static int
     renderWrappedText(MatrixStack matrixStack, IFormattableTextComponent text, int maxWidth, int padding) {
         Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontRenderer = minecraft.fontRenderer;
+        FontRenderer fontRenderer = minecraft.font;
 
         List<ITextProperties> lines = getLines(
-                TextComponentUtils.func_240648_a_(text.deepCopy(), text.getStyle()),
+                TextComponentUtils.mergeStyles(text.copy(), text.getStyle()),
                 maxWidth - 3 * padding
         );
         List<IReorderingProcessor> processors = LanguageMap.getInstance()
-                .func_244260_a(lines);
+                .getVisualOrder(lines);
 
         for (int i = 0; i < processors.size(); i++) {
-            fontRenderer.func_238422_b_(matrixStack, processors.get(i),
+            fontRenderer.draw(matrixStack, processors.get(i),
                     padding, (10 * i) + padding, 0xFF_192022);
         }
 
@@ -185,12 +185,12 @@ public class UIHelper {
     private static List<ITextProperties> getLines(ITextComponent component, int maxWidth) {
         Minecraft minecraft = Minecraft.getInstance();
 
-        CharacterManager charactermanager = minecraft.fontRenderer.getCharacterManager();
+        CharacterManager charactermanager = minecraft.font.getSplitter();
         List<ITextProperties> list = null;
         float f = Float.MAX_VALUE;
 
         for (int i : LINE_BREAK_VALUES) {
-            List<ITextProperties> list1 = charactermanager.func_238362_b_(component, maxWidth - i, Style.EMPTY);
+            List<ITextProperties> list1 = charactermanager.splitLines(component, maxWidth - i, Style.EMPTY);
             float f1 = Math.abs(getTextWidth(charactermanager, list1) - (float) maxWidth);
             if (f1 <= 10.0F) {
                 return list1;
@@ -206,7 +206,7 @@ public class UIHelper {
     }
 
     private static float getTextWidth(CharacterManager manager, List<ITextProperties> text) {
-        return (float) text.stream().mapToDouble(manager::func_238356_a_).max().orElse(0.0D);
+        return (float) text.stream().mapToDouble(manager::stringWidth).max().orElse(0.0D);
     }
 
 }

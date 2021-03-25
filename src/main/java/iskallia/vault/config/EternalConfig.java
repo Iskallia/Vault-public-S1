@@ -58,18 +58,18 @@ public class EternalConfig extends Config {
 
 	@SubscribeEvent
 	public static void onEternalScaled(LivingEvent.LivingUpdateEvent event) {
-		if(event.getEntity().world.isRemote)return;
+		if(event.getEntity().level.isClientSide)return;
 		if(!(event.getEntity() instanceof EternalEntity))return;
 		if(event.getEntity().getTags().contains("VaultScaled"))return;
 		EternalEntity eternal = (EternalEntity)event.getEntity();
-		ServerWorld world = (ServerWorld)eternal.world;
-		VaultRaid raid = VaultRaidData.get(world).getAt(eternal.getPosition());
+		ServerWorld world = (ServerWorld)eternal.level;
+		VaultRaid raid = VaultRaidData.get(world).getAt(eternal.blockPosition());
 		if(raid == null)return;
 
 		Level level = ModConfigs.ETERNAL.getForLevel(raid.level);
 
 		for(VaultMobsConfig.Mob.AttributeOverride override: level.ATTRIBUTES) {
-			if(world.rand.nextDouble() >= override.ROLL_CHANCE)continue;
+			if(world.random.nextDouble() >= override.ROLL_CHANCE)continue;
 			Attribute attribute = Registry.ATTRIBUTE.getOptional(new ResourceLocation(override.NAME)).orElse(null);
 			if(attribute == null)continue;
 			ModifiableAttributeInstance instance = eternal.getAttribute(attribute);
@@ -81,12 +81,12 @@ public class EternalConfig extends Config {
 
 		int extraHealth = eternals.getEternals().size() * ModConfigs.ETERNAL.EXTRA_HP_PER_ETERNAL;
 		eternal.getAttribute(Attributes.MAX_HEALTH)
-				.applyPersistentModifier(new AttributeModifier("Multiple eternals health bonus",
+				.addPermanentModifier(new AttributeModifier("Multiple eternals health bonus",
 						extraHealth, AttributeModifier.Operation.ADDITION));
 
 		int extraDamage = eternals.getEternals().size() * ModConfigs.ETERNAL.EXTRA_DAMAGE_PER_ETERNAL;
 		eternal.getAttribute(Attributes.ATTACK_DAMAGE)
-				.applyPersistentModifier(new AttributeModifier("Multiple eternals damage bonus",
+				.addPermanentModifier(new AttributeModifier("Multiple eternals damage bonus",
 						extraDamage, AttributeModifier.Operation.ADDITION));
 
 		eternal.heal(1000000.0F);

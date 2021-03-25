@@ -10,7 +10,7 @@ public class AssassinSet extends EffectSet {
 	@Expose private float parryChance;
 
 	public AssassinSet(int speedAmplifier, float parryChance) {
-		super(VaultGear.Set.ASSASSIN, new EffectTalent(0, Effects.SPEED, speedAmplifier,
+		super(VaultGear.Set.ASSASSIN, new EffectTalent(0, Effects.MOVEMENT_SPEED, speedAmplifier,
 				EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD));
 		this.parryChance = parryChance;
 	}

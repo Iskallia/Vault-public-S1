@@ -36,14 +36,14 @@ public class ParryTalent extends PlayerTalent {
 
     @SubscribeEvent
     public static void onPlayerDamage(LivingAttackEvent event) {
-        if(event.getEntityLiving().world.isRemote)return;
+        if(event.getEntityLiving().level.isClientSide)return;
         if(!(event.getEntityLiving() instanceof ServerPlayerEntity))return;
         if(event.getSource() == VaultRaid.VAULT_FAILED)return;
 
         ServerPlayerEntity player = (ServerPlayerEntity) event.getEntityLiving();
         float totalParryChance = 0.0F;
 
-        TalentTree abilities = PlayerTalentsData.get(player.getServerWorld()).getTalents(player);
+        TalentTree abilities = PlayerTalentsData.get(player.getLevel()).getTalents(player);
 
         for (TalentNode<?> node : abilities.getNodes()) {
             if (!(node.getTalent() instanceof ParryTalent)) continue;
@@ -51,7 +51,7 @@ public class ParryTalent extends PlayerTalent {
             totalParryChance += talent.getParryChance();
         }
 
-        SetTree sets = PlayerSetsData.get(player.getServerWorld()).getSets(player);
+        SetTree sets = PlayerSetsData.get(player.getLevel()).getSets(player);
 
         for (SetNode<?> node : sets.getNodes()) {
             if (node.getSet() instanceof AssassinSet) {
@@ -64,17 +64,17 @@ public class ParryTalent extends PlayerTalent {
         }
 
         for (EquipmentSlotType slot : EquipmentSlotType.values()) {
-            ItemStack stack = player.getItemStackFromSlot(slot);
+            ItemStack stack = player.getItemBySlot(slot);
             totalParryChance += ModAttributes.EXTRA_PARRY_CHANCE.getOrDefault(stack, 0.0F).getValue(stack);
         }
 
-        if (event.getEntity().world.rand.nextFloat() <= totalParryChance) {
-            player.world.playSound(
+        if (event.getEntity().level.random.nextFloat() <= totalParryChance) {
+            player.level.playSound(
                     null,
-                    player.getPosX(),
-                    player.getPosY(),
-                    player.getPosZ(),
-                    SoundEvents.ITEM_SHIELD_BLOCK,
+                    player.getX(),
+                    player.getY(),
+                    player.getZ(),
+                    SoundEvents.SHIELD_BLOCK,
                     SoundCategory.MASTER,
                     1F, 1F
             );

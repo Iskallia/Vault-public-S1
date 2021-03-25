@@ -67,7 +67,7 @@ public interface VaultGear<T extends Item> extends net.minecraftforge.common.ext
 
             } else {
                 Rarity rarity = ModAttributes.GEAR_RARITY.getOrDefault(stack, Rarity.COMMON).getValue(stack);
-                return ((IFormattableTextComponent) name).mergeStyle(rarity.color);
+                return ((IFormattableTextComponent) name).withStyle(rarity.color);
             }
         }
 
@@ -80,12 +80,12 @@ public interface VaultGear<T extends Item> extends net.minecraftforge.common.ext
     }
 
     default ActionResult<ItemStack> onItemRightClick(T item, World world, PlayerEntity player, Hand hand, ActionResult<ItemStack> result) {
-        ItemStack stack = player.getHeldItem(hand);
+        ItemStack stack = player.getItemInHand(hand);
 
-        if(world.isRemote) {
+        if(world.isClientSide) {
             if(stack.getItem() == ModItems.DAGGER && hand == Hand.OFF_HAND) {
                 ((VaultDaggerItem)stack.getItem()).attackOffHand();
-                return ActionResult.resultSuccess(stack);
+                return ActionResult.success(stack);
             }
 
             return result;
@@ -95,14 +95,14 @@ public interface VaultGear<T extends Item> extends net.minecraftforge.common.ext
 
         if(attribute.isPresent() && attribute.get().getValue(stack) == State.UNIDENTIFIED) {
             attribute.get().setBaseValue(State.ROLLING);
-            return ActionResult.resultFail(stack);
+            return ActionResult.fail(stack);
         }
 
         return result;
     }
 
     default void inventoryTick(T item, ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-        if(world.isRemote)return;
+        if(world.isClientSide)return;
 
         if(ModAttributes.GEAR_STATE.getOrCreate(stack, State.UNIDENTIFIED).getValue(stack) == State.ROLLING) {
             this.tickRoll(item, stack, world, entity, itemSlot, isSelected);
@@ -125,22 +125,22 @@ public interface VaultGear<T extends Item> extends net.minecraftforge.common.ext
             ModAttributes.GEAR_STATE.create(stack, State.IDENTIFIED);
             stack.getOrCreateTag().remove("RollTicks");
             stack.getOrCreateTag().remove("LastModelHit");
-            world.playSound(null, entity.getPosition(), ModSounds.CONFETTI_SFX, SoundCategory.PLAYERS, 0.5F, 1.0F);
+            world.playSound(null, entity.blockPosition(), ModSounds.CONFETTI_SFX, SoundCategory.PLAYERS, 0.5F, 1.0F);
             return;
         }
 
         if ((int) displacement != lastModelHit) {
-            Rarity rarity = ModAttributes.GEAR_ROLL_TYPE.getOrCreate(stack, RollType.ALL).getValue(stack).get(world.rand);
+            Rarity rarity = ModAttributes.GEAR_ROLL_TYPE.getOrCreate(stack, RollType.ALL).getValue(stack).get(world.random);
             ModAttributes.GEAR_RARITY.create(stack, rarity);
-            ModAttributes.GEAR_MODEL.create(stack, world.rand.nextInt(this.getModelsFor(rarity)));
+            ModAttributes.GEAR_MODEL.create(stack, world.random.nextInt(this.getModelsFor(rarity)));
             ModAttributes.GEAR_COLOR.create(stack, randomBaseColor(world.getRandom()));
             if (item == ModItems.ETCHING) {
-                Set set = Set.values()[world.rand.nextInt(Set.values().length)];
+                Set set = Set.values()[world.random.nextInt(Set.values().length)];
                 ModAttributes.GEAR_SET.create(stack, set);
             }
 
             stack.getOrCreateTag().putInt("LastModelHit", (int) displacement);
-            world.playSound(null, entity.getPosition(), ModSounds.RAFFLE_SFX, SoundCategory.PLAYERS, 1.2F, 1.0F);
+            world.playSound(null, entity.blockPosition(), ModSounds.RAFFLE_SFX, SoundCategory.PLAYERS, 1.2F, 1.0F);
         }
 
         stack.getOrCreateTag().putInt("RollTicks", rollTicks + 1);
@@ -157,27 +157,27 @@ public interface VaultGear<T extends Item> extends net.minecraftforge.common.ext
         ModAttributes.GEAR_STATE.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(state -> {
             if(state == State.IDENTIFIED)return;
             ModAttributes.GEAR_ROLL_TYPE.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(roll -> {
-                tooltip.add(new StringTextComponent("Roll: ").append(new StringTextComponent(roll.name()).mergeStyle(TextFormatting.GREEN)));
+                tooltip.add(new StringTextComponent("Roll: ").append(new StringTextComponent(roll.name()).withStyle(TextFormatting.GREEN)));
             });
         });
 
         ModAttributes.GEAR_RARITY.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(rarity -> {
             if (item == ModItems.ETCHING) return;
-            tooltip.add(new StringTextComponent("Rarity: ").append(new StringTextComponent(rarity.name()).mergeStyle(rarity.color)));
+            tooltip.add(new StringTextComponent("Rarity: ").append(new StringTextComponent(rarity.name()).withStyle(rarity.color)));
         });
 
         ModAttributes.GEAR_SET.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(value -> {
             tooltip.add(new StringTextComponent(""));
-            tooltip.add(new StringTextComponent("Etching: ").append(new StringTextComponent(value.name()).mergeStyle(TextFormatting.RED)));
+            tooltip.add(new StringTextComponent("Etching: ").append(new StringTextComponent(value.name()).withStyle(TextFormatting.RED)));
 
             if (item == ModItems.ETCHING) {
                 tooltip.add(new StringTextComponent(""));
                 for (TextComponent descriptionLine : value.getLore()) {
-                    tooltip.add(descriptionLine.mergeStyle(TextFormatting.ITALIC, TextFormatting.GRAY));
+                    tooltip.add(descriptionLine.withStyle(TextFormatting.ITALIC, TextFormatting.GRAY));
                 }
                 tooltip.add(new StringTextComponent(""));
                 for (TextComponent descriptionLine : value.getDescription()) {
-                    tooltip.add(descriptionLine.mergeStyle(TextFormatting.GRAY));
+                    tooltip.add(descriptionLine.withStyle(TextFormatting.GRAY));
                 }
             }
         });
@@ -197,36 +197,36 @@ public interface VaultGear<T extends Item> extends net.minecraftforge.common.ext
                     .append(tooltipDots(unfilled, TextFormatting.GRAY)));
         });
         ModAttributes.ADD_ARMOR.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(value -> {
-            tooltip.add(new StringTextComponent("+" + format(value, 5) + " Armor").mergeStyle(TextFormatting.DARK_GRAY));
+            tooltip.add(new StringTextComponent("+" + format(value, 5) + " Armor").withStyle(TextFormatting.DARK_GRAY));
         });
         ModAttributes.ADD_ARMOR_TOUGHNESS.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(value -> {
-            tooltip.add(new StringTextComponent("+" + format(value, 5) + " Armor Toughness").mergeStyle(TextFormatting.DARK_GRAY));
+            tooltip.add(new StringTextComponent("+" + format(value, 5) + " Armor Toughness").withStyle(TextFormatting.DARK_GRAY));
         });
         ModAttributes.ADD_KNOCKBACK_RESISTANCE.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(value -> {
-            tooltip.add(new StringTextComponent("+" + format(value, 5) + " Knockback Resistance").mergeStyle(TextFormatting.DARK_GRAY));
+            tooltip.add(new StringTextComponent("+" + format(value, 5) + " Knockback Resistance").withStyle(TextFormatting.DARK_GRAY));
         });
         ModAttributes.ADD_ATTACK_DAMAGE.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(value -> {
-            tooltip.add(new StringTextComponent("+" + format(value, 5) + " Attack Damage").mergeStyle(TextFormatting.DARK_GRAY));
+            tooltip.add(new StringTextComponent("+" + format(value, 5) + " Attack Damage").withStyle(TextFormatting.DARK_GRAY));
         });
         ModAttributes.ADD_ATTACK_SPEED.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(value -> {
-            tooltip.add(new StringTextComponent("+" + format(value, 5) + " Attack Speed").mergeStyle(TextFormatting.DARK_GRAY));
+            tooltip.add(new StringTextComponent("+" + format(value, 5) + " Attack Speed").withStyle(TextFormatting.DARK_GRAY));
         });
         ModAttributes.ADD_DURABILITY.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(value -> {
-            tooltip.add(new StringTextComponent("+" + value + " Durability").mergeStyle(TextFormatting.DARK_GRAY));
+            tooltip.add(new StringTextComponent("+" + value + " Durability").withStyle(TextFormatting.DARK_GRAY));
         });
         ModAttributes.EXTRA_LEECH_RATIO.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(value -> {
-            tooltip.add(new StringTextComponent("+" + format(value * 100.0F, 5) + "% Leech").mergeStyle(TextFormatting.RED));
+            tooltip.add(new StringTextComponent("+" + format(value * 100.0F, 5) + "% Leech").withStyle(TextFormatting.RED));
         });
         ModAttributes.EXTRA_PARRY_CHANCE.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(value -> {
-            tooltip.add(new StringTextComponent("+" + format(value * 100.0F, 5) + "% Parry").mergeStyle(TextFormatting.RED));
+            tooltip.add(new StringTextComponent("+" + format(value * 100.0F, 5) + "% Parry").withStyle(TextFormatting.RED));
         });
         ModAttributes.EXTRA_HEALTH.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(value -> {
-            tooltip.add(new StringTextComponent("+" + format(value, 5) + " Health").mergeStyle(TextFormatting.RED));
+            tooltip.add(new StringTextComponent("+" + format(value, 5) + " Health").withStyle(TextFormatting.RED));
         });
         ModAttributes.EXTRA_EFFECTS.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(value -> {
             value.forEach(effect -> {
                 tooltip.add(new StringTextComponent("+" + effect.getAmplifier() + " ")
-                        .append(new TranslationTextComponent(effect.getEffect().getName())).mergeStyle(TextFormatting.GREEN));
+                        .append(new TranslationTextComponent(effect.getEffect().getDescriptionId())).withStyle(TextFormatting.GREEN));
             });
         });
 
@@ -237,7 +237,7 @@ public interface VaultGear<T extends Item> extends net.minecraftforge.common.ext
         }
 
         ModAttributes.MIN_VAULT_LEVEL.get(stack).map(attribute -> attribute.getValue(stack)).ifPresent(value -> {
-            tooltip.add(new StringTextComponent("Requires level: ").append(new StringTextComponent(value + "").mergeStyle(TextFormatting.YELLOW)));
+            tooltip.add(new StringTextComponent("Requires level: ").append(new StringTextComponent(value + "").withStyle(TextFormatting.YELLOW)));
         });
     }
 
@@ -385,7 +385,7 @@ public interface VaultGear<T extends Item> extends net.minecraftforge.common.ext
     }
 
     static Integer getDyeColor(ItemStack stack) {
-        CompoundNBT compoundnbt = stack.getChildTag("display");
+        CompoundNBT compoundnbt = stack.getTagElement("display");
         if (compoundnbt != null && compoundnbt.contains("color", Constants.NBT.TAG_INT)) {
             return compoundnbt.getInt("color");
         }
@@ -398,7 +398,7 @@ public interface VaultGear<T extends Item> extends net.minecraftforge.common.ext
             text.append("\u2b22 ");
         }
         return new StringTextComponent(text.toString())
-                .mergeStyle(formatting);
+                .withStyle(formatting);
     }
 
     DyeColor[] BASE_COLORS = {
@@ -433,27 +433,27 @@ public interface VaultGear<T extends Item> extends net.minecraftforge.common.ext
         }
 
         @Override
-        public int getDurability(EquipmentSlotType slot) {
+        public int getDurabilityForSlot(EquipmentSlotType slot) {
             return 0;
         }
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType slot) {
+        public int getDefenseForSlot(EquipmentSlotType slot) {
             return 0;
         }
 
         @Override
-        public int getEnchantability() {
-            return ArmorMaterial.DIAMOND.getEnchantability();
+        public int getEnchantmentValue() {
+            return ArmorMaterial.DIAMOND.getEnchantmentValue();
         }
 
         @Override
-        public SoundEvent getSoundEvent() {
-            return ArmorMaterial.DIAMOND.getSoundEvent();
+        public SoundEvent getEquipSound() {
+            return ArmorMaterial.DIAMOND.getEquipSound();
         }
 
         @Override
-        public Ingredient getRepairMaterial() {
+        public Ingredient getRepairIngredient() {
             return Ingredient.EMPTY;
         }
 
@@ -481,32 +481,32 @@ public interface VaultGear<T extends Item> extends net.minecraftforge.common.ext
         }
 
         @Override
-        public int getMaxUses() {
+        public int getUses() {
             return 0;
         }
 
         @Override
-        public float getEfficiency() {
+        public float getSpeed() {
             return 0.0F;
         }
 
         @Override
-        public float getAttackDamage() {
+        public float getAttackDamageBonus() {
             return 0.0F;
         }
 
         @Override
-        public int getHarvestLevel() {
-            return ItemTier.DIAMOND.getHarvestLevel();
+        public int getLevel() {
+            return ItemTier.DIAMOND.getLevel();
         }
 
         @Override
-        public int getEnchantability() {
-            return ItemTier.DIAMOND.getEnchantability();
+        public int getEnchantmentValue() {
+            return ItemTier.DIAMOND.getEnchantmentValue();
         }
 
         @Override
-        public Ingredient getRepairMaterial() {
+        public Ingredient getRepairIngredient() {
             return Ingredient.EMPTY;
         }
     }

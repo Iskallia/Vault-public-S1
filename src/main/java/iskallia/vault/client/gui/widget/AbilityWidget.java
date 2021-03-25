@@ -95,7 +95,7 @@ public class AbilityWidget extends Widget {
         if (locked) return false;
         if (selected) return false;
 
-        this.playDownSound(Minecraft.getInstance().getSoundHandler());
+        this.playDownSound(Minecraft.getInstance().getSoundManager());
         return true;
     }
 
@@ -120,9 +120,9 @@ public class AbilityWidget extends Widget {
     renderIcon(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         ResourceBoundary resourceBoundary = style.frameType.getResourceBoundary();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(-ICON_SIZE / 2f, -ICON_SIZE / 2f, 0);
-        Minecraft.getInstance().textureManager.bindTexture(resourceBoundary.getResource());
+        Minecraft.getInstance().textureManager.bind(resourceBoundary.getResource());
 
         int vOffset = locked ? 62
                 : selected || isMouseOver(mouseX, mouseY) ? -31
@@ -132,11 +132,11 @@ public class AbilityWidget extends Widget {
                 resourceBoundary.getV() + vOffset,
                 resourceBoundary.getW(),
                 resourceBoundary.getH());
-        matrixStack.pop();
+        matrixStack.popPose();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(-16 / 2f, -16 / 2f, 0);
-        Minecraft.getInstance().textureManager.bindTexture(locked ? SKILL_WIDGET_RESOURCE : ABILITIES_RESOURCE);
+        Minecraft.getInstance().textureManager.bind(locked ? SKILL_WIDGET_RESOURCE : ABILITIES_RESOURCE);
         if (locked) {
             blit(matrixStack, this.x + 3, this.y + 1,
                     10, 124, 10, 14);
@@ -146,12 +146,12 @@ public class AbilityWidget extends Widget {
                     style.u, style.v,
                     16, 16);
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public void
     renderPips(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        Minecraft.getInstance().textureManager.bindTexture(SKILL_WIDGET_RESOURCE);
+        Minecraft.getInstance().textureManager.bind(SKILL_WIDGET_RESOURCE);
 
         int rowCount = pipRowCount(abilityGroup.getMaxLevel());
         int remainingPips = abilityGroup.getMaxLevel();
@@ -173,7 +173,7 @@ public class AbilityWidget extends Widget {
         int lineWidth = count * PIP_SIZE + (count - 1) * GAP_SIZE;
         int remainingFilled = filledCount;
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(x, y, 0);
         matrixStack.translate(-lineWidth / 2f, -PIP_SIZE / 2f, 0);
 
@@ -190,7 +190,7 @@ public class AbilityWidget extends Widget {
             matrixStack.translate(PIP_SIZE + GAP_SIZE, 0, 0);
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public static int

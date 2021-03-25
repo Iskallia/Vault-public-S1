@@ -32,11 +32,11 @@ public class FrenzyTalent extends PlayerTalent {
 
 	@SubscribeEvent
 	public static void onLivingHurt(LivingHurtEvent event) {
-		if(event.getEntity().world.isRemote)return;
-		if(!(event.getSource().getTrueSource() instanceof PlayerEntity))return;
+		if(event.getEntity().level.isClientSide)return;
+		if(!(event.getSource().getEntity() instanceof PlayerEntity))return;
 
-		ServerPlayerEntity player = (ServerPlayerEntity)event.getSource().getTrueSource();
-		TalentTree abilities = PlayerTalentsData.get(player.getServerWorld()).getTalents(player);
+		ServerPlayerEntity player = (ServerPlayerEntity)event.getSource().getEntity();
+		TalentTree abilities = PlayerTalentsData.get(player.getLevel()).getTalents(player);
 
 		for(TalentNode<?> node : abilities.getNodes()) {
 			if(!(node.getTalent() instanceof FrenzyTalent))continue;

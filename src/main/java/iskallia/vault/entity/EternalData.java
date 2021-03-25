@@ -54,11 +54,11 @@ public class EternalData implements INBTSerializable<CompoundNBT> {
         int level = data.getEternals(data.getOwnerOf(this.getId())).getEternals().size();
 
         eternal.setCustomName(new StringTextComponent("[")
-                .append(new StringTextComponent(String.valueOf(level)).mergeStyle(TextFormatting.GREEN))
+                .append(new StringTextComponent(String.valueOf(level)).withStyle(TextFormatting.GREEN))
                 .append(new StringTextComponent("] " + this.getName())));
 
         for (EquipmentSlotType slot : EquipmentSlotType.values()) {
-            eternal.setItemStackToSlot(slot, this.getStack(slot).copy());
+            eternal.setItemSlot(slot, this.getStack(slot).copy());
         }
 
         return eternal;
@@ -67,7 +67,7 @@ public class EternalData implements INBTSerializable<CompoundNBT> {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        if(this.getId() != null) nbt.putUniqueId("Id", this.getId());
+        if(this.getId() != null) nbt.putUUID("Id", this.getId());
         if(this.getName() != null) nbt.putString("Name", this.getName());
 
         if(mainSlots != null) {
@@ -84,13 +84,13 @@ public class EternalData implements INBTSerializable<CompoundNBT> {
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        if (nbt.contains("Id")) this.uuid = nbt.getUniqueId("Id");
+        if (nbt.contains("Id")) this.uuid = nbt.getUUID("Id");
         this.name = nbt.getString("Name");
         if (nbt.contains("MainSlots")) {
             ListNBT mainSlotsList = nbt.getList("MainSlots", Constants.NBT.TAG_COMPOUND);
 
             for (int i = 0; i < Math.min(mainSlotsList.size(), EquipmentSlotType.values().length); i++) {
-                this.setStack(EquipmentSlotType.values()[i], ItemStack.read(mainSlotsList.getCompound(i)));
+                this.setStack(EquipmentSlotType.values()[i], ItemStack.of(mainSlotsList.getCompound(i)));
             }
         }
     }

@@ -100,7 +100,7 @@ public class AnvilEvents {
             }
 
             ModAttributes.CURRENT_REPAIRS.create(output, curRepairs + 1);
-            output.setDamage(0);
+            output.setDamageValue(0);
             event.setOutput(output);
             event.setMaterialCost(1);
             event.setCost(1);

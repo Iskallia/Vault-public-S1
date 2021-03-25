@@ -40,13 +40,13 @@ public class OpenSkillTreeMessage {
 
             if (sender == null) return;
 
-            PlayerAbilitiesData playerAbilitiesData = PlayerAbilitiesData.get((ServerWorld) sender.world);
+            PlayerAbilitiesData playerAbilitiesData = PlayerAbilitiesData.get((ServerWorld) sender.level);
             AbilityTree abilityTree = playerAbilitiesData.getAbilities(sender);
 
-            PlayerTalentsData playerTalentsData = PlayerTalentsData.get((ServerWorld) sender.world);
+            PlayerTalentsData playerTalentsData = PlayerTalentsData.get((ServerWorld) sender.level);
             TalentTree talentTree = playerTalentsData.getTalents(sender);
 
-            PlayerResearchesData playerResearchesData = PlayerResearchesData.get((ServerWorld) sender.world);
+            PlayerResearchesData playerResearchesData = PlayerResearchesData.get((ServerWorld) sender.level);
             ResearchTree researchTree = playerResearchesData.getResearches(sender);
 
             NetworkHooks.openGui(
@@ -64,9 +64,9 @@ public class OpenSkillTreeMessage {
                         }
                     },
                     (buffer) -> {
-                        buffer.writeCompoundTag(abilityTree.serializeNBT());
-                        buffer.writeCompoundTag(talentTree.serializeNBT());
-                        buffer.writeCompoundTag(researchTree.serializeNBT());
+                        buffer.writeNbt(abilityTree.serializeNBT());
+                        buffer.writeNbt(talentTree.serializeNBT());
+                        buffer.writeNbt(researchTree.serializeNBT());
                     }
             );
         });

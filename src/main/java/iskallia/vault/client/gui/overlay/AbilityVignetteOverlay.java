@@ -18,16 +18,16 @@ public class AbilityVignetteOverlay {
         MatrixStack matrixStack = event.getMatrixStack();
 
         Minecraft minecraft = Minecraft.getInstance();
-        int width = minecraft.getMainWindow().getScaledWidth();
-        int height = minecraft.getMainWindow().getScaledHeight();
+        int width = minecraft.getWindow().getGuiScaledWidth();
+        int height = minecraft.getWindow().getGuiScaledHeight();
 
         if (minecraft.player == null) return;
 
-        if (minecraft.player.getActivePotionEffect(ModEffects.RAMPAGE) != null) {
+        if (minecraft.player.getEffect(ModEffects.RAMPAGE) != null) {
             int alpha = (int) (0x15 * (Math.sin(System.currentTimeMillis() / 250d) + 2)) << 24;
             AbstractGui.fill(matrixStack, 0, 0, width, height, alpha | 0x00_FF0000);
 
-        } else if (minecraft.player.getActivePotionEffect(ModEffects.GHOST_WALK) != null) {
+        } else if (minecraft.player.getEffect(ModEffects.GHOST_WALK) != null) {
             AbstractGui.fill(matrixStack, 0, 0, width, height, 0x20_ABEABE);
 
         }

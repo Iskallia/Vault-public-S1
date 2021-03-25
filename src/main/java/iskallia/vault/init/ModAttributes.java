@@ -63,12 +63,12 @@ public class ModAttributes {
 	public static ItemAttribute<PuzzleRuneBlock.Color, EnumAttribute<PuzzleRuneBlock.Color>> PUZZLE_COLOR;
 
 	public static void register(RegistryEvent.Register<Attribute> event) {
-		CRIT_CHANCE = register(event.getRegistry(), "generic.crit_chance", new RangedAttribute("attribute.name.generic.crit_chance", 0.0D, 0.0D, 1.0D)).setShouldWatch(true);
-		CRIT_MULTIPLIER = register(event.getRegistry(), "generic.crit_multiplier", new RangedAttribute("attribute.name.generic.crit_multiplier", 0.0D, 0.0D, 1024.0D)).setShouldWatch(true);
-		TP_CHANCE = register(event.getRegistry(), "generic.tp_chance", new RangedAttribute("attribute.name.generic.tp_chance", 0.0D, 0.0D, 1.0D)).setShouldWatch(true);
-		TP_INDIRECT_CHANCE = register(event.getRegistry(), "generic.indirect_tp_chance", new RangedAttribute("attribute.name.generic.indirect_tp_chance", 0.0D, 0.0D, 1.0D)).setShouldWatch(true);
-		TP_RANGE = register(event.getRegistry(), "generic.tp_range", new RangedAttribute("attribute.name.generic.tp_range", 32.0D, 0.0D, 1024.0D)).setShouldWatch(true);
-		POTION_RESISTANCE = register(event.getRegistry(), "generic.potion_resistance", new RangedAttribute("attribute.name.generic.potion_resistance", 0.0D, 0.0D, 1.0D)).setShouldWatch(true);
+		CRIT_CHANCE = register(event.getRegistry(), "generic.crit_chance", new RangedAttribute("attribute.name.generic.crit_chance", 0.0D, 0.0D, 1.0D)).setSyncable(true);
+		CRIT_MULTIPLIER = register(event.getRegistry(), "generic.crit_multiplier", new RangedAttribute("attribute.name.generic.crit_multiplier", 0.0D, 0.0D, 1024.0D)).setSyncable(true);
+		TP_CHANCE = register(event.getRegistry(), "generic.tp_chance", new RangedAttribute("attribute.name.generic.tp_chance", 0.0D, 0.0D, 1.0D)).setSyncable(true);
+		TP_INDIRECT_CHANCE = register(event.getRegistry(), "generic.indirect_tp_chance", new RangedAttribute("attribute.name.generic.indirect_tp_chance", 0.0D, 0.0D, 1.0D)).setSyncable(true);
+		TP_RANGE = register(event.getRegistry(), "generic.tp_range", new RangedAttribute("attribute.name.generic.tp_range", 32.0D, 0.0D, 1024.0D)).setSyncable(true);
+		POTION_RESISTANCE = register(event.getRegistry(), "generic.potion_resistance", new RangedAttribute("attribute.name.generic.potion_resistance", 0.0D, 0.0D, 1.0D)).setSyncable(true);
 
 		ADD_ARMOR = register(new ResourceLocation("minecraft", "add_armor"), () -> new DoubleAttribute((stack, parent, value) -> parent.getBaseValue() + value));
 		ADD_ARMOR_TOUGHNESS = register(new ResourceLocation("minecraft", "add_armor_toughness"), () -> new DoubleAttribute((stack, parent, value) -> parent.getBaseValue() + value));

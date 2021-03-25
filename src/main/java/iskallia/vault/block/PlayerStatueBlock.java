@@ -36,31 +36,33 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class PlayerStatueBlock extends Block {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public static final VoxelShape SHAPE = Block.makeCuboidShape(1, 0, 1, 15, 5, 15);
+    public static final VoxelShape SHAPE = Block.box(1, 0, 1, 15, 5, 15);
 
     public PlayerStatueBlock() {
-        super(Properties.create(Material.ROCK, MaterialColor.STONE)
-                .hardnessAndResistance(1, 3600000.0F)
-                .notSolid()
-                .doesNotBlockMovement());
+        super(Properties.of(Material.STONE, MaterialColor.STONE)
+                .strength(1, 3600000.0F)
+                .noOcclusion()
+                .noCollission());
 
-        this.setDefaultState(this.stateContainer.getBaseState()
-                .with(FACING, Direction.SOUTH));
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(FACING, Direction.SOUTH));
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState()
-                .with(FACING, context.getPlacementHorizontalFacing());
+        return this.defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection());
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
@@ -81,9 +83,9 @@ public class PlayerStatueBlock extends Block {
     }
 
     @Override
-    public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
+    public void playerWillDestroy(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        if (!world.isClientSide) {
+            TileEntity tileEntity = world.getBlockEntity(pos);
             ItemStack itemStack = new ItemStack(getBlock());
 
             if (tileEntity instanceof PlayerStatueTileEntity) {
@@ -97,18 +99,18 @@ public class PlayerStatueBlock extends Block {
             }
 
             ItemEntity itemEntity = new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, itemStack);
-            itemEntity.setDefaultPickupDelay();
-            world.addEntity(itemEntity);
+            itemEntity.setDefaultPickUpDelay();
+            world.addFreshEntity(itemEntity);
         }
 
-        super.onBlockHarvested(world, pos, state, player);
+        super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (world.isRemote) return ActionResultType.SUCCESS;
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (world.isClientSide) return ActionResultType.SUCCESS;
 
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         if (!(te instanceof PlayerStatueTileEntity)) return ActionResultType.SUCCESS;
 
         PlayerStatueTileEntity statue = (PlayerStatueTileEntity) te;
@@ -131,10 +133,10 @@ public class PlayerStatueBlock extends Block {
                     }
                 },
                 (buffer) -> {
-                    buffer.writeCompoundTag(nbt);
+                    buffer.writeNbt(nbt);
                 }
         );
 
-        return super.onBlockActivated(state, world, pos, player, handIn, hit);
+        return super.use(state, world, pos, player, handIn, hit);
     }
 }

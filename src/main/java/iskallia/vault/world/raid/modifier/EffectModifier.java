@@ -25,7 +25,7 @@ public class EffectModifier extends VaultModifier {
 	@Expose private final String type;
 
 	public EffectModifier(String name, ResourceLocation icon, Effect effect, int value, String operator, EffectAbility.Type type) {
-		this(name, icon, Registry.EFFECTS.getKey(effect).toString(), value, operator, type.toString());
+		this(name, icon, Registry.MOB_EFFECT.getKey(effect).toString(), value, operator, type.toString());
 	}
 
 	public EffectModifier(String name, ResourceLocation icon, String effect, int value, String operator, String type) {
@@ -47,7 +47,7 @@ public class EffectModifier extends VaultModifier {
 	}
 
 	public Effect getEffect() {
-		return Registry.EFFECTS.getOrDefault(new ResourceLocation(this.effect));
+		return Registry.MOB_EFFECT.get(new ResourceLocation(this.effect));
 	}
 
 	public int getAmplifier(int oldValue) {
@@ -76,16 +76,16 @@ public class EffectModifier extends VaultModifier {
 		Tuple<Integer, EffectTalent> data = EffectTalent.getData(player, world, this.getEffect());
 		if(data.getA() < 0)return;
 
-		EffectInstance activeEffect = player.getActivePotionEffect(this.getEffect());
+		EffectInstance activeEffect = player.getEffect(this.getEffect());
 		int newAmplifier = this.getAmplifier(data.getA());
 
 		if(newAmplifier >= 0) {
 			EffectInstance newEffect = new EffectInstance(this.getEffect(), 100, newAmplifier,
 					false, data.getB().getType().showParticles, data.getB().getType().showIcon);
 
-			player.addPotionEffect(newEffect);
+			player.addEffect(newEffect);
 		} else if(activeEffect != null) {
-			player.removePotionEffect(activeEffect.getPotion());
+			player.removeEffect(activeEffect.getEffect());
 		}
 	}
 

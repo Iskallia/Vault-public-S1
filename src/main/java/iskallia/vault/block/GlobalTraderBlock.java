@@ -29,33 +29,35 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class GlobalTraderBlock extends VendingMachineBlock {
 
     public GlobalTraderBlock() {
-        super(Properties.create(Material.IRON, MaterialColor.IRON)
-                .hardnessAndResistance(-1.0f, 3600000.0F)
-                .notSolid()
+        super(Properties.of(Material.METAL, MaterialColor.METAL)
+                .strength(-1.0f, 3600000.0F)
+                .noOcclusion()
                 .sound(SoundType.METAL));
     }
 
     @Override
     public boolean hasTileEntity(BlockState state) {
-        return state.get(HALF) == DoubleBlockHalf.LOWER;
+        return state.getValue(HALF) == DoubleBlockHalf.LOWER;
     }
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return state.get(HALF) == DoubleBlockHalf.LOWER ? ModBlocks.GLOBAL_TRADER_TILE_ENTITY.create() : null;
+        return state.getValue(HALF) == DoubleBlockHalf.LOWER ? ModBlocks.GLOBAL_TRADER_TILE_ENTITY.create() : null;
     }
 
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (world.isRemote) {
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        if (world.isClientSide) {
             playOpenSound();
             return ActionResultType.SUCCESS;
         }
@@ -83,7 +85,7 @@ public class GlobalTraderBlock extends VendingMachineBlock {
                     nbt.put("PlayerTradesList", playerTrades);
                     BlockState blockState = world.getBlockState(pos);
                     buffer.writeBlockPos(getTileEntityPos(blockState, pos));
-                    buffer.writeCompoundTag(nbt);
+                    buffer.writeNbt(nbt);
                 }
         );
         return ActionResultType.SUCCESS;

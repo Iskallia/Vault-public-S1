@@ -25,6 +25,8 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 
 import java.util.function.Supplier;
 
+import net.minecraft.world.gen.feature.structure.Structure.IStartFactory;
+
 public class ArenaStructure extends Structure<ArenaStructure.Config> {
 
     public static final int START_Y = 32;
@@ -33,7 +35,7 @@ public class ArenaStructure extends Structure<ArenaStructure.Config> {
         super(config);
     }
 
-    public GenerationStage.Decoration func_236396_f_() {
+    public GenerationStage.Decoration step() {
         return GenerationStage.Decoration.UNDERGROUND_STRUCTURES;
     }
 
@@ -49,17 +51,17 @@ public class ArenaStructure extends Structure<ArenaStructure.Config> {
             this.structure = structure;
         }
 
-        public void func_230364_a_(DynamicRegistries registry, ChunkGenerator gen, TemplateManager manager, int chunkX, int chunkZ, Biome biome, Config config) {
+        public void generatePieces(DynamicRegistries registry, ChunkGenerator gen, TemplateManager manager, int chunkX, int chunkZ, Biome biome, Config config) {
             BlockPos blockpos = new BlockPos(chunkX * 16, START_Y, chunkZ * 16);
             ArenaStructure.Pools.init();
-            JigsawGenerator.func_242837_a(registry, config.toVillageConfig(), AbstractVillagePiece::new, gen, manager, blockpos, this.components, this.rand, false, false);
-            this.recalculateStructureSize();
+            JigsawGenerator.addPieces(registry, config.toVillageConfig(), AbstractVillagePiece::new, gen, manager, blockpos, this.pieces, this.random, false, false);
+            this.calculateBoundingBox();
         }
     }
 
     public static class Config implements IFeatureConfig {
         public static final Codec<ArenaStructure.Config> CODEC = RecordCodecBuilder.create(builder -> {
-            return builder.group(JigsawPattern.field_244392_b_.fieldOf("start_pool").forGetter(ArenaStructure.Config::getStartPool),
+            return builder.group(JigsawPattern.CODEC.fieldOf("start_pool").forGetter(ArenaStructure.Config::getStartPool),
                     Codec.intRange(0, Integer.MAX_VALUE).fieldOf("size").forGetter(ArenaStructure.Config::getSize))
                     .apply(builder, ArenaStructure.Config::new);
         });
@@ -87,9 +89,9 @@ public class ArenaStructure extends Structure<ArenaStructure.Config> {
     }
 
     public static class Pools {
-        public static final JigsawPattern START = JigsawPatternRegistry.func_244094_a(
+        public static final JigsawPattern START = JigsawPatternRegistry.register(
                 new JigsawPattern(Vault.id("arena/starts"), new ResourceLocation("empty"), ImmutableList.of(
-                        Pair.of(JigsawPiece.func_242861_b(Vault.sId("arena/arena1/p_p"), ProcessorLists.field_244101_a), 1)
+                        Pair.of(JigsawPiece.single(Vault.sId("arena/arena1/p_p"), ProcessorLists.EMPTY), 1)
                 ), JigsawPattern.PlacementBehaviour.RIGID));
 
         public static void init() {

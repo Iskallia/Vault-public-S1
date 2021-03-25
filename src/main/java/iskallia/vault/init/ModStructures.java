@@ -25,7 +25,7 @@ public class ModStructures {
     }
 
     private static <T extends Structure<?>> T register(IForgeRegistry<Structure<?>> registry, String name, T structure) {
-        Structure.field_236365_a_.put(name, structure);
+        Structure.STRUCTURES_REGISTRY.put(name, structure);
         structure.setRegistryName(Vault.id(name));
         registry.register(structure);
         return structure;

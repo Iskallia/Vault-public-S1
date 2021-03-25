@@ -22,11 +22,11 @@ public class EffectAbility extends PlayerAbility {
     @Expose private final String type;
 
     public EffectAbility(int cost, Effect effect, int amplifier, Type type) {
-        this(cost, Registry.EFFECTS.getKey(effect).toString(), amplifier, type.toString());
+        this(cost, Registry.MOB_EFFECT.getKey(effect).toString(), amplifier, type.toString());
     }
 
     public EffectAbility(int cost, Effect effect, int amplifier, Type type, Behavior behavior) {
-        this(cost, Registry.EFFECTS.getKey(effect).toString(), amplifier, type.toString(), behavior);
+        this(cost, Registry.MOB_EFFECT.getKey(effect).toString(), amplifier, type.toString(), behavior);
     }
 
     public EffectAbility(int cost, String effect, int amplifier, String type) {
@@ -44,7 +44,7 @@ public class EffectAbility extends PlayerAbility {
     }
 
     public Effect getEffect() {
-        return Registry.EFFECTS.getOrDefault(new ResourceLocation(this.effect));
+        return Registry.MOB_EFFECT.get(new ResourceLocation(this.effect));
     }
 
     public int getAmplifier() {
@@ -57,26 +57,26 @@ public class EffectAbility extends PlayerAbility {
 
     @Override
     public void onRemoved(PlayerEntity player) {
-        player.removePotionEffect(this.getEffect());
+        player.removeEffect(this.getEffect());
     }
 
     @Override
     public void onBlur(PlayerEntity player) {
-        player.removePotionEffect(this.getEffect());
+        player.removeEffect(this.getEffect());
     }
 
     @Override
     public void onTick(PlayerEntity player, boolean active) {
         if(!active) {
-            player.removePotionEffect(this.getEffect());
+            player.removeEffect(this.getEffect());
         } else {
-            EffectInstance activeEffect = player.getActivePotionEffect(this.getEffect());
+            EffectInstance activeEffect = player.getEffect(this.getEffect());
             EffectInstance newEffect = new EffectInstance(this.getEffect(),
                     Integer.MAX_VALUE, this.getAmplifier(), false,
                     this.getType().showParticles, this.getType().showIcon);
 
             if (activeEffect == null) {
-                player.addPotionEffect(newEffect);
+                player.addEffect(newEffect);
             }
         }
     }
@@ -88,14 +88,14 @@ public class EffectAbility extends PlayerAbility {
 
     public void playEffects(PlayerEntity player) {
         if (getEffect() == Effects.INVISIBILITY) {
-            player.world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(),
+            player.level.playSound(player, player.getX(), player.getY(), player.getZ(),
                     ModSounds.INVISIBILITY_SFX, SoundCategory.MASTER, 0.7f * 0.25f, 1f);
-            player.playSound(ModSounds.INVISIBILITY_SFX, SoundCategory.MASTER, 0.7f, 1f);
+            player.playNotifySound(ModSounds.INVISIBILITY_SFX, SoundCategory.MASTER, 0.7f, 1f);
 
         } else if (getEffect() == Effects.NIGHT_VISION) {
-            player.world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(),
+            player.level.playSound(player, player.getX(), player.getY(), player.getZ(),
                     ModSounds.NIGHT_VISION_SFX, SoundCategory.MASTER, 0.15f * 0.25f, 1f);
-            player.playSound(ModSounds.NIGHT_VISION_SFX, SoundCategory.MASTER, 0.15f, 1f);
+            player.playNotifySound(ModSounds.NIGHT_VISION_SFX, SoundCategory.MASTER, 0.15f, 1f);
         }
     }
 

@@ -35,13 +35,13 @@ public class AbilityKnownOnesMessage {
         ListNBT abilities = new ListNBT();
         message.learnedAbilities.stream().map(AbilityNode::serializeNBT).forEach(abilities::add);
         nbt.put("LearnedAbilities", abilities);
-        buffer.writeCompoundTag(nbt);
+        buffer.writeNbt(nbt);
     }
 
     public static AbilityKnownOnesMessage decode(PacketBuffer buffer) {
         AbilityKnownOnesMessage message = new AbilityKnownOnesMessage();
         message.learnedAbilities = new LinkedList<>();
-        CompoundNBT nbt = buffer.readCompoundTag();
+        CompoundNBT nbt = buffer.readNbt();
         ListNBT learnedAbilities = nbt.getList("LearnedAbilities", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < learnedAbilities.size(); i++) {
             message.learnedAbilities.add(AbilityNode.fromNBT(

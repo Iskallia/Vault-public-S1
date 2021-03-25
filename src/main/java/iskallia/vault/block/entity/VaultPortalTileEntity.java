@@ -18,20 +18,20 @@ public class VaultPortalTileEntity extends TileEntity {
 
 
     public void sendUpdates() {
-        this.world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
-        this.world.notifyNeighborsOfStateChange(pos, this.getBlockState().getBlock());
-        markDirty();
+        this.level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        this.level.updateNeighborsAt(worldPosition, this.getBlockState().getBlock());
+        setChanged();
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         if(this.playerBossName != null)compound.putString("playerBossName", playerBossName);
         if(data != null)compound.put("Data", this.data.serializeNBT());
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void load(BlockState state, CompoundNBT nbt) {
         if(nbt.contains("playerBossName", Constants.NBT.TAG_STRING)) {
             this.playerBossName = nbt.getString("playerBossName");
         }
@@ -41,7 +41,7 @@ public class VaultPortalTileEntity extends TileEntity {
             this.data.deserializeNBT(nbt.getCompound("Data"));
         }
 
-        super.read(state, nbt);
+        super.load(state, nbt);
     }
 
     public String getPlayerBossName() {

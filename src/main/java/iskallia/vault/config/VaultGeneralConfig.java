@@ -78,7 +78,7 @@ public class VaultGeneralConfig extends Config {
 
 	@SubscribeEvent
 	public static void cancelItemInteraction(PlayerInteractEvent event) {
-		if(event.getPlayer().world.getDimensionKey() != Vault.VAULT_KEY)return;
+		if(event.getPlayer().level.dimension() != Vault.VAULT_KEY)return;
 
 		if(ModConfigs.VAULT_GENERAL.ITEM_BLACKLIST.contains(event.getItemStack().getItem().getRegistryName().toString())) {
 			if(event.isCancelable())
@@ -88,7 +88,7 @@ public class VaultGeneralConfig extends Config {
 
 	@SubscribeEvent
 	public static void cancelBlockInteraction(PlayerInteractEvent event) {
-		if(event.getPlayer().world.getDimensionKey() != Vault.VAULT_KEY)return;
+		if(event.getPlayer().level.dimension() != Vault.VAULT_KEY)return;
 		BlockState state = event.getWorld().getBlockState(event.getPos());
 
 		if(ModConfigs.VAULT_GENERAL.BLOCK_BLACKLIST.contains(state.getBlock().getRegistryName().toString())) {

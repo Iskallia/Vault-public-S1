@@ -26,14 +26,14 @@ public class CriticalStrikeTalent extends PlayerTalent {
 
 	@SubscribeEvent
 	public static void onCriticalHit(CriticalHitEvent event) {
-		if(event.getEntity().world.isRemote)return;
+		if(event.getEntity().level.isClientSide)return;
 		ServerPlayerEntity player = (ServerPlayerEntity)event.getPlayer();
-		TalentTree abilities = PlayerTalentsData.get(player.getServerWorld()).getTalents(player);
+		TalentTree abilities = PlayerTalentsData.get(player.getLevel()).getTalents(player);
 
 		for(TalentNode<?> node : abilities.getNodes()) {
 			if(!(node.getTalent() instanceof CriticalStrikeTalent))continue;
 
-			if(player.world.rand.nextFloat() < ((CriticalStrikeTalent)node.getTalent()).getChance()) {
+			if(player.level.random.nextFloat() < ((CriticalStrikeTalent)node.getTalent()).getChance()) {
 				event.setResult(Event.Result.ALLOW);
 				return;
 			}

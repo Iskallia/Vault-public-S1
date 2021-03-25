@@ -29,7 +29,7 @@ public class AttributeTalent extends PlayerTalent {
 	}
 
 	public Attribute getAttribute() {
-		return Registry.ATTRIBUTE.getOrDefault(new ResourceLocation(this.attribute));
+		return Registry.ATTRIBUTE.get(new ResourceLocation(this.attribute));
 	}
 
 	public Modifier getModifier() {
@@ -39,7 +39,7 @@ public class AttributeTalent extends PlayerTalent {
 	@Override
 	public void onAdded(PlayerEntity player) {
 		this.onRemoved(player); //Remove the old attribute modifier just in case.
-		this.runIfPresent(player, attributeData -> attributeData.applyNonPersistentModifier(this.getModifier().toMCModifier()));
+		this.runIfPresent(player, attributeData -> attributeData.addTransientModifier(this.getModifier().toMCModifier()));
 	}
 
 	@Override
@@ -70,15 +70,15 @@ public class AttributeTalent extends PlayerTalent {
 		@Expose public final int operation;
 
 		public Modifier(String name, double amount, AttributeModifier.Operation operation) {
-			this.id = MathHelper.getRandomUUID(new Random(name.hashCode())).toString();
+			this.id = MathHelper.createInsecureUUID(new Random(name.hashCode())).toString();
 			this.name = name;
 			this.amount = amount;
-			this.operation = operation.getId();
+			this.operation = operation.toValue();
 		}
 
 		public AttributeModifier toMCModifier() {
 			return new AttributeModifier(UUID.fromString(this.id), this.name,
-					this.amount, AttributeModifier.Operation.byId(this.operation));
+					this.amount, AttributeModifier.Operation.fromValue(this.operation));
 		}
 	}
 

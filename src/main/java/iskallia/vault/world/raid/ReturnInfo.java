@@ -25,7 +25,7 @@ public class ReturnInfo implements INBTSerializable<CompoundNBT> {
 	}
 
 	public ReturnInfo(ServerPlayerEntity player) {
-		this(player.getPositionVec(), player.rotationYaw, player.rotationPitch, player.interactionManager.getGameType(), player.world.getDimensionKey());
+		this(player.position(), player.yRot, player.xRot, player.gameMode.getGameModeForPlayer(), player.level.dimension());
 	}
 
 	public ReturnInfo(Vector3d position, float yaw, float pitch, GameType gamemode, RegistryKey<World> dimension) {
@@ -37,9 +37,9 @@ public class ReturnInfo implements INBTSerializable<CompoundNBT> {
 	}
 
 	public void apply(MinecraftServer server, ServerPlayerEntity player) {
-		ServerWorld world = server.getWorld(this.dimension);
-		player.teleport(world, this.position.x, this.position.y, this.position.z, this.yaw, this.pitch);
-		player.setGameType(this.gamemode);
+		ServerWorld world = server.getLevel(this.dimension);
+		player.teleportTo(world, this.position.x, this.position.y, this.position.z, this.yaw, this.pitch);
+		player.setGameMode(this.gamemode);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class ReturnInfo implements INBTSerializable<CompoundNBT> {
 		nbt.putFloat("Yaw", this.yaw);
 		nbt.putFloat("Pitch", this.pitch);
 		nbt.putInt("Gamemode", this.gamemode.ordinal());
-		nbt.putString("Dimension", this.dimension.getLocation().toString()); //TODO: debug
+		nbt.putString("Dimension", this.dimension.location().toString()); //TODO: debug
 		return nbt;
 	}
 
@@ -60,8 +60,8 @@ public class ReturnInfo implements INBTSerializable<CompoundNBT> {
 		this.position = new Vector3d(nbt.getDouble("PosX"), nbt.getDouble("PosY"), nbt.getDouble("PosZ"));
 		this.yaw = nbt.getFloat("Yaw");
 		this.pitch = nbt.getFloat("Pitch");
-		this.gamemode = GameType.getByID(nbt.getInt("Gamemode"));
-		this.dimension = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(nbt.getString("Dimension")));
+		this.gamemode = GameType.byId(nbt.getInt("Gamemode"));
+		this.dimension = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("Dimension")));
 	}
 
 }

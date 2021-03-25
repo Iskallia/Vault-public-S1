@@ -56,13 +56,13 @@ public class TalentsConfig extends Config {
 
     @Override
     protected void reset() {
-        this.HASTE = TalentGroup.ofEffect("Haste", Effects.HASTE, EffectTalent.Type.ICON_ONLY, 6, i -> { if(i < 3)return 2; else if(i == 3)return 3; else return 4; }, EffectTalent.Operator.SET);
+        this.HASTE = TalentGroup.ofEffect("Haste", Effects.DIG_SPEED, EffectTalent.Type.ICON_ONLY, 6, i -> { if(i < 3)return 2; else if(i == 3)return 3; else return 4; }, EffectTalent.Operator.SET);
         this.REGENERATION = TalentGroup.ofEffect("Regeneration", Effects.REGENERATION, EffectTalent.Type.ICON_ONLY, 3, i -> i == 0 ? 10 : 5, EffectTalent.Operator.SET);
         this.VAMPIRISM = new TalentGroup<>("Vampirism", new VampirismTalent(2, 0.1F), new VampirismTalent(2, 0.2F), new VampirismTalent(2, 0.3F), new VampirismTalent(2, 0.4F), new VampirismTalent(2, 0.5F), new VampirismTalent(2, 0.6F));
-        this.RESISTANCE = TalentGroup.ofEffect("Resistance", Effects.RESISTANCE, EffectTalent.Type.ICON_ONLY, 2, i -> 3, EffectTalent.Operator.SET);
-        this.STRENGTH = TalentGroup.ofEffect("Strength", Effects.STRENGTH, EffectTalent.Type.ICON_ONLY, 2, i -> 3, EffectTalent.Operator.SET);
+        this.RESISTANCE = TalentGroup.ofEffect("Resistance", Effects.DAMAGE_RESISTANCE, EffectTalent.Type.ICON_ONLY, 2, i -> 3, EffectTalent.Operator.SET);
+        this.STRENGTH = TalentGroup.ofEffect("Strength", Effects.DAMAGE_BOOST, EffectTalent.Type.ICON_ONLY, 2, i -> 3, EffectTalent.Operator.SET);
         this.FIRE_RESISTANCE = TalentGroup.ofEffect("Fire Resistance", Effects.FIRE_RESISTANCE, EffectTalent.Type.ICON_ONLY, 1, i -> 5, EffectTalent.Operator.SET);
-        this.SPEED = TalentGroup.ofEffect("Speed", Effects.SPEED, EffectTalent.Type.ICON_ONLY, 5, i -> 2, EffectTalent.Operator.SET);
+        this.SPEED = TalentGroup.ofEffect("Speed", Effects.MOVEMENT_SPEED, EffectTalent.Type.ICON_ONLY, 5, i -> 2, EffectTalent.Operator.SET);
         this.WATER_BREATHING = TalentGroup.ofEffect("Water Breathing", Effects.WATER_BREATHING, EffectTalent.Type.ICON_ONLY, 1, i -> 5, EffectTalent.Operator.SET);
         this.WELL_FIT = TalentGroup.ofAttribute("Well Fit", Attributes.MAX_HEALTH, "Extra Health", 10, i -> 1, i -> i * 2.0D, i -> AttributeModifier.Operation.ADDITION);
         this.REACH = TalentGroup.ofAttribute("Reach", ForgeMod.REACH_DISTANCE.get(), "Maximum Reach", 10, i -> 1, i -> i * 1.0D, i -> AttributeModifier.Operation.ADDITION);

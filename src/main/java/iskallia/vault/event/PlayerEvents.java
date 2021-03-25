@@ -32,23 +32,23 @@ public class PlayerEvents {
     @SubscribeEvent
     public static void onStartTracking(PlayerEvent.StartTracking event) {
         Entity target = event.getTarget();
-        if (target.world.isRemote)return;
+        if (target.level.isClientSide)return;
 
         ServerPlayerEntity player = (ServerPlayerEntity)event.getPlayer();
 
-        if(target instanceof FighterEntity)ModNetwork.CHANNEL.sendTo(new FighterSizeMessage(target, ((FighterEntity)target).sizeMultiplier), player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
-        if(target instanceof EternalEntity)ModNetwork.CHANNEL.sendTo(new FighterSizeMessage(target, ((EternalEntity)target).sizeMultiplier), player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+        if(target instanceof FighterEntity)ModNetwork.CHANNEL.sendTo(new FighterSizeMessage(target, ((FighterEntity)target).sizeMultiplier), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        if(target instanceof EternalEntity)ModNetwork.CHANNEL.sendTo(new FighterSizeMessage(target, ((EternalEntity)target).sizeMultiplier), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.side == LogicalSide.CLIENT) return;
 
-        RegistryKey<World> dimensionKey = event.player.world.getDimensionKey();
-        GameRules gameRules = event.player.world.getGameRules();
+        RegistryKey<World> dimensionKey = event.player.level.dimension();
+        GameRules gameRules = event.player.level.getGameRules();
 
         if (MODIFIED_GAMERULE && dimensionKey != Vault.VAULT_KEY) {
-            gameRules.get(GameRules.NATURAL_REGENERATION).set(NATURAL_REGEN_OLD_VALUE, event.player.getServer());
+            gameRules.getRule(GameRules.RULE_NATURAL_REGENERATION).set(NATURAL_REGEN_OLD_VALUE, event.player.getServer());
             MODIFIED_GAMERULE = false;
             return;
         }
@@ -56,22 +56,22 @@ public class PlayerEvents {
         if (dimensionKey != Vault.VAULT_KEY) return;
 
         if (event.phase == TickEvent.Phase.START) {
-            NATURAL_REGEN_OLD_VALUE = gameRules.getBoolean(GameRules.NATURAL_REGENERATION);
-            gameRules.get(GameRules.NATURAL_REGENERATION).set(false, event.player.getServer());
+            NATURAL_REGEN_OLD_VALUE = gameRules.getBoolean(GameRules.RULE_NATURAL_REGENERATION);
+            gameRules.getRule(GameRules.RULE_NATURAL_REGENERATION).set(false, event.player.getServer());
             MODIFIED_GAMERULE = true;
 
         } else if (event.phase == TickEvent.Phase.END) {
-            gameRules.get(GameRules.NATURAL_REGENERATION).set(NATURAL_REGEN_OLD_VALUE, event.player.getServer());
+            gameRules.getRule(GameRules.RULE_NATURAL_REGENERATION).set(NATURAL_REGEN_OLD_VALUE, event.player.getServer());
             MODIFIED_GAMERULE = false;
         }
     }
 
     @SubscribeEvent
     public static void onAttack(AttackEntityEvent event) {
-        if(event.getPlayer().world.isRemote)return;
+        if(event.getPlayer().level.isClientSide)return;
 
-        int level = PlayerVaultStatsData.get((ServerWorld)event.getPlayer().world).getVaultStats(event.getPlayer()).getVaultLevel();
-        ItemStack stack = event.getPlayer().getHeldItemMainhand();
+        int level = PlayerVaultStatsData.get((ServerWorld)event.getPlayer().level).getVaultStats(event.getPlayer()).getVaultLevel();
+        ItemStack stack = event.getPlayer().getMainHandItem();
 
         if(ModAttributes.MIN_VAULT_LEVEL.exists(stack)
                 && level < ModAttributes.MIN_VAULT_LEVEL.get(stack).get().getValue(stack)) {
@@ -81,16 +81,16 @@ public class PlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerTick2(TickEvent.PlayerTickEvent event) {
-        if(event.player.world.isRemote)return;
+        if(event.player.level.isClientSide)return;
         EquipmentSlotType[] slots = {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET};
 
         for(EquipmentSlotType slot: slots) {
-            ItemStack stack = event.player.getItemStackFromSlot(slot);
-            int level = PlayerVaultStatsData.get((ServerWorld)event.player.world).getVaultStats(event.player).getVaultLevel();
+            ItemStack stack = event.player.getItemBySlot(slot);
+            int level = PlayerVaultStatsData.get((ServerWorld)event.player.level).getVaultStats(event.player).getVaultLevel();
 
             if(ModAttributes.MIN_VAULT_LEVEL.exists(stack)
                     && level < ModAttributes.MIN_VAULT_LEVEL.get(stack).get().getValue(stack)) {
-                event.player.dropItem(stack.copy(), false, false);
+                event.player.drop(stack.copy(), false, false);
                 stack.setCount(0);
             }
         }

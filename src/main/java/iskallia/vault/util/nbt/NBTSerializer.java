@@ -221,20 +221,20 @@ public class NBTSerializer {
 
             throw new UnserializableClassException(clazz);
 
-        if (clazz.isAssignableFrom(Byte.class)) return (T) Byte.valueOf(((ByteNBT) tag).getByte());
-        else if (clazz.isAssignableFrom(Boolean.class)) return (T) Boolean.valueOf(((ByteNBT) tag).getByte() != 0);
-        else if (clazz.isAssignableFrom(Short.class)) return (T) Short.valueOf(((ShortNBT) tag).getShort());
-        else if (clazz.isAssignableFrom(Integer.class)) return (T) Integer.valueOf(((IntNBT) tag).getInt());
-        else if (clazz.isAssignableFrom(Long.class)) return (T) Long.valueOf(((LongNBT) tag).getLong());
-        else if (clazz.isAssignableFrom(Float.class)) return (T) Float.valueOf(((FloatNBT) tag).getFloat());
-        else if (clazz.isAssignableFrom(Double.class)) return (T) Double.valueOf(((DoubleNBT) tag).getDouble());
-        else if (clazz.isAssignableFrom(byte[].class)) return (T) ((ByteArrayNBT) tag).getByteArray();
+        if (clazz.isAssignableFrom(Byte.class)) return (T) Byte.valueOf(((ByteNBT) tag).getAsByte());
+        else if (clazz.isAssignableFrom(Boolean.class)) return (T) Boolean.valueOf(((ByteNBT) tag).getAsByte() != 0);
+        else if (clazz.isAssignableFrom(Short.class)) return (T) Short.valueOf(((ShortNBT) tag).getAsShort());
+        else if (clazz.isAssignableFrom(Integer.class)) return (T) Integer.valueOf(((IntNBT) tag).getAsInt());
+        else if (clazz.isAssignableFrom(Long.class)) return (T) Long.valueOf(((LongNBT) tag).getAsLong());
+        else if (clazz.isAssignableFrom(Float.class)) return (T) Float.valueOf(((FloatNBT) tag).getAsFloat());
+        else if (clazz.isAssignableFrom(Double.class)) return (T) Double.valueOf(((DoubleNBT) tag).getAsDouble());
+        else if (clazz.isAssignableFrom(byte[].class)) return (T) ((ByteArrayNBT) tag).getAsByteArray();
         else if (clazz.isAssignableFrom(Byte[].class))
-            return (T) ArrayUtils.toObject(((ByteArrayNBT) tag).getByteArray());
-        else if (clazz.isAssignableFrom(String.class)) return (T) ((StringNBT) tag).getString();
-        else if (clazz.isAssignableFrom(int[].class)) return (T) ((IntArrayNBT) tag).getIntArray();
+            return (T) ArrayUtils.toObject(((ByteArrayNBT) tag).getAsByteArray());
+        else if (clazz.isAssignableFrom(String.class)) return (T) ((StringNBT) tag).getAsString();
+        else if (clazz.isAssignableFrom(int[].class)) return (T) ((IntArrayNBT) tag).getAsIntArray();
         else if (clazz.isAssignableFrom(Integer[].class))
-            return (T) ArrayUtils.toObject(((IntArrayNBT) tag).getIntArray());
+            return (T) ArrayUtils.toObject(((IntArrayNBT) tag).getAsIntArray());
 
         else if (INBTSerializable.class.isAssignableFrom(clazz)) {
 

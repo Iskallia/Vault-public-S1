@@ -26,12 +26,12 @@ public class PlayerStatueBlockItem extends BlockItem {
 
     public PlayerStatueBlockItem() {
         super(ModBlocks.PLAYER_STATUE, new Item.Properties()
-                .group(ModItems.VAULT_MOD_GROUP)
-                .maxStackSize(1));
+                .tab(ModItems.VAULT_MOD_GROUP)
+                .stacksTo(1));
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         CompoundNBT nbt = stack.getTag();
 
         if (nbt != null) {
@@ -40,22 +40,22 @@ public class PlayerStatueBlockItem extends BlockItem {
             boolean hasCrown = blockEntityTag.getBoolean("HasCrown");
 
             StringTextComponent titleText = new StringTextComponent(hasCrown ? " Arena Champion" : " Vault Boss");
-            titleText.setStyle(Style.EMPTY.setColor(Color.fromInt(0xFF_ff9966)));
+            titleText.setStyle(Style.EMPTY.withColor(Color.fromRgb(0xFF_ff9966)));
             tooltip.add(titleText);
 
             StringTextComponent text = new StringTextComponent(" Nickname: " + nickname);
-            text.setStyle(Style.EMPTY.setColor(Color.fromInt(0xFF_ff9966)));
+            text.setStyle(Style.EMPTY.withColor(Color.fromRgb(0xFF_ff9966)));
             tooltip.add(text);
         } else {
             tooltip.add(new StringTextComponent(""));
             tooltip.add(new StringTextComponent("Statue: "));
             StringTextComponent tip = new StringTextComponent(" Right-click to generate trade!");
-            tip.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFAA00)));
+            tip.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FFAA00)));
             tooltip.add(tip);
             return;
         }
 
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
     @Override
@@ -64,10 +64,10 @@ public class PlayerStatueBlockItem extends BlockItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        if (handIn == Hand.OFF_HAND) return super.onItemRightClick(worldIn, playerIn, handIn);
-        ItemStack statue = LootStatueBlockItem.getStatueBlockItem(playerIn.getName().getString(), StatueType.values()[worldIn.rand.nextInt(StatueType.values().length)], false, true);
-        playerIn.setHeldItem(Hand.MAIN_HAND, statue);
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        if (handIn == Hand.OFF_HAND) return super.use(worldIn, playerIn, handIn);
+        ItemStack statue = LootStatueBlockItem.getStatueBlockItem(playerIn.getName().getString(), StatueType.values()[worldIn.random.nextInt(StatueType.values().length)], false, true);
+        playerIn.setItemInHand(Hand.MAIN_HAND, statue);
+        return super.use(worldIn, playerIn, handIn);
     }
 }

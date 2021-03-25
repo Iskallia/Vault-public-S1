@@ -4,12 +4,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ResourceLocation;
 
+import net.minecraft.item.Item.Properties;
+
 public class ItemSkillOrbFrame extends Item {
 
     public ItemSkillOrbFrame(ItemGroup group, ResourceLocation id) {
         super(new Properties()
-                .group(group)
-                .maxStackSize(64));
+                .tab(group)
+                .stacksTo(64));
 
         this.setRegistryName(id);
     }

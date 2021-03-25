@@ -119,7 +119,7 @@ public class VaultMobsConfig extends Config {
 
 		public Level mobAdd(Item item, int weight) {
 			if(item instanceof ArmorItem) {
-				this.MOB_LOOT.computeIfAbsent(((ArmorItem)item).getEquipmentSlot().getName(), s -> new WeightedList<>()).add(item.getRegistryName().toString(), weight);
+				this.MOB_LOOT.computeIfAbsent(((ArmorItem)item).getSlot().getName(), s -> new WeightedList<>()).add(item.getRegistryName().toString(), weight);
 			} else {
 				this.MOB_LOOT.computeIfAbsent(EquipmentSlotType.MAINHAND.getName(), s -> new WeightedList<>()).add(item.getRegistryName().toString(), weight);
 				this.MOB_LOOT.computeIfAbsent(EquipmentSlotType.OFFHAND.getName(), s -> new WeightedList<>()).add(item.getRegistryName().toString(), weight);
@@ -130,7 +130,7 @@ public class VaultMobsConfig extends Config {
 
 		public Level bossAdd(Item item, int weight) {
 			if(item instanceof ArmorItem) {
-				this.BOSS_LOOT.computeIfAbsent(((ArmorItem)item).getEquipmentSlot().getName(), s -> new WeightedList<>()).add(item.getRegistryName().toString(), weight);
+				this.BOSS_LOOT.computeIfAbsent(((ArmorItem)item).getSlot().getName(), s -> new WeightedList<>()).add(item.getRegistryName().toString(), weight);
 			} else {
 				this.BOSS_LOOT.computeIfAbsent(EquipmentSlotType.MAINHAND.getName(), s -> new WeightedList<>()).add(item.getRegistryName().toString(), weight);
 				this.BOSS_LOOT.computeIfAbsent(EquipmentSlotType.OFFHAND.getName(), s -> new WeightedList<>()).add(item.getRegistryName().toString(), weight);
@@ -141,7 +141,7 @@ public class VaultMobsConfig extends Config {
 
 		public Level raffleAdd(Item item, int weight) {
 			if(item instanceof ArmorItem) {
-				this.RAFFLE_BOSS_LOOT.computeIfAbsent(((ArmorItem)item).getEquipmentSlot().getName(), s -> new WeightedList<>()).add(item.getRegistryName().toString(), weight);
+				this.RAFFLE_BOSS_LOOT.computeIfAbsent(((ArmorItem)item).getSlot().getName(), s -> new WeightedList<>()).add(item.getRegistryName().toString(), weight);
 			} else {
 				this.RAFFLE_BOSS_LOOT.computeIfAbsent(EquipmentSlotType.MAINHAND.getName(), s -> new WeightedList<>()).add(item.getRegistryName().toString(), weight);
 				this.RAFFLE_BOSS_LOOT.computeIfAbsent(EquipmentSlotType.OFFHAND.getName(), s -> new WeightedList<>()).add(item.getRegistryName().toString(), weight);
@@ -242,7 +242,7 @@ public class VaultMobsConfig extends Config {
 			LivingEntity entity = (LivingEntity)this.getType().create(world);
 
 			for(AttributeOverride override: ATTRIBUTES) {
-				if(world.rand.nextDouble() >= override.ROLL_CHANCE)continue;
+				if(world.random.nextDouble() >= override.ROLL_CHANCE)continue;
 				Attribute attribute = Registry.ATTRIBUTE.getOptional(new ResourceLocation(override.NAME)).orElse(null);
 				if(attribute == null)continue;
 				ModifiableAttributeInstance instance = entity.getAttribute(attribute);

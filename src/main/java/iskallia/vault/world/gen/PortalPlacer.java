@@ -16,21 +16,21 @@ public class PortalPlacer {
     }
 
     public void place(IWorld world, BlockPos pos, Direction facing, int width, int height) {
-        pos = pos.offset(Direction.DOWN).offset(facing.getOpposite());
+        pos = pos.relative(Direction.DOWN).relative(facing.getOpposite());
 
         for (int y = 0; y < height + 2; y++) {
-            this.place(world, pos.up(y), facing, this.framePlacer);
-            this.place(world, pos.offset(facing, width + 1).up(y), facing, this.framePlacer);
+            this.place(world, pos.above(y), facing, this.framePlacer);
+            this.place(world, pos.relative(facing, width + 1).above(y), facing, this.framePlacer);
 
             for (int x = 1; x < width + 1; x++) {
-                this.place(world, pos.offset(facing, x).up(y), facing, y == 0 || y == height + 1 ? this.framePlacer : this.portalPlacer);
+                this.place(world, pos.relative(facing, x).above(y), facing, y == 0 || y == height + 1 ? this.framePlacer : this.portalPlacer);
             }
         }
     }
 
     protected void place(IWorld world, BlockPos pos, BlockState state) {
         if(state != null) {
-            world.setBlockState(pos, state, 1);
+            world.setBlock(pos, state, 1);
         }
     }
 

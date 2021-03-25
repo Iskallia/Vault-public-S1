@@ -56,28 +56,28 @@ import java.util.stream.Collectors;
 public class VaultRaid implements INBTSerializable<CompoundNBT> {
 
     public static final PortalPlacer PORTAL_PLACER = new PortalPlacer((pos, random, facing) -> {
-        return ModBlocks.VAULT_PORTAL.getDefaultState().with(VaultPortalBlock.AXIS, facing.getAxis());
+        return ModBlocks.VAULT_PORTAL.defaultBlockState().setValue(VaultPortalBlock.AXIS, facing.getAxis());
     }, (pos, random, facing) -> {
         Block[] blocks = {
                 Blocks.BLACKSTONE, Blocks.BLACKSTONE, Blocks.POLISHED_BLACKSTONE,
                 Blocks.POLISHED_BLACKSTONE_BRICKS, Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS
         };
 
-        return blocks[random.nextInt(blocks.length)].getDefaultState();
+        return blocks[random.nextInt(blocks.length)].defaultBlockState();
     });
 
     public static final PortalPlacer FINAL_PORTAL_PLACER = new PortalPlacer((pos, random, facing) -> {
-        return ModBlocks.FINAL_VAULT_PORTAL.getDefaultState().with(VaultPortalBlock.AXIS, facing.getAxis());
+        return ModBlocks.FINAL_VAULT_PORTAL.defaultBlockState().setValue(VaultPortalBlock.AXIS, facing.getAxis());
     }, (pos, random, facing) -> {
         Block[] blocks = {
                 Blocks.BLACKSTONE, Blocks.BLACKSTONE, Blocks.POLISHED_BLACKSTONE,
                 Blocks.POLISHED_BLACKSTONE_BRICKS, Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS
         };
 
-        return blocks[random.nextInt(blocks.length)].getDefaultState();
+        return blocks[random.nextInt(blocks.length)].defaultBlockState();
     });
 
-    public static final DamageSource VAULT_FAILED = new DamageSource("vaultFailed").setDamageBypassesArmor().setDamageAllowedInCreativeMode();
+    public static final DamageSource VAULT_FAILED = new DamageSource("vaultFailed").bypassArmor().bypassInvul();
 
     public static final int REGION_SIZE = 1 << 11;
 
@@ -112,8 +112,8 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
 
     public VaultRaid(List<ServerPlayerEntity> players, List<ServerPlayerEntity> spectators,
                      MutableBoundingBox box, int level, int rarity, String playerBossName) {
-        this.playerIds = players.stream().map(Entity::getUniqueID).collect(Collectors.toList());
-        this.spectatorIds = spectators.stream().map(Entity::getUniqueID).collect(Collectors.toList());
+        this.playerIds = players.stream().map(Entity::getUUID).collect(Collectors.toList());
+        this.spectatorIds = spectators.stream().map(Entity::getUUID).collect(Collectors.toList());
         this.box = box;
         this.level = level;
         this.rarity = rarity;
@@ -123,7 +123,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
         this.ticksLeft = this.sTickLeft;
 
         players.stream()
-                .map(player -> VaultSetsData.get(player.getServerWorld()).getExtraTime(player.getUniqueID()))
+                .map(player -> VaultSetsData.get(player.getLevel()).getExtraTime(player.getUUID()))
                 .max(Integer::compare)
                 .ifPresent(extraTime -> {
                     this.sTickLeft += extraTime;
@@ -169,12 +169,12 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
                 this.onFinishRaid(world);
             } else {
                 this.runForAll(world.getServer(), player -> {
-                    player.sendMessage(new StringTextComponent("Time has run out!").mergeStyle(TextFormatting.GREEN), player.getUniqueID());
-                    player.inventory.func_234564_a_(stack -> true, -1, player.container.func_234641_j_());
-                    player.openContainer.detectAndSendChanges();
-                    player.container.onCraftMatrixChanged(player.inventory);
-                    player.updateHeldItem();
-                    player.attackEntityFrom(VAULT_FAILED, 100000000.0F);
+                    player.sendMessage(new StringTextComponent("Time has run out!").withStyle(TextFormatting.GREEN), player.getUUID());
+                    player.inventory.clearOrCountMatchingItems(stack -> true, -1, player.inventoryMenu.getCraftSlots());
+                    player.containerMenu.broadcastChanges();
+                    player.inventoryMenu.slotsChanged(player.inventory);
+                    player.broadcastCarriedItem();
+                    player.hurt(VAULT_FAILED, 100000000.0F);
                 });
 
                 this.onFinishRaid(world);
@@ -183,8 +183,8 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
         } else {
             this.runForPlayers(world.getServer(), player -> {
                 if (this.ticksLeft + 20 < this.sTickLeft
-                        && player.world.getDimensionKey() != Vault.VAULT_KEY) {
-                    if (player.world.getDimensionKey() == World.OVERWORLD) {
+                        && player.level.dimension() != Vault.VAULT_KEY) {
+                    if (player.level.dimension() == World.OVERWORLD) {
                         //This triggers when you go through the portal or TP out.
                         this.onFinishRaid(world);
                     } else {
@@ -203,17 +203,17 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
         this.finished = true;
 
         this.runForAll(world.getServer(), player -> {
-            if (!player.removed && player.world.getDimensionKey() == Vault.VAULT_KEY) {
+            if (!player.removed && player.level.dimension() == Vault.VAULT_KEY) {
                 this.teleportToStart(world, player);
             }
 
-            this.finish(world, player.getUniqueID());
+            this.finish(world, player.getUUID());
 
             List<UUID> list = this.spectators.stream().map(spectator -> spectator.uuid).collect(Collectors.toList());
 
-            if (!player.removed && !list.contains(player.getUniqueID())) {
+            if (!player.removed && !list.contains(player.getUUID())) {
                 float range = ModConfigs.VAULT_GENERAL.VAULT_EXIT_TNL_MAX - ModConfigs.VAULT_GENERAL.VAULT_EXIT_TNL_MIN;
-                float tnl = ModConfigs.VAULT_GENERAL.VAULT_EXIT_TNL_MIN + world.rand.nextFloat() * range;
+                float tnl = ModConfigs.VAULT_GENERAL.VAULT_EXIT_TNL_MIN + world.random.nextFloat() * range;
 
                 PlayerVaultStatsData statsData = PlayerVaultStatsData.get(world);
                 PlayerVaultStats stats = statsData.getVaultStats(player);
@@ -225,7 +225,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
     }
 
     public void addBoss(LivingEntity entity) {
-        this.bosses.add(entity.getUniqueID());
+        this.bosses.add(entity.getUUID());
         this.summonedBoss = true;
     }
 
@@ -236,11 +236,11 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
     public void finish(ServerWorld server, UUID playerId) {
         Scoreboard scoreboard = server.getScoreboard();
         ScoreObjective objective = getOrCreateObjective(scoreboard, "VaultRarity", ScoreCriteria.DUMMY, ScoreCriteria.RenderType.INTEGER);
-        scoreboard.removeObjectiveFromEntity(playerId.toString(), objective);
+        scoreboard.resetPlayerScore(playerId.toString(), objective);
     }
 
     public static ScoreObjective getOrCreateObjective(Scoreboard scoreboard, String name, ScoreCriteria criteria, ScoreCriteria.RenderType renderType) {
-        if (!scoreboard.func_197897_d().contains(name)) {
+        if (!scoreboard.getObjectiveNames().contains(name)) {
             scoreboard.addObjective(name, criteria, new StringTextComponent(name), renderType);
         }
 
@@ -250,7 +250,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
     public void runForPlayers(MinecraftServer server, Consumer<ServerPlayerEntity> action) {
         for (UUID uuid : this.playerIds) {
             if (server == null) return;
-            ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(uuid);
+            ServerPlayerEntity player = server.getPlayerList().getPlayer(uuid);
             if (player == null) return;
             action.accept(player);
         }
@@ -259,7 +259,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
     public void runForSpectators(MinecraftServer server, Consumer<ServerPlayerEntity> action) {
         this.spectators.stream().map(spectator -> spectator.uuid).forEach(uuid -> {
             if (server == null) return;
-            ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(uuid);
+            ServerPlayerEntity player = server.getPlayerList().getPlayer(uuid);
             if (player == null) return;
             action.accept(player);
         });
@@ -274,7 +274,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
         this.runForAll(server, player -> {
             ModNetwork.CHANNEL.sendTo(
                     new VaultRaidTickMessage(this.ticksLeft),
-                    player.connection.netManager,
+                    player.connection.connection,
                     NetworkDirection.PLAY_TO_CLIENT
             );
         });
@@ -285,14 +285,14 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
         CompoundNBT nbt = new CompoundNBT();
 
         if (this.playerIds.size() == 1) {
-            nbt.putUniqueId("PlayerId", this.playerIds.get(0));
+            nbt.putUUID("PlayerId", this.playerIds.get(0));
         } else {
             ListNBT playerIdsList = new ListNBT();
-            this.playerIds.forEach(uuid -> playerIdsList.add(NBTUtil.func_240626_a_(uuid)));
+            this.playerIds.forEach(uuid -> playerIdsList.add(NBTUtil.createUUID(uuid)));
             nbt.put("PlayerIds", playerIdsList);
         }
 
-        nbt.put("Box", this.box.toNBTTagIntArray());
+        nbt.put("Box", this.box.createTag());
         nbt.putInt("Level", this.level);
         nbt.putInt("Rarity", this.rarity);
         nbt.putInt("StartTicksLeft", this.sTickLeft);
@@ -326,10 +326,10 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         if (nbt.contains("PlayerId")) {
-            this.playerIds = Collections.singletonList(nbt.getUniqueId("PlayerId"));
+            this.playerIds = Collections.singletonList(nbt.getUUID("PlayerId"));
         } else {
             ListNBT playerIdsList = nbt.getList("PlayerIds", Constants.NBT.TAG_INT_ARRAY);
-            this.playerIds = playerIdsList.stream().map(NBTUtil::readUniqueId).collect(Collectors.toList());
+            this.playerIds = playerIdsList.stream().map(NBTUtil::loadUUID).collect(Collectors.toList());
         }
 
         this.box = new MutableBoundingBox(nbt.getIntArray("Box"));
@@ -360,7 +360,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
         this.bosses.clear();
         ListNBT bossesList = nbt.getList("Bosses", Constants.NBT.TAG_STRING);
         bossesList.stream()
-                .map(inbt -> ((StringNBT) inbt).getString())
+                .map(inbt -> ((StringNBT) inbt).getAsString())
                 .map(UUID::fromString)
                 .forEach(this.bosses::add);
     }
@@ -374,13 +374,13 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
     public void teleportToStart(ServerWorld world, ServerPlayerEntity player) {
         if (this.start == null) {
             Vault.LOGGER.warn("No vault start was found.");
-            player.teleport(world, this.box.minX + this.box.getXSize() / 2.0F, 256,
-                    this.box.minZ + this.box.getZSize() / 2.0F, player.rotationYaw, player.rotationPitch);
+            player.teleportTo(world, this.box.x0 + this.box.getXSpan() / 2.0F, 256,
+                    this.box.z0 + this.box.getZSpan() / 2.0F, player.yRot, player.xRot);
             return;
         }
 
-        player.teleport(world, this.start.getX() + 0.5D, this.start.getY() + 0.2D, this.start.getZ() + 0.5D,
-                this.facing == null ? world.getRandom().nextFloat() * 360.0F : this.facing.rotateY().getHorizontalAngle(), 0.0F);
+        player.teleportTo(world, this.start.getX() + 0.5D, this.start.getY() + 0.2D, this.start.getZ() + 0.5D,
+                this.facing == null ? world.getRandom().nextFloat() * 360.0F : this.facing.getClockWise().toYRot(), 0.0F);
 
         player.setOnGround(true);
     }
@@ -392,17 +392,17 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
         for (int x = -48; x < 48; x++) {
             for (int z = -48; z < 48; z++) {
                 for (int y = 0; y < 48; y++) {
-                    BlockPos pos = chunkPos.asBlockPos().add(x, VaultStructure.START_Y + y, z);
+                    BlockPos pos = chunkPos.getWorldPosition().offset(x, VaultStructure.START_Y + y, z);
                     if (world.getBlockState(pos).getBlock() != Blocks.CRIMSON_PRESSURE_PLATE) continue;
-                    world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                    world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 
                     this.start = pos;
 
                     for (Direction direction : Direction.Plane.HORIZONTAL) {
                         int count = 1;
 
-                        while (world.getBlockState(pos.offset(direction, count)).getBlock() == Blocks.WARPED_PRESSURE_PLATE) {
-                            world.setBlockState(pos.offset(direction, count), Blocks.AIR.getDefaultState());
+                        while (world.getBlockState(pos.relative(direction, count)).getBlock() == Blocks.WARPED_PRESSURE_PLATE) {
+                            world.setBlockAndUpdate(pos.relative(direction, count), Blocks.AIR.defaultBlockState());
                             count++;
                         }
 
@@ -416,40 +416,40 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
         }
 
         this.spectatorIds.forEach(uuid -> {
-            ServerPlayerEntity player = world.getServer().getPlayerList().getPlayerByUUID(uuid);
+            ServerPlayerEntity player = world.getServer().getPlayerList().getPlayer(uuid);
             if (player == null) return;
             this.addSpectator(player);
         });
 
         this.runForAll(world.getServer(), player -> {
             this.teleportToStart(world, player);
-            player.func_242279_ag();
+            player.setPortalCooldown();
 
-            Scoreboard scoreboard = player.getWorldScoreboard();
+            Scoreboard scoreboard = player.getScoreboard();
             ScoreObjective objective = getOrCreateObjective(scoreboard, "VaultRarity", ScoreCriteria.DUMMY, ScoreCriteria.RenderType.INTEGER);
-            scoreboard.getOrCreateScore(player.getName().getString(), objective).setScorePoints(this.rarity);
+            scoreboard.getOrCreatePlayerScore(player.getName().getString(), objective).setScore(this.rarity);
 
             long seconds = (this.ticksLeft / 20) % 60;
             long minutes = ((this.ticksLeft / 20) / 60) % 60;
             String duration = String.format("%02d:%02d", minutes, seconds);
 
             StringTextComponent title = new StringTextComponent("The Vault");
-            title.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_ddd01e)));
+            title.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_ddd01e)));
 
             IFormattableTextComponent subtitle = this.cannotExit
                     ? new StringTextComponent("No exit this time, ").append(player.getName()).append(new StringTextComponent("!"))
                     : new StringTextComponent("Good luck, ").append(player.getName()).append(new StringTextComponent("!"));
-            subtitle.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_ddd01e)));
+            subtitle.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_ddd01e)));
 
             StringTextComponent actionBar = new StringTextComponent("You have " + duration + " minutes to complete the raid.");
-            actionBar.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_ddd01e)));
+            actionBar.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_ddd01e)));
 
             STitlePacket titlePacket = new STitlePacket(STitlePacket.Type.TITLE, title);
             STitlePacket subtitlePacket = new STitlePacket(STitlePacket.Type.SUBTITLE, subtitle);
 
-            player.connection.sendPacket(titlePacket);
-            player.connection.sendPacket(subtitlePacket);
-            player.sendStatusMessage(actionBar, true);
+            player.connection.send(titlePacket);
+            player.connection.send(subtitlePacket);
+            player.displayClientMessage(actionBar, true);
 
             //ModNetwork.CHANNEL.sendTo(
             //        new VaultBeginMessage(this.cannotExit),
@@ -463,7 +463,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
 
             ModNetwork.CHANNEL.sendTo(
                     new VaultInfoMessage(this),
-                    player.connection.netManager,
+                    player.connection.connection,
                     NetworkDirection.PLAY_TO_CLIENT
             );
 
@@ -473,8 +473,8 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
             this.modifiers.forEach((i, modifier) -> {
                 StringTextComponent s = new StringTextComponent(modifier.getName());
 
-                s.setStyle(Style.EMPTY.setColor(Color.fromInt(modifier.getColor()))
-                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(modifier.getDescription()))));
+                s.setStyle(Style.EMPTY.withColor(Color.fromRgb(modifier.getColor()))
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent(modifier.getDescription()))));
 
                 text.append(s);
 
@@ -494,29 +494,29 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
             String rarityName = VaultRarity.values()[this.rarity].name().toLowerCase();
             rarityName = rarityName.substring(0, 1).toUpperCase() + rarityName.substring(1);
 
-            text.append(new StringTextComponent(rarityName).mergeStyle(VaultRarity.values()[this.rarity].color));
+            text.append(new StringTextComponent(rarityName).withStyle(VaultRarity.values()[this.rarity].color));
             text.append(new StringTextComponent(" Vault!"));
-            prefix.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_ffffff)));
-            text.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_ffffff)));
+            prefix.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_ffffff)));
+            text.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_ffffff)));
 
-            IFormattableTextComponent playerName = player.getDisplayName().deepCopy();
-            playerName.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_983198)));
+            IFormattableTextComponent playerName = player.getDisplayName().copy();
+            playerName.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_983198)));
 
-            world.getServer().getPlayerList().func_232641_a_(playerName.append(prefix).append(text), ChatType.CHAT, player.getUniqueID());
-            Advancement advancement = player.getServer().getAdvancementManager().getAdvancement(Vault.id("root"));
-            player.getAdvancements().grantCriterion(advancement, "entered_vault");
+            world.getServer().getPlayerList().broadcastMessage(playerName.append(prefix).append(text), ChatType.CHAT, player.getUUID());
+            Advancement advancement = player.getServer().getAdvancements().getAdvancement(Vault.id("root"));
+            player.getAdvancements().award(advancement, "entered_vault");
         });
     }
 
     public void addSpectator(ServerPlayerEntity player) {
-        this.getPlayerIds().remove(player.getUniqueID());
+        this.getPlayerIds().remove(player.getUUID());
         Spectator spectator = new Spectator();
-        spectator.uuid = player.getUniqueID();
-        spectator.oldGameType = player.interactionManager.getGameType();
-        player.setGameType(GameType.SPECTATOR);
+        spectator.uuid = player.getUUID();
+        spectator.oldGameType = player.gameMode.getGameModeForPlayer();
+        player.setGameMode(GameType.SPECTATOR);
 
-        if (player.world.getDimensionKey() != Vault.VAULT_KEY) {
-            this.teleportToStart(player.getServer().getWorld(Vault.VAULT_KEY), player);
+        if (player.level.dimension() != Vault.VAULT_KEY) {
+            this.teleportToStart(player.getServer().getLevel(Vault.VAULT_KEY), player);
         }
     }
 
@@ -526,7 +526,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
 
         public void finish(ServerWorld world, VaultRaid raid) {
             NetcodeUtils.runIfPresent(world.getServer(), this.uuid, player -> {
-                player.setGameType(this.oldGameType);
+                player.setGameMode(this.oldGameType);
                 raid.teleportToStart(world, player);
             });
         }
@@ -535,14 +535,14 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
         public CompoundNBT serializeNBT() {
             CompoundNBT nbt = new CompoundNBT();
             nbt.putInt("GameType", this.oldGameType.ordinal());
-            nbt.putUniqueId("PlayerId", this.uuid);
+            nbt.putUUID("PlayerId", this.uuid);
             return nbt;
         }
 
         @Override
         public void deserializeNBT(CompoundNBT nbt) {
             this.oldGameType = GameType.values()[nbt.getInt("GameType")];
-            this.uuid = nbt.getUniqueId("PlayerId");
+            this.uuid = nbt.getUUID("PlayerId");
         }
 
         public static Spectator fromNBT(CompoundNBT nbt) {

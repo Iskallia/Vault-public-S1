@@ -10,16 +10,16 @@ public class AngelTalent extends PlayerTalent {
 
     @Override
     public void tick(PlayerEntity player) {
-        if (!player.abilities.allowFlying) {
-            player.abilities.allowFlying = true;
+        if (!player.abilities.mayfly) {
+            player.abilities.mayfly = true;
         }
-        player.sendPlayerAbilities();
+        player.onUpdateAbilities();
     }
 
     @Override
     public void onRemoved(PlayerEntity player) {
-        player.abilities.allowFlying = false;
-        player.sendPlayerAbilities();
+        player.abilities.mayfly = false;
+        player.onUpdateAbilities();
     }
 
 }

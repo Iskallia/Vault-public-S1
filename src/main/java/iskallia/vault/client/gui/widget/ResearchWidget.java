@@ -68,7 +68,7 @@ public class ResearchWidget extends Widget {
         if (locked) return false;
         if (selected) return false;
 
-        this.playDownSound(Minecraft.getInstance().getSoundHandler());
+        this.playDownSound(Minecraft.getInstance().getSoundManager());
         return true;
     }
 
@@ -90,9 +90,9 @@ public class ResearchWidget extends Widget {
     renderIcon(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         ResourceBoundary resourceBoundary = style.frameType.getResourceBoundary();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(-ICON_SIZE / 2f, -ICON_SIZE / 2f, 0);
-        Minecraft.getInstance().textureManager.bindTexture(resourceBoundary.getResource());
+        Minecraft.getInstance().textureManager.bind(resourceBoundary.getResource());
 
         int vOffset = locked ? 62
                 : selected || isMouseOver(mouseX, mouseY) ? -31
@@ -102,11 +102,11 @@ public class ResearchWidget extends Widget {
                 resourceBoundary.getV() + vOffset,
                 resourceBoundary.getW(),
                 resourceBoundary.getH());
-        matrixStack.pop();
+        matrixStack.popPose();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(-16 / 2f, -16 / 2f, 0);
-        Minecraft.getInstance().textureManager.bindTexture(locked ? SKILL_WIDGET_RESOURCE : RESEARCHES_RESOURCE);
+        Minecraft.getInstance().textureManager.bind(locked ? SKILL_WIDGET_RESOURCE : RESEARCHES_RESOURCE);
         if (locked) {
             blit(matrixStack, this.x + 3, this.y + 1,
                     10, 124, 10, 14);
@@ -115,7 +115,7 @@ public class ResearchWidget extends Widget {
                     style.u, style.v,
                     16, 16);
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
 }

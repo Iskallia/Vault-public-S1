@@ -32,23 +32,23 @@ public class ExecuteAbility extends EffectAbility {
 
     @Override
     public void onAction(PlayerEntity player, boolean active) {
-        EffectInstance activeEffect = player.getActivePotionEffect(this.getEffect());
+        EffectInstance activeEffect = player.getEffect(this.getEffect());
         EffectInstance newEffect = new EffectInstance(this.getEffect(),
                 Integer.MAX_VALUE, this.getAmplifier(), false,
                 this.getType().showParticles, this.getType().showIcon);
 
         if (activeEffect == null) {
-            player.addPotionEffect(newEffect);
+            player.addEffect(newEffect);
         }
     }
 
     @SubscribeEvent
     public static void onDamage(LivingDamageEvent event) {
-        if (event.getEntity().world.isRemote) return;
-        if (!(event.getSource().getTrueSource() instanceof PlayerEntity)) return;
+        if (event.getEntity().level.isClientSide) return;
+        if (!(event.getSource().getEntity() instanceof PlayerEntity)) return;
 
-        PlayerEntity player = (PlayerEntity) event.getSource().getTrueSource();
-        EffectInstance execute = player.getActivePotionEffect(ModEffects.EXECUTE);
+        PlayerEntity player = (PlayerEntity) event.getSource().getEntity();
+        EffectInstance execute = player.getEffect(ModEffects.EXECUTE);
 
         if (execute == null) return;
 
@@ -61,15 +61,15 @@ public class ExecuteAbility extends EffectAbility {
 
         event.setAmount(damage);
 
-        player.getHeldItemMainhand().damageItem((int) damage, player, playerEntity -> {
+        player.getMainHandItem().hurtAndBreak((int) damage, player, playerEntity -> {
         });
 
-        player.world.playSound(
+        player.level.playSound(
                 null,
-                player.getPosX(),
-                player.getPosY(),
-                player.getPosZ(),
-                SoundEvents.ENTITY_EVOKER_CAST_SPELL,
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                SoundEvents.EVOKER_CAST_SPELL,
                 SoundCategory.MASTER,
                 1F, 1F
         );
@@ -83,7 +83,7 @@ public class ExecuteAbility extends EffectAbility {
 //        }
 
 
-        player.removePotionEffect(ModEffects.EXECUTE);
+        player.removeEffect(ModEffects.EXECUTE);
     }
 
     private static Vector3d getOffset(Direction direction) {

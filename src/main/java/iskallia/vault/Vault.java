@@ -28,7 +28,7 @@ public class Vault {
     public static final String MOD_ID = "the_vault";
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public static RegistryKey<World> VAULT_KEY = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, Vault.id("vault"));
+    public static RegistryKey<World> VAULT_KEY = RegistryKey.create(Registry.DIMENSION_REGISTRY, Vault.id("vault"));
 
     public Vault() {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, this::onCommandRegister);
@@ -43,16 +43,16 @@ public class Vault {
     public void onBiomeLoad(BiomeLoadingEvent event) {
         if (event.getName().equals(Vault.id("spoopy"))) {
             event.getGeneration()
-                    .withFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION, ModFeatures.VAULT_ORE)
-                    .withFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION, ModFeatures.BREADCRUMB_CHEST);
+                    .addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION, ModFeatures.VAULT_ORE)
+                    .addFeature(GenerationStage.Decoration.UNDERGROUND_DECORATION, ModFeatures.BREADCRUMB_CHEST);
         }
 
-        event.getGeneration().withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, ModFeatures.VAULT_ROCK_ORE);
+        event.getGeneration().addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, ModFeatures.VAULT_ROCK_ORE);
     }
 
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
-        ServerWorld serverWorld = player.getServerWorld();
+        ServerWorld serverWorld = player.getLevel();
         MinecraftServer server = player.getServer();
         PlayerVaultStatsData.get(serverWorld).getVaultStats(player).sync(server);
         PlayerResearchesData.get(serverWorld).getResearches(player).sync(server);

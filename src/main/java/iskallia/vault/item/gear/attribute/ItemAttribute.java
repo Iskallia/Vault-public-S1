@@ -32,7 +32,7 @@ public class ItemAttribute<T, I extends ItemAttribute.Instance<T>> {
 	}
 
 	public Optional<I> get(ItemStack stack) {
-		CompoundNBT nbt = stack.getChildTag("Vault");
+		CompoundNBT nbt = stack.getTagElement("Vault");
 		if(nbt == null || !nbt.contains(this.getTagKey(), Constants.NBT.TAG_LIST))return Optional.empty();
 
 		ListNBT attributesList = nbt.getList(this.getTagKey(), Constants.NBT.TAG_COMPOUND);
@@ -89,7 +89,7 @@ public class ItemAttribute<T, I extends ItemAttribute.Instance<T>> {
 	}
 
 	public I create(ItemStack stack, Supplier<T> value) {
-		CompoundNBT nbt = stack.getOrCreateChildTag("Vault");
+		CompoundNBT nbt = stack.getOrCreateTagElement("Vault");
 		if(!nbt.contains(this.getTagKey(), Constants.NBT.TAG_LIST))nbt.put(this.getTagKey(), new ListNBT());
 		ListNBT attributesList = nbt.getList(this.getTagKey(), Constants.NBT.TAG_COMPOUND);
 
@@ -182,7 +182,7 @@ public class ItemAttribute<T, I extends ItemAttribute.Instance<T>> {
 			if(this.delegate == null)return;
 			CompoundNBT nbt = this.serializeNBT();
 
-			for(String key: nbt.keySet()) {
+			for(String key: nbt.getAllKeys()) {
 				INBT value = nbt.get(key);
 
 				if(value != null) {

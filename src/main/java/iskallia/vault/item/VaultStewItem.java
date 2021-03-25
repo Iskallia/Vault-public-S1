@@ -17,9 +17,11 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
+import net.minecraft.item.Item.Properties;
+
 public class VaultStewItem extends SoupItem {
 
-	public static Food FOOD = new Food.Builder().saturation(0).hunger(0).fastToEat().setAlwaysEdible().build();
+	public static Food FOOD = new Food.Builder().saturationMod(0).nutrition(0).fast().alwaysEat().build();
 	private final Rarity rarity;
 
 	public VaultStewItem(ResourceLocation id, Rarity rarity, Properties builder) {
@@ -33,22 +35,22 @@ public class VaultStewItem extends SoupItem {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		if (!world.isRemote && this.getRarity() == Rarity.MYSTERY) {
-			ItemStack heldStack = player.getHeldItem(hand);
-			String randomPart = ModConfigs.VAULT_STEW.STEW_POOL.getRandom(world.rand);
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+		if (!world.isClientSide && this.getRarity() == Rarity.MYSTERY) {
+			ItemStack heldStack = player.getItemInHand(hand);
+			String randomPart = ModConfigs.VAULT_STEW.STEW_POOL.getRandom(world.random);
 			ItemStack stackToDrop = new ItemStack(Registry.ITEM.getOptional(new ResourceLocation(randomPart)).orElse(Items.AIR));
-			ItemRelicBoosterPack.successEffects(world, player.getPositionVec());
+			ItemRelicBoosterPack.successEffects(world, player.position());
 
-			player.dropItem(stackToDrop, false, false);
+			player.drop(stackToDrop, false, false);
 			heldStack.shrink(1);
 		}
 
-		return super.onItemRightClick(world, player, hand);
+		return super.use(world, player, hand);
 	}
 
 	@Override
-	public ItemStack onItemUseFinish(ItemStack stack, World world, LivingEntity entity) {
+	public ItemStack finishUsingItem(ItemStack stack, World world, LivingEntity entity) {
 		if(this.getRarity() != Rarity.MYSTERY && entity instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity)entity;
 			PlayerVaultStatsData statsData = PlayerVaultStatsData.get((ServerWorld) world);
@@ -56,7 +58,7 @@ public class VaultStewItem extends SoupItem {
 			statsData.addVaultExp(player, (int)(stats.getTnl() * this.getRarity().tnlProgress));
 		}
 
-		return super.onItemUseFinish(stack, world, entity);
+		return super.finishUsingItem(stack, world, entity);
 	}
 
 	public enum Rarity {

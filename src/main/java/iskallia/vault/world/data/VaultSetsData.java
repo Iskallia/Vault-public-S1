@@ -48,7 +48,7 @@ public class VaultSetsData extends WorldSavedData {
 
     public boolean markSetAsCrafted(UUID playerId, RelicSet relicSet) {
         Set<String> craftedSets = getCraftedSets(playerId);
-        this.markDirty();
+        this.setDirty();
         return craftedSets.add(relicSet.getId().toString());
     }
 
@@ -56,7 +56,7 @@ public class VaultSetsData extends WorldSavedData {
     public static void onCrafted(PlayerEvent.ItemCraftedEvent event) {
         PlayerEntity player = event.getPlayer();
 
-        if (player.world.isRemote) return;
+        if (player.level.isClientSide) return;
 
         IInventory craftingMatrix = event.getInventory();
         ItemStack craftedItemstack = event.getCrafting();
@@ -64,28 +64,28 @@ public class VaultSetsData extends WorldSavedData {
         if (craftedItemstack.getItem() != ModBlocks.RELIC_STATUE_BLOCK_ITEM)
             return;
 
-        for (int i = 0; i < craftingMatrix.getSizeInventory(); i++) {
-            ItemStack stackInSlot = craftingMatrix.getStackInSlot(i);
+        for (int i = 0; i < craftingMatrix.getContainerSize(); i++) {
+            ItemStack stackInSlot = craftingMatrix.getItem(i);
             if (stackInSlot == ItemStack.EMPTY) continue;
             Item item = stackInSlot.getItem();
             if (item instanceof RelicPartItem) {
                 RelicPartItem relicPart = (RelicPartItem) item;
-                VaultSetsData vaultSetsData = VaultSetsData.get((ServerWorld) player.world);
-                vaultSetsData.markSetAsCrafted(player.getUniqueID(), relicPart.getRelicSet());
+                VaultSetsData vaultSetsData = VaultSetsData.get((ServerWorld) player.level);
+                vaultSetsData.markSetAsCrafted(player.getUUID(), relicPart.getRelicSet());
                 break;
             }
         }
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         this.playerData = NBTHelper.readMap(nbt, "Sets", ListNBT.class, list -> {
             return IntStream.range(0, list.size()).mapToObj(list::getString).collect(Collectors.toSet());
         });
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         NBTHelper.writeMap(compound, "Sets", this.playerData, ListNBT.class, strings -> {
             ListNBT list = new ListNBT();
             strings.forEach(s -> list.add(StringNBT.valueOf(s)));
@@ -96,8 +96,8 @@ public class VaultSetsData extends WorldSavedData {
     }
 
     public static VaultSetsData get(ServerWorld world) {
-        return world.getServer().func_241755_D_()
-                .getSavedData().getOrCreate(VaultSetsData::new, DATA_NAME);
+        return world.getServer().overworld()
+                .getDataStorage().computeIfAbsent(VaultSetsData::new, DATA_NAME);
     }
 
 }

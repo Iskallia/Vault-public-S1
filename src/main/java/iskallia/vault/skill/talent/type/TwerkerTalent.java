@@ -42,18 +42,18 @@ public class TwerkerTalent extends PlayerTalent {
     @Override
     public void tick(PlayerEntity player) {
         if (player.isCrouching()) {
-            BlockPos playerPos = player.getPosition();
+            BlockPos playerPos = player.blockPosition();
 
             BlockPos pos = new BlockPos(
-                    playerPos.getX() + player.getRNG().nextInt(this.getXRange() * 2 + 1) - this.getXRange(),
-                    playerPos.getY() - player.getRNG().nextInt(this.getYRange() * 2 + 1) + this.getYRange(),
-                    playerPos.getZ() + player.getRNG().nextInt(this.getZRange() * 2 + 1) - this.getZRange());
+                    playerPos.getX() + player.getRandom().nextInt(this.getXRange() * 2 + 1) - this.getXRange(),
+                    playerPos.getY() - player.getRandom().nextInt(this.getYRange() * 2 + 1) + this.getYRange(),
+                    playerPos.getZ() + player.getRandom().nextInt(this.getZRange() * 2 + 1) - this.getZRange());
 
-            Block block = player.world.getBlockState(pos).getBlock();
+            Block block = player.level.getBlockState(pos).getBlock();
 
             if (block instanceof CropsBlock || block instanceof SaplingBlock) {
-                BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), player.world, pos, player);
-                ((ServerWorld) player.world).spawnParticle(ParticleTypes.HAPPY_VILLAGER, pos.getX(), pos.getY(), pos.getZ(),
+                BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), player.level, pos, player);
+                ((ServerWorld) player.level).sendParticles(ParticleTypes.HAPPY_VILLAGER, pos.getX(), pos.getY(), pos.getZ(),
                         100, 1D, 0.5D, 1D, 0.0D);
             }
         }

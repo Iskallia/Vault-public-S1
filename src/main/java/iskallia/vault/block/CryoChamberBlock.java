@@ -42,24 +42,26 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class CryoChamberBlock extends Block {
 
-    public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = HorizontalBlock.FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     public static final EnumProperty<ChamberState> CHAMBER_STATE = EnumProperty.create("chamber_state", ChamberState.class);
 
     public CryoChamberBlock() {
-        super(Properties.create(Material.IRON, MaterialColor.IRON)
-                .hardnessAndResistance(5.0F, 3600000.0F)
+        super(Properties.of(Material.METAL, MaterialColor.METAL)
+                .strength(5.0F, 3600000.0F)
                 .sound(SoundType.METAL)
-                .notSolid()
-                .setOpaque(CryoChamberBlock::isntSolid)
-                .setBlocksVision(CryoChamberBlock::isntSolid));
+                .noOcclusion()
+                .isRedstoneConductor(CryoChamberBlock::isntSolid)
+                .isViewBlocking(CryoChamberBlock::isntSolid));
 
-        this.setDefaultState(this.stateContainer.getBaseState()
-                .with(FACING, Direction.NORTH)
-                .with(HALF, DoubleBlockHalf.LOWER)
-                .with(CHAMBER_STATE, ChamberState.NONE));
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(FACING, Direction.NORTH)
+                .setValue(HALF, DoubleBlockHalf.LOWER)
+                .setValue(CHAMBER_STATE, ChamberState.NONE));
     }
 
     private static boolean isntSolid(BlockState state, IBlockReader reader, BlockPos pos) {
@@ -68,7 +70,7 @@ public class CryoChamberBlock extends Block {
 
     @Override
     public boolean hasTileEntity(BlockState state) {
-        if (state.get(HALF) == DoubleBlockHalf.LOWER)
+        if (state.getValue(HALF) == DoubleBlockHalf.LOWER)
             return true;
 
         return false;
@@ -76,7 +78,7 @@ public class CryoChamberBlock extends Block {
 
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        if (state.get(HALF) == DoubleBlockHalf.LOWER)
+        if (state.getValue(HALF) == DoubleBlockHalf.LOWER)
             return ModBlocks.CRYO_CHAMBER_TILE_ENTITY.create();
 
         return null;
@@ -84,73 +86,73 @@ public class CryoChamberBlock extends Block {
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        BlockPos pos = context.getPos();
-        World world = context.getWorld();
-        if (pos.getY() < 255 && world.getBlockState(pos.up()).isReplaceable(context)) {
-            return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing()).with(HALF, DoubleBlockHalf.LOWER).with(CHAMBER_STATE, ChamberState.NONE);
+        BlockPos pos = context.getClickedPos();
+        World world = context.getLevel();
+        if (pos.getY() < 255 && world.getBlockState(pos.above()).canBeReplaced(context)) {
+            return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection()).setValue(HALF, DoubleBlockHalf.LOWER).setValue(CHAMBER_STATE, ChamberState.NONE);
         } else {
             return null;
         }
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(HALF);
         builder.add(FACING);
         builder.add(CHAMBER_STATE);
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-        if (!worldIn.isRemote && player.isCreative()) {
-            DoubleBlockHalf half = state.get(HALF);
+    public void playerWillDestroy(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
+        if (!worldIn.isClientSide && player.isCreative()) {
+            DoubleBlockHalf half = state.getValue(HALF);
             if (half == DoubleBlockHalf.UPPER) {
-                BlockPos blockpos = pos.down();
+                BlockPos blockpos = pos.below();
                 BlockState blockstate = worldIn.getBlockState(blockpos);
-                if (blockstate.getBlock() == state.getBlock() && blockstate.get(HALF) == DoubleBlockHalf.LOWER) {
-                    worldIn.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 35);
-                    worldIn.playEvent(player, 2001, blockpos, Block.getStateId(blockstate));
+                if (blockstate.getBlock() == state.getBlock() && blockstate.getValue(HALF) == DoubleBlockHalf.LOWER) {
+                    worldIn.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
+                    worldIn.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
                 }
             }
         }
 
-        super.onBlockHarvested(worldIn, pos, state, player);
+        super.playerWillDestroy(worldIn, pos, state, player);
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-        DoubleBlockHalf half = stateIn.get(HALF);
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+        DoubleBlockHalf half = stateIn.getValue(HALF);
         if (facing.getAxis() == Direction.Axis.Y && half == DoubleBlockHalf.LOWER == (facing == Direction.UP)) {
-            return facingState.isIn(this) && facingState.get(HALF) != half ? stateIn.with(FACING, facingState.get(FACING)) : Blocks.AIR.getDefaultState();
+            return facingState.is(this) && facingState.getValue(HALF) != half ? stateIn.setValue(FACING, facingState.getValue(FACING)) : Blocks.AIR.defaultBlockState();
         } else {
-            return half == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !stateIn.isValidPosition(worldIn, currentPos) ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+            return half == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !stateIn.canSurvive(worldIn, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
         }
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        worldIn.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER), 3);
+    public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        worldIn.setBlock(pos.above(), state.setValue(HALF, DoubleBlockHalf.UPPER), 3);
 
         if(placer != null) {
             CryoChamberTileEntity te = getCryoChamberTileEntity(worldIn, pos, state);
-            te.setOwner(placer.getUniqueID());
+            te.setOwner(placer.getUUID());
             te.setMaxCores(ModConfigs.CRYO_CHAMBER.getPlayerCoreCount(placer.getDisplayName().getString()));
         }
     }
 
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (worldIn.isRemote) return;
+    public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (worldIn.isClientSide) return;
         if (!newState.isAir()) return;
 
         CryoChamberTileEntity chamber = getCryoChamberTileEntity(worldIn, pos, state);
         if (chamber == null) return;
 
-        if (state.get(HALF) == DoubleBlockHalf.LOWER) {
+        if (state.getValue(HALF) == DoubleBlockHalf.LOWER) {
             dropCryoChamber(worldIn, pos, chamber);
         }
 
-        super.onReplaced(state, worldIn, pos, newState, isMoving);
+        super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
     private void dropCryoChamber(World world, BlockPos pos, CryoChamberTileEntity te) {
@@ -159,17 +161,17 @@ public class CryoChamberBlock extends Block {
         nbt.put("BlockEntityTag", te.serializeNBT());
         chamberStack.setTag(nbt);
         ItemEntity entity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), chamberStack);
-        world.addEntity(entity);
+        world.addFreshEntity(entity);
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (!world.isRemote) {
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        if (!world.isClientSide) {
             CryoChamberTileEntity chamber = getCryoChamberTileEntity(world, pos, state);
-            ItemStack heldStack = player.getHeldItem(hand);
+            ItemStack heldStack = player.getItemInHand(hand);
 
             if (chamber == null) return ActionResultType.SUCCESS;
-            if (heldStack == ItemStack.EMPTY && player.isSneaking()) {
+            if (heldStack == ItemStack.EMPTY && player.isShiftKeyDown()) {
                 if(chamber.getEternal() == null) return ActionResultType.SUCCESS;
                 CompoundNBT nbt = new CompoundNBT();
                 nbt.putInt("RenameType", RenameType.CRYO_CHAMBER.ordinal());
@@ -190,7 +192,7 @@ public class CryoChamberBlock extends Block {
                             }
                         },
                         (buffer) -> {
-                            buffer.writeCompoundTag(nbt);
+                            buffer.writeNbt(nbt);
                         }
                 );
                 return ActionResultType.SUCCESS;
@@ -199,7 +201,7 @@ public class CryoChamberBlock extends Block {
             if (heldStack.getItem() == ModItems.TRADER_CORE) {
                 TraderCore coreToInsert = ItemTraderCore.getCoreFromStack(heldStack);
                 if (chamber.getOwner() == null) {
-                    chamber.setOwner(player.getUniqueID());
+                    chamber.setOwner(player.getUUID());
                     chamber.setMaxCores(ModConfigs.CRYO_CHAMBER.getPlayerCoreCount(player.getDisplayName().getString()));
                 }
 
@@ -217,14 +219,14 @@ public class CryoChamberBlock extends Block {
     }
 
     public static BlockPos getCryoChamberPos(BlockState state, BlockPos pos) {
-        return state.get(HALF) == DoubleBlockHalf.UPPER
-                ? pos.down() : pos;
+        return state.getValue(HALF) == DoubleBlockHalf.UPPER
+                ? pos.below() : pos;
     }
 
     public static CryoChamberTileEntity getCryoChamberTileEntity(World world, BlockPos pos, BlockState state) {
         BlockPos cryoChamberPos = getCryoChamberPos(state, pos);
 
-        TileEntity tileEntity = world.getTileEntity(cryoChamberPos);
+        TileEntity tileEntity = world.getBlockEntity(cryoChamberPos);
 
         if ((!(tileEntity instanceof CryoChamberTileEntity)))
             return null;
@@ -245,7 +247,7 @@ public class CryoChamberBlock extends Block {
         }
 
         @Override
-        public String getString() {
+        public String getSerializedName() {
             return this.name;
         }
     }

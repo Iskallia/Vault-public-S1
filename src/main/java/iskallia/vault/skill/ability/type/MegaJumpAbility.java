@@ -29,19 +29,19 @@ public class MegaJumpAbility extends PlayerAbility {
 
         jumpVector = jumpVector.scale(magnitude);
 
-        player.addVelocity(
-                jumpVector.getX(),
-                jumpVector.getY(),
-                jumpVector.getZ()
+        player.push(
+                jumpVector.x(),
+                jumpVector.y(),
+                jumpVector.z()
         );
 
         player.startFallFlying();
 
-        player.velocityChanged = true;
+        player.hurtMarked = true;
 
-        player.playSound(ModSounds.MEGA_JUMP_SFX, SoundCategory.MASTER, 0.7f, 1f);
-        ((ServerWorld) player.world).spawnParticle(ParticleTypes.POOF,
-                player.getPosX(), player.getPosY(), player.getPosZ(),
+        player.playNotifySound(ModSounds.MEGA_JUMP_SFX, SoundCategory.MASTER, 0.7f, 1f);
+        ((ServerWorld) player.level).sendParticles(ParticleTypes.POOF,
+                player.getX(), player.getY(), player.getZ(),
                 50, 1D, 0.5D, 1D, 0.0D);
     }
 

@@ -78,7 +78,7 @@ public class VendingMachineTileEntity extends SkinnableTileEntity {
 
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         ListNBT list = new ListNBT();
         for (TraderCore core : cores) {
             try {
@@ -88,11 +88,11 @@ public class VendingMachineTileEntity extends SkinnableTileEntity {
             }
         }
         compound.put("coresList", list);
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void load(BlockState state, CompoundNBT nbt) {
         ListNBT list = nbt.getList("coresList", Constants.NBT.TAG_COMPOUND);
         this.cores = new LinkedList<>();
         for (INBT tag : list) {
@@ -105,7 +105,7 @@ public class VendingMachineTileEntity extends SkinnableTileEntity {
             cores.add(core);
         }
         updateSkin();
-        super.read(state, nbt);
+        super.load(state, nbt);
     }
 
     @Override
@@ -127,18 +127,18 @@ public class VendingMachineTileEntity extends SkinnableTileEntity {
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-        read(state, tag);
+        load(state, tag);
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(pos, 1, getUpdateTag());
+        return new SUpdateTileEntityPacket(worldPosition, 1, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        CompoundNBT nbt = pkt.getNbtCompound();
+        CompoundNBT nbt = pkt.getTag();
         handleUpdateTag(getBlockState(), nbt);
     }
 }

@@ -26,12 +26,12 @@ public class ResearchMessage {
     }
 
     public static void encode(ResearchMessage message, PacketBuffer buffer) {
-        buffer.writeString(message.researchName, 32767);
+        buffer.writeUtf(message.researchName, 32767);
     }
 
     public static ResearchMessage decode(PacketBuffer buffer) {
         ResearchMessage message = new ResearchMessage();
-        message.researchName = buffer.readString(32767);
+        message.researchName = buffer.readUtf(32767);
         return message;
     }
 
@@ -46,8 +46,8 @@ public class ResearchMessage {
 
             if (research == null) return;
 
-            PlayerVaultStatsData statsData = PlayerVaultStatsData.get((ServerWorld) sender.world);
-            PlayerResearchesData researchesData = PlayerResearchesData.get((ServerWorld) sender.world);
+            PlayerVaultStatsData statsData = PlayerVaultStatsData.get((ServerWorld) sender.level);
+            PlayerResearchesData researchesData = PlayerResearchesData.get((ServerWorld) sender.level);
 
             ResearchTree researchTree = researchesData.getResearches(sender);
 

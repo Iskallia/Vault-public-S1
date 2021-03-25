@@ -17,11 +17,13 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class CapacitorBlock extends Block {
 
     public CapacitorBlock() {
-        super(Properties.create(Material.IRON, MaterialColor.IRON)
-                .hardnessAndResistance(5.0F, 3600000.0F)
+        super(Properties.of(Material.METAL, MaterialColor.METAL)
+                .strength(5.0F, 3600000.0F)
                 .sound(SoundType.METAL));
 
     }
@@ -37,18 +39,18 @@ public class CapacitorBlock extends Block {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (world.isRemote) return super.onBlockActivated(state, world, pos, player, hand, hit);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        if (world.isClientSide) return super.use(state, world, pos, player, hand, hit);
         CapacitorTileEntity te = getCapacitorTileEntity(world, pos);
         if (te != null) {
-            player.sendStatusMessage(new StringTextComponent("Energy Stored: " + te.getEnergyStorage().getEnergyStored()), true);
+            player.displayClientMessage(new StringTextComponent("Energy Stored: " + te.getEnergyStorage().getEnergyStored()), true);
         }
-        return super.onBlockActivated(state, world, pos, player, hand, hit);
+        return super.use(state, world, pos, player, hand, hit);
     }
 
     public static CapacitorTileEntity getCapacitorTileEntity(World world, BlockPos pos) {
 
-        TileEntity tileEntity = world.getTileEntity(pos);
+        TileEntity tileEntity = world.getBlockEntity(pos);
 
         if ((!(tileEntity instanceof CapacitorTileEntity)))
             return null;

@@ -25,7 +25,7 @@ public class RegionOreFeature extends OreFeature {
 	}
 
 	@Override
-	public boolean func_241855_a(ISeedReader view, ChunkGenerator gen, Random random, BlockPos pos, OreFeatureConfig config) {
+	public boolean place(ISeedReader view, ChunkGenerator gen, Random random, BlockPos pos, OreFeatureConfig config) {
 		VaultOreConfig.Ore[] pool = ModConfigs.VAULT_ORES.getPool(view.getSeed(), pos.getX() >> 4, pos.getZ() >> 4, new SharedSeedRandom());
 		boolean result = false;
 
@@ -35,8 +35,8 @@ public class RegionOreFeature extends OreFeature {
 				int y = random.nextInt(256);
 				int z = random.nextInt(16);
 
-				if(this.isNearTunnel(view, pos.add(x, y, z))) {
-					result |= super.func_241855_a(view, gen, random, pos.add(x, y, z), ore.toConfig());
+				if(this.isNearTunnel(view, pos.offset(x, y, z))) {
+					result |= super.place(view, gen, random, pos.offset(x, y, z), ore.toConfig());
 				}
 			}
 		}
@@ -49,7 +49,7 @@ public class RegionOreFeature extends OreFeature {
 		for(int x = -3; x <= 3; x++) {
 			for(int z = -3; z <= 3; z++) {
 				for(int y = -3; y <= 3; y++) {
-					if(view.getBlockState(pos.add(x, y, z)).getBlock() == Blocks.CAVE_AIR) {
+					if(view.getBlockState(pos.offset(x, y, z)).getBlock() == Blocks.CAVE_AIR) {
 						return true;
 					}
 				}
@@ -60,7 +60,7 @@ public class RegionOreFeature extends OreFeature {
 	}
 
 	public static void register(RegistryEvent.Register<Feature<?>> event) {
-		INSTANCE = new RegionOreFeature(OreFeatureConfig.field_236566_a_);
+		INSTANCE = new RegionOreFeature(OreFeatureConfig.CODEC);
 		INSTANCE.setRegistryName(Vault.id("vault_ore"));
 		event.getRegistry().register(INSTANCE);
 	}

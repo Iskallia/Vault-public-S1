@@ -11,13 +11,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(ModifiableAttributeInstance.class)
 public abstract class MixinAttributeInstance {
 
-	@Redirect(method = "computeValue", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/attributes/Attribute;clampValue(D)D"))
-	private double computeValue(Attribute attribute, double value) {
+	@Redirect(method = "calculateValue", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/attributes/Attribute;sanitizeValue(D)D"))
+	private double calculateValue(Attribute attribute, double value) {
 		if(attribute == Attributes.ARMOR) {
 			return MathHelper.clamp(value, 0, 100);
 		}
 
-		return attribute.clampValue(value);
+		return attribute.sanitizeValue(value);
 	}
 
 }

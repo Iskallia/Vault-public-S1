@@ -4,12 +4,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ResourceLocation;
 
+import net.minecraft.item.Item.Properties;
+
 public class ItemVaultRune extends Item {
 
     public ItemVaultRune(ItemGroup group, ResourceLocation id) {
         super(new Properties()
-                .group(group)
-                .maxStackSize(1));
+                .tab(group)
+                .stacksTo(1));
 
         this.setRegistryName(id);
     }

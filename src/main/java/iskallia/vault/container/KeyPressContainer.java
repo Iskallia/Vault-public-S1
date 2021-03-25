@@ -28,15 +28,15 @@ public class KeyPressContainer extends Container {
             public ItemStack onTake(PlayerEntity player, ItemStack stack) {
                 ItemStack itemStack = super.onTake(player, stack);
 
-                if (!player.world.isRemote && !itemStack.isEmpty()) {
-                    player.world.playEvent(1030, player.getPosition(), 0);
+                if (!player.level.isClientSide && !itemStack.isEmpty()) {
+                    player.level.levelEvent(1030, player.blockPosition(), 0);
                 }
 
                 return itemStack;
             }
 
             @Override
-            public boolean isItemValid(ItemStack stack) {
+            public boolean mayPlace(ItemStack stack) {
                 return false; // Do not accept any item in
             }
         });
@@ -53,26 +53,26 @@ public class KeyPressContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player) {
+    public boolean stillValid(PlayerEntity player) {
         return true;
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int index) {
-        Slot slot = inventorySlots.get(index);
+    public ItemStack quickMoveStack(PlayerEntity player, int index) {
+        Slot slot = slots.get(index);
 
-        if (slot == null || !slot.getHasStack())
+        if (slot == null || !slot.hasItem())
             return ItemStack.EMPTY;
 
-        ItemStack stackOnSlot = slot.getStack();
+        ItemStack stackOnSlot = slot.getItem();
         ItemStack copiedStack = stackOnSlot.copy();
 
         // Picking the result item
         if (index == KeyPressInventory.RESULT_SLOT) {
-            if (mergeItemStack(stackOnSlot, 3, 39, false)) {
-                internalInventory.decrStackSize(KeyPressInventory.KEY_SLOT, 1);
-                internalInventory.decrStackSize(KeyPressInventory.CLUSTER_SLOT, 1);
-                player.world.playEvent(1030, player.getPosition(), 0);
+            if (moveItemStackTo(stackOnSlot, 3, 39, false)) {
+                internalInventory.removeItem(KeyPressInventory.KEY_SLOT, 1);
+                internalInventory.removeItem(KeyPressInventory.CLUSTER_SLOT, 1);
+                player.level.levelEvent(1030, player.blockPosition(), 0);
                 return copiedStack;
             } else {
                 return ItemStack.EMPTY;
@@ -81,7 +81,7 @@ public class KeyPressContainer extends Container {
 
         // Picking ingredient items
         if (index == KeyPressInventory.KEY_SLOT || index == KeyPressInventory.CLUSTER_SLOT) {
-            if (mergeItemStack(stackOnSlot, 3, 39, false)) {
+            if (moveItemStackTo(stackOnSlot, 3, 39, false)) {
                 internalInventory.updateResult();
                 return copiedStack;
             } else {
@@ -90,12 +90,12 @@ public class KeyPressContainer extends Container {
         }
 
         // Picking from actual player inventory
-        if (!mergeItemStack(stackOnSlot, 0, 2, false))
+        if (!moveItemStackTo(stackOnSlot, 0, 2, false))
             return ItemStack.EMPTY;
 
         if (stackOnSlot.isEmpty())
-            slot.putStack(ItemStack.EMPTY);
-        else slot.onSlotChanged();
+            slot.set(ItemStack.EMPTY);
+        else slot.setChanged();
 
         if (stackOnSlot.getCount() == copiedStack.getCount())
             return ItemStack.EMPTY;
@@ -104,11 +104,11 @@ public class KeyPressContainer extends Container {
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity player) {
-        super.onContainerClosed(player);
+    public void removed(PlayerEntity player) {
+        super.removed(player);
 
-        ItemStack keyStack = internalInventory.getStackInSlot(KeyPressInventory.KEY_SLOT);
-        ItemStack clusterStack = internalInventory.getStackInSlot(KeyPressInventory.CLUSTER_SLOT);
+        ItemStack keyStack = internalInventory.getItem(KeyPressInventory.KEY_SLOT);
+        ItemStack clusterStack = internalInventory.getItem(KeyPressInventory.CLUSTER_SLOT);
 
         if (!keyStack.isEmpty()) {
             EntityHelper.giveItem(player, keyStack);

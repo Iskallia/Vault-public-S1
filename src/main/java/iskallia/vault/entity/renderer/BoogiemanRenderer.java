@@ -19,17 +19,17 @@ public class BoogiemanRenderer extends ZombieRenderer {
 //            System.out.println(i + " " + layer.getClass().getSimpleName());
 //        }
 
-        layerRenderers.remove(this.layerRenderers.size() - 1); // Do not render armors
+        layers.remove(this.layers.size() - 1); // Do not render armors
     }
 
     @Override
-    protected void preRenderCallback(ZombieEntity entitylivingbase, MatrixStack matrixStack, float partialTickTime) {
-        super.preRenderCallback(entitylivingbase, matrixStack, partialTickTime);
+    protected void scale(ZombieEntity entitylivingbase, MatrixStack matrixStack, float partialTickTime) {
+        super.scale(entitylivingbase, matrixStack, partialTickTime);
         matrixStack.scale(2, 2, 2);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(ZombieEntity entity) {
+    public ResourceLocation getTextureLocation(ZombieEntity entity) {
         return TEXTURE;
     }
 

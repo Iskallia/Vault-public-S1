@@ -18,6 +18,8 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class VaultAxeItem extends AxeItem implements VaultGear<VaultAxeItem> {
 
 	public VaultAxeItem(ResourceLocation id, Properties builder) {
@@ -48,13 +50,13 @@ public class VaultAxeItem extends AxeItem implements VaultGear<VaultAxeItem> {
 	}
 
 	@Override
-	public ITextComponent getDisplayName(ItemStack itemStack) {
-		return this.getDisplayName(this, itemStack, super.getDisplayName(itemStack));
+	public ITextComponent getName(ItemStack itemStack) {
+		return this.getDisplayName(this, itemStack, super.getName(itemStack));
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		return this.onItemRightClick(this, world, player, hand, super.onItemRightClick(world, player, hand));
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+		return this.onItemRightClick(this, world, player, hand, super.use(world, player, hand));
 	}
 
 	@Override
@@ -64,8 +66,8 @@ public class VaultAxeItem extends AxeItem implements VaultGear<VaultAxeItem> {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		super.addInformation(stack, world, tooltip, flag);
+	public void appendHoverText(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+		super.appendHoverText(stack, world, tooltip, flag);
 		this.addInformation(this, stack, world, tooltip, flag);
 	}
 

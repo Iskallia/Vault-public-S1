@@ -49,26 +49,26 @@ public class AbilitiesOverlay {
 
         MatrixStack matrixStack = event.getMatrixStack();
         Minecraft minecraft = Minecraft.getInstance();
-        int bottom = minecraft.getMainWindow().getScaledHeight();
+        int bottom = minecraft.getWindow().getGuiScaledHeight();
         int barWidth = 62;
         int barHeight = 22;
 
-        minecraft.getProfiler().startSection("abilityBar");
-        matrixStack.push();
+        minecraft.getProfiler().push("abilityBar");
+        matrixStack.pushPose();
 
         RenderSystem.enableBlend();
         matrixStack.translate(10, bottom - barHeight, 0);
 
-        minecraft.getTextureManager().bindTexture(HUD_RESOURCE);
-        minecraft.ingameGUI.blit(matrixStack,
+        minecraft.getTextureManager().bind(HUD_RESOURCE);
+        minecraft.gui.blit(matrixStack,
                 0, 0,
                 1, 13, barWidth, barHeight);
 
-        minecraft.getTextureManager().bindTexture(ABILITIES_RESOURCE);
+        minecraft.getTextureManager().bind(ABILITIES_RESOURCE);
         AbilityNode<?> focusedAbility = learnedAbilities.get(focusedIndex);
         SkillStyle focusedStyle = ModConfigs.ABILITIES_GUI.getStyles().get(focusedAbility.getGroup().getParentName());
-        GlStateManager.color4f(1, 1, 1, cooldowns.getOrDefault(focusedIndex, 0) > 0 ? 0.4f : 1);
-        minecraft.ingameGUI.blit(matrixStack,
+        GlStateManager._color4f(1, 1, 1, cooldowns.getOrDefault(focusedIndex, 0) > 0 ? 0.4f : 1);
+        minecraft.gui.blit(matrixStack,
                 23, 3,
                 focusedStyle.u, focusedStyle.v,
                 16, 16);
@@ -83,7 +83,7 @@ public class AbilitiesOverlay {
             RenderSystem.enableBlend();
         }
 
-        GlStateManager.color4f(0.7f, 0.7f, 0.7f, 0.5f);
+        GlStateManager._color4f(0.7f, 0.7f, 0.7f, 0.5f);
         AbilityNode<?> previousAbility = learnedAbilities.get(previousIndex);
         if (cooldowns.getOrDefault(previousIndex, 0) > 0) {
             float cooldownPercent = (float) cooldowns.get(previousIndex) / ModConfigs.ABILITIES.cooldownOf(previousAbility, minecraft.player);
@@ -95,7 +95,7 @@ public class AbilitiesOverlay {
             RenderSystem.enableBlend();
         }
         SkillStyle previousStyle = ModConfigs.ABILITIES_GUI.getStyles().get(previousAbility.getGroup().getParentName());
-        minecraft.ingameGUI.blit(matrixStack,
+        minecraft.gui.blit(matrixStack,
                 43, 3,
                 previousStyle.u, previousStyle.v,
                 16, 16);
@@ -111,21 +111,21 @@ public class AbilitiesOverlay {
             RenderSystem.enableBlend();
         }
         SkillStyle nextStyle = ModConfigs.ABILITIES_GUI.getStyles().get(nextAbility.getGroup().getParentName());
-        minecraft.ingameGUI.blit(matrixStack,
+        minecraft.gui.blit(matrixStack,
                 3, 3,
                 nextStyle.u, nextStyle.v,
                 16, 16);
 
-        minecraft.getTextureManager().bindTexture(HUD_RESOURCE);
-        GlStateManager.color4f(1, 1, 1, 1);
-        minecraft.ingameGUI.blit(matrixStack,
+        minecraft.getTextureManager().bind(HUD_RESOURCE);
+        GlStateManager._color4f(1, 1, 1, 1);
+        minecraft.gui.blit(matrixStack,
                 19, -1,
                 64 + (cooldowns.getOrDefault(focusedIndex, 0) > 0 ? 50 : active ? 25 : 0),
                 13,
                 24, 24);
 
-        matrixStack.pop();
-        minecraft.getProfiler().endSection();
+        matrixStack.popPose();
+        minecraft.getProfiler().pop();
     }
 
 }

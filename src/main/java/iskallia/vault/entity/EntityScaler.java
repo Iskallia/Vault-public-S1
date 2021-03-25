@@ -19,18 +19,18 @@ public class EntityScaler {
 		VaultMobsConfig.Level overrides = ModConfigs.VAULT_MOBS.getForLevel(level);
 
 		for(EquipmentSlotType slot: EquipmentSlotType.values()) {
-			if(slot.getSlotType() == EquipmentSlotType.Group.HAND) {
-				if(!entity.getItemStackFromSlot(slot).isEmpty())continue;
+			if(slot.getType() == EquipmentSlotType.Group.HAND) {
+				if(!entity.getItemBySlot(slot).isEmpty())continue;
 			}
 
 			ItemStack loot = new ItemStack(type.loot.apply(overrides, slot));
 
 			for(int i = 0; i < type.trials.apply(overrides); i++) {
-				EnchantmentHelper.addRandomEnchantment(random, loot,
-						EnchantmentHelper.calcItemStackEnchantability(random, type.level.apply(overrides), 15, loot), true);
+				EnchantmentHelper.enchantItem(random, loot,
+						EnchantmentHelper.getEnchantmentCost(random, type.level.apply(overrides), 15, loot), true);
 			}
 
-			entity.setItemStackToSlot(slot, loot);
+			entity.setItemSlot(slot, loot);
 		}
 	}
 

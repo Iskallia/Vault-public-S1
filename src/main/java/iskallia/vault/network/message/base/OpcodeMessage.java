@@ -12,12 +12,12 @@ public class OpcodeMessage<OPC extends Enum<OPC>> {
 
     public void encodeSelf(OpcodeMessage<OPC> message, PacketBuffer buffer) {
         buffer.writeInt(message.opcode.ordinal());
-        buffer.writeCompoundTag(message.payload);
+        buffer.writeNbt(message.payload);
     }
 
     public void decodeSelf(PacketBuffer buffer, Class<OPC> enumClass) {
         this.opcode = enumClass.getEnumConstants()[buffer.readInt()];
-        this.payload = buffer.readCompoundTag();
+        this.payload = buffer.readNbt();
     }
 
     public static <O extends Enum<O>, T extends OpcodeMessage<O>>

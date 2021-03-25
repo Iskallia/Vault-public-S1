@@ -19,7 +19,7 @@ public class SkillDescriptionsConfig extends Config {
     public IFormattableTextComponent getDescriptionFor(String skillName) {
         JsonElement element = descriptions.get(skillName);
         if (element == null) {
-            return StringTextComponent.Serializer.getComponentFromJsonLenient(
+            return StringTextComponent.Serializer.fromJsonLenient(
                     "[" +
                             "{text:'No description for ', color:'#192022'}," +
                             "{text: '" + skillName + "', color: '#fcf5c5'}," +
@@ -27,7 +27,7 @@ public class SkillDescriptionsConfig extends Config {
                             "]"
             );
         }
-        return StringTextComponent.Serializer.getComponentFromJson(element);
+        return StringTextComponent.Serializer.fromJson(element);
     }
 
     @Override

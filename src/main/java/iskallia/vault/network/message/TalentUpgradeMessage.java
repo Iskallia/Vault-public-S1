@@ -27,12 +27,12 @@ public class TalentUpgradeMessage {
     }
 
     public static void encode(TalentUpgradeMessage message, PacketBuffer buffer) {
-        buffer.writeString(message.talentName, 32767);
+        buffer.writeUtf(message.talentName, 32767);
     }
 
     public static TalentUpgradeMessage decode(PacketBuffer buffer) {
         TalentUpgradeMessage message = new TalentUpgradeMessage();
-        message.talentName = buffer.readString(32767);
+        message.talentName = buffer.readUtf(32767);
         return message;
     }
 
@@ -45,8 +45,8 @@ public class TalentUpgradeMessage {
 
             TalentGroup<?> talentGroup = ModConfigs.TALENTS.getByName(message.talentName);
 
-            PlayerVaultStatsData statsData = PlayerVaultStatsData.get((ServerWorld) sender.world);
-            PlayerTalentsData abilitiesData = PlayerTalentsData.get((ServerWorld) sender.world);
+            PlayerVaultStatsData statsData = PlayerVaultStatsData.get((ServerWorld) sender.level);
+            PlayerTalentsData abilitiesData = PlayerTalentsData.get((ServerWorld) sender.level);
             TalentTree talentTree = abilitiesData.getTalents(sender);
 
             if (ModConfigs.SKILL_GATES.getGates().isLocked(talentGroup, talentTree))

@@ -53,7 +53,7 @@ public class SuperSecretCakes {
 
     @SubscribeEvent
     public static void onCakePlaced(BlockEvent.EntityPlaceEvent event) {
-        if (((ServerWorld) event.getWorld()).getDimensionKey() != Vault.VAULT_KEY) return;
+        if (((ServerWorld) event.getWorld()).dimension() != Vault.VAULT_KEY) return;
 
         // Cancel if put by players or tile entities
         if (event.getPlacedBlock().getBlock() == Blocks.CAKE) {
@@ -63,22 +63,22 @@ public class SuperSecretCakes {
 
     @SubscribeEvent
     public static void onCakeEat(PlayerInteractEvent.RightClickBlock event) {
-        if (event.getWorld().getDimensionKey() != Vault.VAULT_KEY) return;
+        if (event.getWorld().dimension() != Vault.VAULT_KEY) return;
 
         if (event.getWorld().getBlockState(event.getPos()).getBlock() == Blocks.CAKE) {
             if (event.getSide() == LogicalSide.CLIENT) {
                 Random random = new Random();
                 String cakeQuote = CAKE_QUOTES[random.nextInt(CAKE_QUOTES.length)];
                 StringTextComponent text = new StringTextComponent("\"" + cakeQuote + "\"");
-                text.setStyle(Style.EMPTY.setItalic(true).setColor(Color.fromInt(0xFF_FFC411)));
-                event.getPlayer().sendStatusMessage(text, true);
+                text.setStyle(Style.EMPTY.withItalic(true).withColor(Color.fromRgb(0xFF_FFC411)));
+                event.getPlayer().displayClientMessage(text, true);
 
             } else {
-                event.getPlayer().addPotionEffect(new EffectInstance(Effects.ABSORPTION, 20 * 60, 0));
+                event.getPlayer().addEffect(new EffectInstance(Effects.ABSORPTION, 20 * 60, 0));
                 event.getWorld().destroyBlock(event.getPos(), false);
-                Advancement advancement = event.getPlayer().getServer().getAdvancementManager().getAdvancement(Vault.id("super_secret_cakes"));
+                Advancement advancement = event.getPlayer().getServer().getAdvancements().getAdvancement(Vault.id("super_secret_cakes"));
                 ((ServerPlayerEntity) event.getPlayer()).getAdvancements()
-                        .grantCriterion(advancement, "cake_consumed");
+                        .award(advancement, "cake_consumed");
                 event.setCanceled(true);
             }
         }
