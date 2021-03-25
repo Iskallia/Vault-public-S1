@@ -1,7 +1,6 @@
 package iskallia.vault.block;
 
 import iskallia.vault.altar.AltarInfusionRecipe;
-import iskallia.vault.altar.RequiredItem;
 import iskallia.vault.block.entity.VaultAltarTileEntity;
 import iskallia.vault.init.ModBlocks;
 import iskallia.vault.init.ModConfigs;
@@ -12,11 +11,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -31,7 +30,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class VaultAltarBlock extends Block {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -65,44 +63,39 @@ public class VaultAltarBlock extends Block {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (worldIn.isRemote)
-            return ActionResultType.SUCCESS;
-        if (handIn != Hand.MAIN_HAND)
-            return ActionResultType.SUCCESS;
+        if (worldIn.isRemote || handIn != Hand.MAIN_HAND) return ActionResultType.SUCCESS;
+        ItemStack heldItem = player.getHeldItemMainhand();
 
         VaultAltarTileEntity altar = getAltarTileEntity(worldIn, pos);
-        if (altar == null)
-            return ActionResultType.SUCCESS;
+        if (altar == null || altar.isInfusing()) return ActionResultType.SUCCESS;
 
-        //infusion in process.. do nothing
-        if (altar.getInfusionTimer() != -1) return ActionResultType.SUCCESS;
-
-        //remove vault rock
-        if (player.isSneaking() && altar.containsVaultRock() && player.getHeldItemMainhand().getItem() == Items.AIR) {
-
-            player.setHeldItem(Hand.MAIN_HAND, new ItemStack(ModItems.VAULT_ROCK));
-            altar.setContainsVaultRock(false);
-
-            altar.sendUpdates();
-            return ActionResultType.SUCCESS;
+        if (player.isSneaking() && altar.containsVaultRock()) {
+            return onRemoveVaultRock(player, altar);
         }
 
-        ItemStack heldItem = player.getHeldItemMainhand();
-        if (heldItem.getItem() != ModItems.VAULT_ROCK)
-            return ActionResultType.SUCCESS;
+        if (heldItem.getItem() != ModItems.VAULT_ROCK) return ActionResultType.SUCCESS;
 
         PlayerVaultAltarData data = PlayerVaultAltarData.get((ServerWorld) worldIn);
 
-        // player has no recipe, give them one.
-        if (!data.getRecipes().containsKey(player.getUniqueID())) {
-            List<RequiredItem> items = ModConfigs.VAULT_ALTAR.getRequiredItemsFromConfig((ServerWorld)worldIn, player);
-            data.add(player.getUniqueID(), new AltarInfusionRecipe(player.getUniqueID(), items));
-        }
+        return onAddVaultRock((ServerWorld) worldIn, player, altar, heldItem, data);
+    }
 
+    private ActionResultType onAddVaultRock(ServerWorld worldIn, PlayerEntity player, VaultAltarTileEntity altar, ItemStack heldItem, PlayerVaultAltarData data) {
+        AltarInfusionRecipe recipe = data.getRecipe(worldIn, player);
+
+        altar.setRecipe(recipe);
         altar.setContainsVaultRock(true);
 
-        heldItem.setCount(heldItem.getCount() - 1);
+        if (!player.isCreative()) heldItem.setCount(heldItem.getCount() - 1);
         altar.sendUpdates();
+        return ActionResultType.SUCCESS;
+    }
+
+    private ActionResultType onRemoveVaultRock(PlayerEntity player, VaultAltarTileEntity altar) {
+        altar.setContainsVaultRock(false);
+        altar.sendUpdates();
+
+        player.setHeldItem(Hand.MAIN_HAND, new ItemStack(ModItems.VAULT_ROCK));
         return ActionResultType.SUCCESS;
     }
 
@@ -114,14 +107,14 @@ public class VaultAltarBlock extends Block {
             if (powered) {
                 VaultAltarTileEntity altar = getAltarTileEntity(worldIn, pos);
                 if (altar != null && altar.containsVaultRock()) {
-                    if (altar.getInfusionTimer() != -1) return;
-                    PlayerEntity player = worldIn.getClosestPlayer(altar.getPos().getX(), altar.getPos().getY(), altar.getPos().getZ(), ModConfigs.VAULT_ALTAR.PLAYER_RANGE_CHECK, null);
-                    if (player != null) {
-                        PlayerVaultAltarData data = PlayerVaultAltarData.get((ServerWorld) worldIn);
-                        AltarInfusionRecipe recipe = data.getRecipe(player);
-                        if (recipe != null && recipe.isComplete()) {
-                            data.remove(player.getUniqueID());
+                    if (altar.isInfusing() || altar.getOwner() == null) return;
+                    PlayerVaultAltarData data = PlayerVaultAltarData.get((ServerWorld) worldIn);
+                    if (data.hasRecipe(altar.getOwner())) {
+                        AltarInfusionRecipe recipe = data.getRecipe(altar.getOwner());
+                        if (recipe.isComplete()) {
+                            data = data.remove(altar.getOwner());
                             altar.startInfusionTimer(ModConfigs.VAULT_ALTAR.INFUSION_TIME);
+                            altar.setInfusing(true);
                         }
                     }
                 }
@@ -159,5 +152,17 @@ public class VaultAltarBlock extends Block {
         world.addEntity(entity);
 
         super.onReplaced(state, world, pos, newState, isMoving);
+    }
+
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        if (worldIn.isRemote) return;
+
+        VaultAltarTileEntity altar = (VaultAltarTileEntity) worldIn.getTileEntity(pos);
+        if (altar == null || !(placer instanceof PlayerEntity)) return;
+
+        altar.setOwner(placer.getUniqueID());
+
+        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
     }
 }

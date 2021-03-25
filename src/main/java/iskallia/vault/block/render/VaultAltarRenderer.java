@@ -23,9 +23,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class VaultAltarRenderer extends TileEntityRenderer<VaultAltarTileEntity> {
 
@@ -50,11 +48,9 @@ public class VaultAltarRenderer extends TileEntityRenderer<VaultAltarTileEntity>
                 Vector3f.YP.rotationDegrees(180.0F - player.rotationYaw),
                 matrixStack, buffer, partialTicks, combinedOverlay, lightLevel);
 
-        // render recipe for specific player if they have one
-        HashMap<UUID, AltarInfusionRecipe> recipes = altar.getNearbyPlayerRecipes();
-        if (!recipes.containsKey(player.getUniqueID())) return;
+        if (altar.getRecipe() == null || altar.getRecipe().getRequiredItems().isEmpty()) return;
 
-        AltarInfusionRecipe recipe = recipes.get(player.getUniqueID());
+        AltarInfusionRecipe recipe = altar.getRecipe();
         List<RequiredItem> items = recipe.getRequiredItems();
         for (int i = 0; i < items.size(); i++) {
             double[] translation = getTranslation(i);

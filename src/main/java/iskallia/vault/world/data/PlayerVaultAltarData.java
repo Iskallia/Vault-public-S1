@@ -38,11 +38,17 @@ public class PlayerVaultAltarData extends WorldSavedData {
     }
 
     public AltarInfusionRecipe getRecipe(UUID uuid) {
-        return this.playerMap.computeIfAbsent(uuid, AltarInfusionRecipe::new);
+        return this.playerMap.get(uuid);
     }
 
-    public Map<UUID, AltarInfusionRecipe> getRecipes() {
-        return this.playerMap;
+    public AltarInfusionRecipe getRecipe(ServerWorld world, PlayerEntity player) {
+        AltarInfusionRecipe recipe = this.playerMap.computeIfAbsent(player.getUniqueID(), k -> new AltarInfusionRecipe(world, player));
+        this.markDirty();
+        return recipe;
+    }
+
+    public boolean hasRecipe(UUID uuid) {
+        return this.playerMap.containsKey(uuid);
     }
 
 

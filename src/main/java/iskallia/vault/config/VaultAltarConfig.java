@@ -4,11 +4,14 @@ import com.google.gson.annotations.Expose;
 import iskallia.vault.Vault;
 import iskallia.vault.altar.RequiredItem;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameterSets;
 import net.minecraft.loot.LootParameters;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -77,8 +80,14 @@ public class VaultAltarConfig extends Config {
 
     }
 
-    public List<RequiredItem> getRequiredItemsFromConfig(ServerWorld world, PlayerEntity player) {
-        /*
+    public List<RequiredItem> generateItems(ServerWorld world, PlayerEntity player) {
+
+        return getRequiredItemsFromJson();
+
+        //return getRequiredItemsFromTables(world, player);
+    }
+
+    private List<RequiredItem> getRequiredItemsFromJson() {
         List<RequiredItem> requiredItems = new ArrayList<>();
 
         List<AltarConfigItem> configItems = new ArrayList<>(ITEMS);
@@ -90,8 +99,10 @@ public class VaultAltarConfig extends Config {
             requiredItems.add(new RequiredItem(new ItemStack(item), 0, getRandomInt(configItem.MIN, configItem.MAX)));
         }
 
-        return requiredItems;*/
+        return requiredItems;
+    }
 
+    private List<RequiredItem> getRequiredItemsFromTables(ServerWorld world, PlayerEntity player) {
         LootContext ctx = new LootContext.Builder(world)
                 .withParameter(LootParameters.THIS_ENTITY, player)
                 .withRandom(world.rand).withLuck(player.getLuck())
@@ -108,13 +119,13 @@ public class VaultAltarConfig extends Config {
 
         RequiredItem lastItem = null;
 
-        for(RequiredItem item: items) {
-            if(lastItem == null) {
+        for (RequiredItem item : items) {
+            if (lastItem == null) {
                 lastItem = item;
                 continue;
             }
 
-            if(item.getItem().getItem() == lastItem.getItem().getItem()) {
+            if (item.getItem().getItem() == lastItem.getItem().getItem()) {
                 lastItem = new RequiredItem(lastItem.getItem(), 0, lastItem.getAmountRequired() + item.getAmountRequired());
             } else {
                 stackedItems.add(lastItem);
