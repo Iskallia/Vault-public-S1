@@ -65,7 +65,7 @@ public class AbilityKeyMessage {
 
             if (sender == null) return;
 
-            PlayerAbilitiesData abilitiesData = PlayerAbilitiesData.get((ServerWorld) sender.world);
+            PlayerAbilitiesData abilitiesData = PlayerAbilitiesData.get((ServerWorld) sender.level);
             AbilityTree abilityTree = abilitiesData.getAbilities(sender);
 
             if (message.scrollUp) {

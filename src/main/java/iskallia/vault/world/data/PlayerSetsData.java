@@ -37,7 +37,7 @@ public class PlayerSetsData extends WorldSavedData {
     }
 
     public SetTree getSets(PlayerEntity player) {
-        return this.getSets(player.getUniqueID());
+        return this.getSets(player.getUUID());
     }
 
     public SetTree getSets(UUID uuid) {
@@ -49,18 +49,18 @@ public class PlayerSetsData extends WorldSavedData {
     public PlayerSetsData add(ServerPlayerEntity player, SetNode<?>... nodes) {
         this.getSets(player).add(player.getServer(), nodes);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerSetsData remove(ServerPlayerEntity player, SetNode<?>... nodes) {
         this.getSets(player).remove(player.getServer(), nodes);
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerSetsData resetSetTree(ServerPlayerEntity player) {
-        UUID uniqueID = player.getUniqueID();
+        UUID uniqueID = player.getUUID();
 
         SetTree oldTalentTree = playerMap.get(uniqueID);
 
@@ -74,7 +74,7 @@ public class PlayerSetsData extends WorldSavedData {
         SetTree setTree = new SetTree(uniqueID);
         this.playerMap.put(uniqueID, setTree);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
@@ -95,14 +95,14 @@ public class PlayerSetsData extends WorldSavedData {
     @SubscribeEvent
     public static void onTick(TickEvent.PlayerTickEvent event) {
         if (event.side == LogicalSide.SERVER) {
-            get((ServerWorld) event.player.world).getSets(event.player);
+            get((ServerWorld) event.player.level).getSets(event.player);
         }
     }
 
     /* ------------------------------- */
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         ListNBT playerList = nbt.getList("PlayerEntries", Constants.NBT.TAG_STRING);
         ListNBT talentList = nbt.getList("SetEntries", Constants.NBT.TAG_COMPOUND);
 
@@ -117,7 +117,7 @@ public class PlayerSetsData extends WorldSavedData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         ListNBT playerList = new ListNBT();
         ListNBT talentList = new ListNBT();
 
@@ -133,8 +133,8 @@ public class PlayerSetsData extends WorldSavedData {
     }
 
     public static PlayerSetsData get(ServerWorld world) {
-        return world.getServer().func_241755_D_()
-                .getSavedData().getOrCreate(PlayerSetsData::new, DATA_NAME);
+        return world.getServer().overworld()
+                .getDataStorage().computeIfAbsent(PlayerSetsData::new, DATA_NAME);
     }
 
 }

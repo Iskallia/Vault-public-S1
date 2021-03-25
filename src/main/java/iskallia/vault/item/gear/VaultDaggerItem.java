@@ -26,6 +26,8 @@ import net.minecraftforge.fml.network.NetworkDirection;
 
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class VaultDaggerItem extends SwordItem implements VaultGear<VaultDaggerItem> {
 
 	public VaultDaggerItem(ResourceLocation id, Properties builder) {
@@ -41,16 +43,16 @@ public class VaultDaggerItem extends SwordItem implements VaultGear<VaultDaggerI
 	public void attackOffHand() {
 		Minecraft mc = Minecraft.getInstance();
 
-		if(Minecraft.getInstance().world != null && Minecraft.getInstance().currentScreen == null
-				&& !Minecraft.getInstance().isGamePaused() && mc.player != null && !mc.player.isActiveItemStackBlocking()) {
+		if(Minecraft.getInstance().level != null && Minecraft.getInstance().screen == null
+				&& !Minecraft.getInstance().isPaused() && mc.player != null && !mc.player.isBlocking()) {
 			RayTraceResult rayTrace = getEntityMouseOverExtended(6.0F);
 
 			if(rayTrace instanceof EntityRayTraceResult) {
 				EntityRayTraceResult entityRayTrace = (EntityRayTraceResult)rayTrace;
 				Entity entityHit = entityRayTrace.getEntity();
 
-				if(entityHit != mc.player && entityHit != mc.player.getRidingEntity()) {
-					ModNetwork.CHANNEL.sendTo(new AttackOffHandMessage(entityHit.getEntityId()), mc.player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+				if(entityHit != mc.player && entityHit != mc.player.getVehicle()) {
+					ModNetwork.CHANNEL.sendTo(new AttackOffHandMessage(entityHit.getId()), mc.player.connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
 				}
 			}
 		}
@@ -74,13 +76,13 @@ public class VaultDaggerItem extends SwordItem implements VaultGear<VaultDaggerI
 	}
 
 	@Override
-	public ITextComponent getDisplayName(ItemStack itemStack) {
-		return this.getDisplayName(this, itemStack, super.getDisplayName(itemStack));
+	public ITextComponent getName(ItemStack itemStack) {
+		return this.getDisplayName(this, itemStack, super.getName(itemStack));
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		return this.onItemRightClick(this, world, player, hand, super.onItemRightClick(world, player, hand));
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+		return this.onItemRightClick(this, world, player, hand, super.use(world, player, hand));
 	}
 
 	@Override
@@ -90,8 +92,8 @@ public class VaultDaggerItem extends SwordItem implements VaultGear<VaultDaggerI
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-		super.addInformation(stack, world, tooltip, flag);
+	public void appendHoverText(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+		super.appendHoverText(stack, world, tooltip, flag);
 		this.addInformation(this, stack, world, tooltip, flag);
 	}
 
@@ -110,17 +112,17 @@ public class VaultDaggerItem extends SwordItem implements VaultGear<VaultDaggerI
 	private static RayTraceResult getEntityMouseOverExtended(float reach) {
 		RayTraceResult result = null;
 		Minecraft mc = Minecraft.getInstance();
-		Entity viewEntity = mc.renderViewEntity;
+		Entity viewEntity = mc.cameraEntity;
 
-		if(viewEntity != null && mc.world != null) {
+		if(viewEntity != null && mc.level != null) {
 			double reachDistance = reach;
 			RayTraceResult rayTrace = viewEntity.pick(reachDistance, 0.0F, false);
 			Vector3d eyePos = viewEntity.getEyePosition(0.0F);
 			boolean hasExtendedReach = false;
 			double attackReach;
 
-			if(mc.playerController != null) {
-				if (mc.playerController.extendedReach() && reachDistance < 6.0D) {
+			if(mc.gameMode != null) {
+				if (mc.gameMode.hasFarPickRange() && reachDistance < 6.0D) {
 					attackReach = 6.0D;
 					reachDistance = attackReach;
 				} else if (reachDistance > (double)reach) {
@@ -128,24 +130,24 @@ public class VaultDaggerItem extends SwordItem implements VaultGear<VaultDaggerI
 				}
 			}
 
-			attackReach = rayTrace.getHitVec().squareDistanceTo(eyePos);
+			attackReach = rayTrace.getLocation().distanceToSqr(eyePos);
 
-			Vector3d lookVec = viewEntity.getLook(1.0F);
+			Vector3d lookVec = viewEntity.getViewVector(1.0F);
 			Vector3d attackVec = eyePos.add(lookVec.x * reachDistance, lookVec.y * reachDistance, lookVec.z * reachDistance);
-			AxisAlignedBB axisAlignedBB = viewEntity.getBoundingBox().expand(lookVec.scale(reachDistance)).grow(1.0D, 1.0D, 1.0D);
-			EntityRayTraceResult entityRayTrace = ProjectileHelper.rayTraceEntities(viewEntity, eyePos, attackVec, axisAlignedBB, (entity) -> !entity.isSpectator() && entity.canBeCollidedWith(), attackReach);
+			AxisAlignedBB axisAlignedBB = viewEntity.getBoundingBox().expandTowards(lookVec.scale(reachDistance)).inflate(1.0D, 1.0D, 1.0D);
+			EntityRayTraceResult entityRayTrace = ProjectileHelper.getEntityHitResult(viewEntity, eyePos, attackVec, axisAlignedBB, (entity) -> !entity.isSpectator() && entity.isPickable(), attackReach);
 
 			if(entityRayTrace != null) {
-				Vector3d hitVec = entityRayTrace.getHitVec();
-				double squareDistanceTo = eyePos.squareDistanceTo(hitVec);
+				Vector3d hitVec = entityRayTrace.getLocation();
+				double squareDistanceTo = eyePos.distanceToSqr(hitVec);
 
 				if(hasExtendedReach && squareDistanceTo > (double)(reach * reach)) {
-					result = BlockRayTraceResult.createMiss(hitVec, Direction.getFacingFromVector(lookVec.x, lookVec.y, lookVec.z), new BlockPos(hitVec));
+					result = BlockRayTraceResult.miss(hitVec, Direction.getNearest(lookVec.x, lookVec.y, lookVec.z), new BlockPos(hitVec));
 				} else if(squareDistanceTo < attackReach) {
 					result = entityRayTrace;
 				}
 			} else {
-				result = BlockRayTraceResult.createMiss(attackVec, Direction.getFacingFromVector(lookVec.x, lookVec.y, lookVec.z), new BlockPos(attackVec));
+				result = BlockRayTraceResult.miss(attackVec, Direction.getNearest(lookVec.x, lookVec.y, lookVec.z), new BlockPos(attackVec));
 			}
 		}
 

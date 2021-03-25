@@ -48,8 +48,8 @@ public class AbilitySelectionWidget extends Widget {
     public boolean isMouseOver(double mouseX, double mouseY) {
         Minecraft minecraft = Minecraft.getInstance();
 
-        float midX = minecraft.getMainWindow().getScaledWidth() / 2f;
-        float midY = minecraft.getMainWindow().getScaledHeight() / 2f;
+        float midX = minecraft.getWindow().getGuiScaledWidth() / 2f;
+        float midY = minecraft.getWindow().getGuiScaledHeight() / 2f;
 
         Vector2f towardsWidget = new Vector2f(x - midX, y - midY);
         Vector2f towardsMouse = new Vector2f((float) mouseX - midX, (float) (mouseY - midY));
@@ -74,24 +74,24 @@ public class AbilitySelectionWidget extends Widget {
         int cooldown = AbilitiesOverlay.cooldowns.getOrDefault(abilityIndex, 0);
 
         if (AbilitiesOverlay.focusedIndex == abilityIndex) {
-            GlStateManager.color4f(0.7f, 0.7f, 0.7f, 0.3f);
+            GlStateManager._color4f(0.7f, 0.7f, 0.7f, 0.3f);
 
         } else {
-            GlStateManager.color4f(1f, 1f, 1f, 1f);
+            GlStateManager._color4f(1f, 1f, 1f, 1f);
         }
 
         RenderSystem.enableBlend();
 
-        minecraft.getTextureManager().bindTexture(HUD_RESOURCE);
+        minecraft.getTextureManager().bind(HUD_RESOURCE);
         blit(matrixStack, bounds.x0 + 1, bounds.y0 + 1,
                 28, 36, 22, 22);
 
-        minecraft.getTextureManager().bindTexture(ABILITIES_RESOURCE);
+        minecraft.getTextureManager().bind(ABILITIES_RESOURCE);
         blit(matrixStack, bounds.x0 + 4, bounds.y0 + 4,
                 abilityStyle.u, abilityStyle.v, 16, 16);
 
         if (cooldown > 0) {
-            GlStateManager.color4f(0.7f, 0.7f, 0.7f, 0.5f);
+            GlStateManager._color4f(0.7f, 0.7f, 0.7f, 0.5f);
             float cooldownPercent = (float) cooldown / ModConfigs.ABILITIES.cooldownOf(abilityNode, minecraft.player);
             int cooldownHeight = (int) (16 * cooldownPercent);
             AbstractGui.fill(matrixStack,
@@ -102,15 +102,15 @@ public class AbilitySelectionWidget extends Widget {
         }
 
         if (AbilitiesOverlay.focusedIndex == abilityIndex) {
-            minecraft.getTextureManager().bindTexture(HUD_RESOURCE);
+            minecraft.getTextureManager().bind(HUD_RESOURCE);
             blit(matrixStack, bounds.x0, bounds.y0,
                     64 + 25,
                     13,
                     24, 24);
 
         } else if (isMouseOver(mouseX, mouseY)) {
-            GlStateManager.color4f(1f, 1f, 1f, 1f);
-            minecraft.getTextureManager().bindTexture(HUD_RESOURCE);
+            GlStateManager._color4f(1f, 1f, 1f, 1f);
+            minecraft.getTextureManager().bind(HUD_RESOURCE);
             blit(matrixStack, bounds.x0, bounds.y0,
                     64 + (cooldown > 0 ? 50 : 0),
                     13,

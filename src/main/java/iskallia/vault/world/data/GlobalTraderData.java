@@ -36,12 +36,12 @@ public class GlobalTraderData extends WorldSavedData {
     }
 
     public List<Trade> getPlayerTrades(PlayerEntity player) {
-        return this.getPlayerTrades(player.getUniqueID());
+        return this.getPlayerTrades(player.getUUID());
     }
 
     public List<Trade> getPlayerTrades(UUID uuid) {
         List<Trade> trades = playerMap.computeIfAbsent(uuid, id -> getNewTrades());
-        this.markDirty();
+        this.setDirty();
         return trades;
     }
 
@@ -58,19 +58,19 @@ public class GlobalTraderData extends WorldSavedData {
     }
 
     public void updatePlayerTrades(PlayerEntity playerEntity, List<Trade> trades) {
-        playerMap.replace(playerEntity.getUniqueID(), trades);
-        this.markDirty();
+        playerMap.replace(playerEntity.getUUID(), trades);
+        this.setDirty();
     }
 
     @SubscribeEvent
     public static void onTick(TickEvent.WorldTickEvent event) {
-        if (event.world.getGameTime() % 20 != 0 || event.phase == TickEvent.Phase.END || event.world.getDimensionKey() != World.OVERWORLD)
+        if (event.world.getGameTime() % 20 != 0 || event.phase == TickEvent.Phase.END || event.world.dimension() != World.OVERWORLD)
             return;
 
         long time = Instant.now().getEpochSecond();
         if (time % (24 * 60 * 60) == 0) {
             resetTrades();
-            GlobalTraderData.get((ServerWorld) event.world).markDirty();
+            GlobalTraderData.get((ServerWorld) event.world).setDirty();
         }
     }
 
@@ -107,7 +107,7 @@ public class GlobalTraderData extends WorldSavedData {
 
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         ListNBT playerList = nbt.getList("PlayerList", Constants.NBT.TAG_STRING);
         ListNBT playerTradesList = nbt.getList("PlayerTradesList", Constants.NBT.TAG_LIST);
 
@@ -133,7 +133,7 @@ public class GlobalTraderData extends WorldSavedData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         ListNBT playerList = new ListNBT();
         ListNBT playerTradesList = new ListNBT();
 
@@ -157,11 +157,11 @@ public class GlobalTraderData extends WorldSavedData {
 
 
     public static GlobalTraderData get(ServerWorld world) {
-        return world.getServer().func_241755_D_().getSavedData().getOrCreate(GlobalTraderData::new, DATA_NAME);
+        return world.getServer().overworld().getDataStorage().computeIfAbsent(GlobalTraderData::new, DATA_NAME);
     }
 
     public void reset() {
         playerMap.clear();
-        this.markDirty();
+        this.setDirty();
     }
 }

@@ -20,6 +20,8 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class VaultDoorBlock extends DoorBlock {
 
     public static final List<VaultDoorBlock> VAULT_DOORS = new ArrayList<>();
@@ -27,16 +29,16 @@ public class VaultDoorBlock extends DoorBlock {
     protected Item keyItem;
 
     public VaultDoorBlock(Item keyItem) {
-        super(Properties.create(Material.WOOD, MaterialColor.DIAMOND)
-                .hardnessAndResistance(-1.0F, 3600000.0F)
+        super(Properties.of(Material.WOOD, MaterialColor.DIAMOND)
+                .strength(-1.0F, 3600000.0F)
                 .sound(SoundType.METAL)
-                .notSolid());
-        this.setDefaultState(this.getStateContainer().getBaseState()
-                .with(FACING, Direction.NORTH)
-                .with(OPEN, Boolean.FALSE)
-                .with(HINGE, DoorHingeSide.LEFT)
-                .with(POWERED, Boolean.FALSE)
-                .with(HALF, DoubleBlockHalf.LOWER));
+                .noOcclusion());
+        this.registerDefaultState(this.getStateDefinition().any()
+                .setValue(FACING, Direction.NORTH)
+                .setValue(OPEN, Boolean.FALSE)
+                .setValue(HINGE, DoorHingeSide.LEFT)
+                .setValue(POWERED, Boolean.FALSE)
+                .setValue(HALF, DoubleBlockHalf.LOWER));
         this.keyItem = keyItem;
         VAULT_DOORS.add(this);
     }
@@ -46,13 +48,13 @@ public class VaultDoorBlock extends DoorBlock {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        ItemStack heldStack = player.getHeldItem(hand);
-        Boolean isOpen = state.get(OPEN);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        ItemStack heldStack = player.getItemInHand(hand);
+        Boolean isOpen = state.getValue(OPEN);
 
         if (!isOpen && heldStack.getItem() == getKeyItem()) {
             heldStack.shrink(1);
-            return super.onBlockActivated(state, world, pos, player, hand, hit);
+            return super.use(state, world, pos, player, hand, hit);
         }
 
         return ActionResultType.PASS;

@@ -148,7 +148,7 @@ public class TalentDialog extends AbstractGui {
 
     public void
     render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        matrixStack.push();
+        matrixStack.pushPose();
 
         renderBackground(matrixStack, mouseX, mouseY, partialTicks);
 
@@ -163,12 +163,12 @@ public class TalentDialog extends AbstractGui {
 
         renderFooter(matrixStack, mouseX, mouseY, partialTicks);
 
-        matrixStack.push();
+        matrixStack.pushPose();
     }
 
     private void
     renderBackground(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        Minecraft.getInstance().getTextureManager().bindTexture(SkillTreeScreen.UI_RESOURCE);
+        Minecraft.getInstance().getTextureManager().bind(SkillTreeScreen.UI_RESOURCE);
         fill(matrixStack,
                 bounds.x0 + 5, bounds.y0 + 5,
                 bounds.x1 - 5, bounds.y1 - 5,
@@ -187,7 +187,7 @@ public class TalentDialog extends AbstractGui {
                 bounds.x1 - 5, bounds.y1 - 5,
                 8, 52, 5, 5);
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(bounds.x0 + 5, bounds.y0, 0);
         matrixStack.scale(bounds.getWidth() - 10, 1, 1);
         blit(matrixStack, 0, 0,
@@ -195,9 +195,9 @@ public class TalentDialog extends AbstractGui {
         matrixStack.translate(0, bounds.getHeight() - 5, 0);
         blit(matrixStack, 0, 0,
                 6, 52, 1, 5);
-        matrixStack.pop();
+        matrixStack.popPose();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(bounds.x0, bounds.y0 + 5, 0);
         matrixStack.scale(1, bounds.getHeight() - 10, 1);
         blit(matrixStack, 0, 0,
@@ -205,14 +205,14 @@ public class TalentDialog extends AbstractGui {
         matrixStack.translate(bounds.getWidth() - 5, 0, 0);
         blit(matrixStack, 0, 0,
                 8, 50, 5, 1);
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private void
     renderHeading(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        Minecraft.getInstance().getTextureManager().bindTexture(SkillTreeScreen.UI_RESOURCE);
+        Minecraft.getInstance().getTextureManager().bind(SkillTreeScreen.UI_RESOURCE);
 
-        FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
+        FontRenderer fontRenderer = Minecraft.getInstance().font;
         SkillStyle abilityStyle = ModConfigs.TALENTS_GUI.getStyles()
                 .get(talentGroup.getParentName());
 
@@ -236,9 +236,9 @@ public class TalentDialog extends AbstractGui {
 
         int gap = 5;
         int contentWidth = abilityBounds.getWidth() + gap
-                + Math.max(fontRenderer.getStringWidth(abilityName), fontRenderer.getStringWidth(subText));
+                + Math.max(fontRenderer.width(abilityName), fontRenderer.width(subText));
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(10, 0, 0);
         FontHelper.drawStringWithBorder(matrixStack,
                 abilityName,
@@ -262,7 +262,7 @@ public class TalentDialog extends AbstractGui {
         matrixStack.translate(abilityBounds.getWidth() / 2f, 0, 0);
         matrixStack.translate(0, 23, 0);
         abilityWidget.render(matrixStack, mouseX, mouseY, partialTicks);
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private void
@@ -286,7 +286,7 @@ public class TalentDialog extends AbstractGui {
 
         this.abilityUpgradeButton.render(matrixStack, containerX, containerY, partialTicks);
 
-        Minecraft.getInstance().getTextureManager().bindTexture(SkillTreeScreen.UI_RESOURCE);
+        Minecraft.getInstance().getTextureManager().bind(SkillTreeScreen.UI_RESOURCE);
 
         TalentNode<?> talentNode = talentTree.getNodeOf(talentGroup);
 

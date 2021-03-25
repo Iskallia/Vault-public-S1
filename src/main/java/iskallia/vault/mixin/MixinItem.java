@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Item.class)
 public class MixinItem {
 
-    @Inject(method = "getDisplayName", cancellable = true, at = @At("RETURN"))
+    @Inject(method = "getName", cancellable = true, at = @At("RETURN"))
     public void appendOverlevelPrefix(ItemStack stack, CallbackInfoReturnable<ITextComponent> info) {
         if (stack.getItem() == Items.ENCHANTED_BOOK) {
             int overLevels = OverlevelEnchantHelper.getOverlevels(stack);

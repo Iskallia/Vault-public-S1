@@ -29,14 +29,14 @@ public class VaultRuneRenderer extends TileEntityRenderer<VaultRuneTileEntity> {
            IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
         ClientPlayerEntity player = mc.player;
         Vector3d eyePosition = player.getEyePosition(1);
-        Vector3d look = player.getLook(1);
+        Vector3d look = player.getViewVector(1);
         Vector3d endPos = eyePosition.add(look.x * 5, look.y * 5, look.z * 5);
         RayTraceContext context = new RayTraceContext(eyePosition, endPos,
                 RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, player);
 
-        BlockRayTraceResult result = player.world.rayTraceBlocks(context);
+        BlockRayTraceResult result = player.level.clip(context);
 
-        if (result.getPos().equals(tileEntity.getPos())) {
+        if (result.getBlockPos().equals(tileEntity.getBlockPos())) {
             StringTextComponent text = new StringTextComponent(tileEntity.getBelongsTo());
             renderLabel(matrixStack, buffer, combinedLight, text, 0xFF_FFFFFF);
         }
@@ -44,23 +44,23 @@ public class VaultRuneRenderer extends TileEntityRenderer<VaultRuneTileEntity> {
 
     private void renderLabel(MatrixStack matrixStack, IRenderTypeBuffer buffer, int lightLevel,
                              StringTextComponent text, int color) {
-        FontRenderer fontRenderer = mc.fontRenderer;
+        FontRenderer fontRenderer = mc.font;
 
         //render amount required for the item
-        matrixStack.push();
+        matrixStack.pushPose();
         float scale = 0.02f;
         int opacity = (int) (0.4f * 255.0F) << 24;
-        float offset = (float) (-fontRenderer.getStringPropertyWidth(text) / 2);
-        Matrix4f matrix4f = matrixStack.getLast().getMatrix();
+        float offset = (float) (-fontRenderer.width(text) / 2);
+        Matrix4f matrix4f = matrixStack.last().pose();
 
         matrixStack.translate(0.5f, 1.4f, 0.5f);
         matrixStack.scale(scale, scale, scale);
-        matrixStack.rotate(mc.getRenderManager().getCameraOrientation()); // face the camera
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(180.0F)); // flip vertical
+        matrixStack.mulPose(mc.getEntityRenderDispatcher().cameraOrientation()); // face the camera
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F)); // flip vertical
 
-        fontRenderer.func_243247_a(text, offset, 0, color, false, matrix4f, buffer, true, opacity, lightLevel);
-        fontRenderer.func_243247_a(text, offset, 0, -1, false, matrix4f, buffer, false, 0, lightLevel);
-        matrixStack.pop();
+        fontRenderer.drawInBatch(text, offset, 0, color, false, matrix4f, buffer, true, opacity, lightLevel);
+        fontRenderer.drawInBatch(text, offset, 0, -1, false, matrix4f, buffer, false, 0, lightLevel);
+        matrixStack.popPose();
     }
 
 }

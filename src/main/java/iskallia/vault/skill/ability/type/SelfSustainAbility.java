@@ -20,9 +20,9 @@ public class SelfSustainAbility extends PlayerAbility {
     @Override
     public void onAction(PlayerEntity player, boolean active) {
         float health = player.getHealth();
-        player.attackEntityFrom(EntityDamageSource.causePlayerDamage(player), 1);
+        player.hurt(EntityDamageSource.playerAttack(player), 1);
         player.setHealth(health - sustain);
-        player.getFoodStats().addStats(sustain, sustain / 5f);
+        player.getFoodData().eat(sustain, sustain / 5f);
     }
 
 }

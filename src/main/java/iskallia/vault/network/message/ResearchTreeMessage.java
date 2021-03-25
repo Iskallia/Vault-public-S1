@@ -24,14 +24,14 @@ public class ResearchTreeMessage {
     }
 
     public static void encode(ResearchTreeMessage message, PacketBuffer buffer) {
-        buffer.writeUniqueId(message.playerUUID);
-        buffer.writeCompoundTag(message.researchTree.serializeNBT());
+        buffer.writeUUID(message.playerUUID);
+        buffer.writeNbt(message.researchTree.serializeNBT());
     }
 
     public static ResearchTreeMessage decode(PacketBuffer buffer) {
         ResearchTreeMessage message = new ResearchTreeMessage();
-        message.researchTree = new ResearchTree(buffer.readUniqueId());
-        message.researchTree.deserializeNBT(Objects.requireNonNull(buffer.readCompoundTag()));
+        message.researchTree = new ResearchTree(buffer.readUUID());
+        message.researchTree.deserializeNBT(Objects.requireNonNull(buffer.readNbt()));
         return message;
     }
 

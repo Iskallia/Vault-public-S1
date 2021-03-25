@@ -37,13 +37,13 @@ public class TankAbility extends EffectAbility {
     @Override
     public void onAction(PlayerEntity player, boolean active) {
 
-        EffectInstance activeEffect = player.getActivePotionEffect(this.getEffect());
+        EffectInstance activeEffect = player.getEffect(this.getEffect());
         EffectInstance newEffect = new EffectInstance(ModEffects.TANK,
                 this.getDurationTicks(), this.getAmplifier(), false,
                 this.getType().showParticles, this.getType().showIcon);
 
         if (activeEffect == null) {
-            player.addPotionEffect(newEffect);
+            player.addEffect(newEffect);
         }
 
 //        player.world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(),
@@ -59,7 +59,7 @@ public class TankAbility extends EffectAbility {
     @SubscribeEvent
     public static void onDamage(LivingDamageEvent event) {
         LivingEntity entity = event.getEntityLiving();
-        EffectInstance tank = entity.getActivePotionEffect(ModEffects.TANK);
+        EffectInstance tank = entity.getEffect(ModEffects.TANK);
         if (tank == null) return;
 
         float reduction = (float) (tank.getAmplifier() + 1) * 0.1f; //TODO Extract reduction percentage to config
@@ -73,29 +73,29 @@ public class TankAbility extends EffectAbility {
         if (event.phase == TickEvent.Phase.END || event.side == LogicalSide.CLIENT) return;
 
         PlayerEntity player = event.player;
-        EffectInstance tank = player.getActivePotionEffect(ModEffects.TANK);
+        EffectInstance tank = player.getEffect(ModEffects.TANK);
 
         if (tank != null) {
             double multiplier = (tank == null ? 1 : 1 - Math.abs((50D - ((double) tank.getAmplifier() * 5D)) * .01D));
 
-            Vector3d currentPos = player.getPositionVec();
-            Vector3d prevPos = prevPositions.get(player) == null ? player.getPositionVec() : prevPositions.get(player);
+            Vector3d currentPos = player.position();
+            Vector3d prevPos = prevPositions.get(player) == null ? player.position() : prevPositions.get(player);
 
             Vector3d direction = new Vector3d(
-                    prevPos.getX() - currentPos.getX(),
-                    prevPos.getY() - currentPos.getY(),
-                    prevPos.getZ() - currentPos.getZ()
+                    prevPos.x() - currentPos.x(),
+                    prevPos.y() - currentPos.y(),
+                    prevPos.z() - currentPos.z()
             );
 
-            player.setMotion(
-                    direction.getX() * -multiplier,
-                    player.getMotion().getY(),
-                    direction.getZ() * -multiplier
+            player.setDeltaMovement(
+                    direction.x() * -multiplier,
+                    player.getDeltaMovement().y(),
+                    direction.z() * -multiplier
 
             );
-            player.velocityChanged = true;
+            player.hurtMarked = true;
         }
-        prevPositions.put(player, player.getPositionVec());
+        prevPositions.put(player, player.position());
     }
 }
 

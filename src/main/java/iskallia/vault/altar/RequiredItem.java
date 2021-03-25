@@ -26,7 +26,7 @@ public class RequiredItem {
     public static RequiredItem deserializeNBT(CompoundNBT nbt) {
         if (!nbt.contains("item"))
             return null;
-        return new RequiredItem(ItemStack.read(nbt.getCompound("item")), nbt.getInt("currentAmount"), nbt.getInt("amountRequired"));
+        return new RequiredItem(ItemStack.of(nbt.getCompound("item")), nbt.getInt("currentAmount"), nbt.getInt("amountRequired"));
     }
 
     public ItemStack getItem() {
@@ -73,7 +73,7 @@ public class RequiredItem {
     }
 
     public boolean isItemEqual(ItemStack stack) {
-        return ItemStack.areItemsEqualIgnoreDurability(this.getItem(), stack);
+        return ItemStack.isSameIgnoreDurability(this.getItem(), stack);
     }
 
 }

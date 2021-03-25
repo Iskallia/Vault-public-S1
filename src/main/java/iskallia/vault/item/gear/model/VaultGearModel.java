@@ -35,46 +35,46 @@ public abstract class VaultGearModel<T extends LivingEntity> extends BipedModel<
     }
 
     @Override
-    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        matrixStack.push();
+    public void renderToBuffer(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        matrixStack.pushPose();
 
         if (this.slotType == EquipmentSlotType.HEAD) {
-            Head.copyModelAngles(this.bipedHead);
+            Head.copyFrom(this.head);
             Head.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 
         } else if (this.slotType == EquipmentSlotType.CHEST) {
-            Body.copyModelAngles(this.bipedBody);
+            Body.copyFrom(this.body);
             Body.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            RightArm.copyModelAngles(this.bipedRightArm);
+            RightArm.copyFrom(this.rightArm);
             RightArm.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            LeftArm.copyModelAngles(this.bipedLeftArm);
+            LeftArm.copyFrom(this.leftArm);
             LeftArm.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 
         } else if (this.slotType == EquipmentSlotType.LEGS) {
-            Belt.copyModelAngles(bipedBody);
+            Belt.copyFrom(body);
             Belt.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 //            matrixStack.translate(0, 0.15f, 0);
 //            float scale = 0.9f;
 //            matrixStack.scale(scale, scale, scale);
-            RightLeg.copyModelAngles(this.bipedRightLeg);
+            RightLeg.copyFrom(this.rightLeg);
             RightLeg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            LeftLeg.copyModelAngles(this.bipedLeftLeg);
+            LeftLeg.copyFrom(this.leftLeg);
             LeftLeg.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 
         } else if (this.slotType == EquipmentSlotType.FEET) {
-            RightBoot.copyModelAngles(this.bipedRightLeg);
+            RightBoot.copyFrom(this.rightLeg);
             RightBoot.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-            LeftBoot.copyModelAngles(this.bipedLeftLeg);
+            LeftBoot.copyFrom(this.leftLeg);
             LeftBoot.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
+        modelRenderer.xRot = x;
+        modelRenderer.yRot = y;
+        modelRenderer.zRot = z;
     }
 
 }

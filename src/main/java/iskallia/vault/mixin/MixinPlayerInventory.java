@@ -14,9 +14,9 @@ public class MixinPlayerInventory {
 
     @Shadow @Final public PlayerEntity player;
 
-    @ModifyArg(method = "func_234563_a_", index = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;damageItem(ILnet/minecraft/entity/LivingEntity;Ljava/util/function/Consumer;)V"))
+    @ModifyArg(method = "hurtArmor", index = 0, at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;hurtAndBreak(ILnet/minecraft/entity/LivingEntity;Ljava/util/function/Consumer;)V"))
     public int limitMaxArmorDamage(int damageAmount) {
-        if(this.player.world.getDimensionKey() == Vault.VAULT_KEY) {
+        if(this.player.level.dimension() == Vault.VAULT_KEY) {
             return Math.min(damageAmount, 5); // Allow maximum of 5 armor damage
         }
 

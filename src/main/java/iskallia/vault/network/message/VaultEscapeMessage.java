@@ -32,8 +32,8 @@ public class VaultEscapeMessage {
     @OnlyIn(Dist.CLIENT)
     public static void playEscapeSound() {
         Minecraft minecraft = Minecraft.getInstance();
-        SoundHandler soundHandler = minecraft.getSoundHandler();
-        soundHandler.play(SimpleSound.master(ModSounds.VAULT_PORTAL_LEAVE, 1f, 1f));
+        SoundHandler soundHandler = minecraft.getSoundManager();
+        soundHandler.play(SimpleSound.forUI(ModSounds.VAULT_PORTAL_LEAVE, 1f, 1f));
     }
 
 }

@@ -33,11 +33,11 @@ public class VaultRelicsConfig extends Config {
 
         for (Relic relicDrop : relicDrops) {
             if (random < relicDrop.WEIGHT)
-                return (RelicPartItem) Registry.ITEM.getOrDefault(new ResourceLocation(relicDrop.NAME));
+                return (RelicPartItem) Registry.ITEM.get(new ResourceLocation(relicDrop.NAME));
             random -= relicDrop.WEIGHT;
         }
 
-        return (RelicPartItem) Registry.ITEM.getOrDefault(new ResourceLocation(relicDrops.get(relicDrops.size() - 1).NAME));
+        return (RelicPartItem) Registry.ITEM.get(new ResourceLocation(relicDrops.get(relicDrops.size() - 1).NAME));
     }
 
     @Override

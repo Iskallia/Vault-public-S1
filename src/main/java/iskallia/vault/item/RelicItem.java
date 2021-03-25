@@ -11,8 +11,8 @@ public class RelicItem extends Item {
 
     public RelicItem(ItemGroup group, ResourceLocation id) {
         super(new Item.Properties()
-                .group(group)
-                .maxStackSize(64));
+                .tab(group)
+                .stacksTo(64));
 
         this.setRegistryName(id);
     }

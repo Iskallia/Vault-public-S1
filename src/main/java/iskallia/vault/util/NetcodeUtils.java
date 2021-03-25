@@ -12,7 +12,7 @@ public class NetcodeUtils {
         if (server == null)
             return false;
 
-        ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(uuid);
+        ServerPlayerEntity player = server.getPlayerList().getPlayer(uuid);
 
         if (player == null)
             return false;

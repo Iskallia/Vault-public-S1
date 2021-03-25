@@ -87,21 +87,21 @@ public class VaultAltarTileEntity extends TileEntity implements ITickableTileEnt
     }
 
     public void sendUpdates() {
-        if (this.world == null) return;
-        this.world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
-        this.world.notifyNeighborsOfStateChange(pos, this.getBlockState().getBlock());
-        markDirty();
+        if (this.level == null) return;
+        this.level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        this.level.updateNeighborsAt(worldPosition, this.getBlockState().getBlock());
+        setChanged();
     }
 
     @Override
     public void tick() {
-        World world = this.getWorld();
-        if (world == null || world.isRemote || !containsVaultRock) return;
+        World world = this.getLevel();
+        if (world == null || world.isClientSide || !containsVaultRock) return;
 
 
-        double x = this.getPos().getX() + 0.5d;
-        double y = this.getPos().getY() + 0.5d;
-        double z = this.getPos().getZ() + 0.5d;
+        double x = this.getBlockPos().getX() + 0.5d;
+        double y = this.getBlockPos().getY() + 0.5d;
+        double z = this.getBlockPos().getZ() + 0.5d;
 
         PlayerVaultAltarData data = PlayerVaultAltarData.get((ServerWorld) world);
 
@@ -120,7 +120,7 @@ public class VaultAltarTileEntity extends TileEntity implements ITickableTileEnt
 
         if (this.containsVaultRock && this.recipe == null && !infusing) {
             this.containsVaultRock = false;
-            world.addEntity(new ItemEntity(world, getPos().getX() + .5d, pos.getY() + 1.5d, pos.getZ() + .5d, new ItemStack(ModItems.VAULT_ROCK)));
+            world.addFreshEntity(new ItemEntity(world, getBlockPos().getX() + .5d, worldPosition.getY() + 1.5d, worldPosition.getZ() + .5d, new ItemStack(ModItems.VAULT_ROCK)));
         }
 
         if (world.getGameTime() % 20 == 0) sendUpdates();
@@ -134,7 +134,7 @@ public class VaultAltarTileEntity extends TileEntity implements ITickableTileEnt
         this.infusing = false;
         ItemStack crystal = ItemVaultCrystal.getRandomCrystal();
 
-        world.addEntity(new ItemEntity(world, getPos().getX() + .5d, pos.getY() + 1.5d, pos.getZ() + .5d, crystal));
+        world.addFreshEntity(new ItemEntity(world, getBlockPos().getX() + .5d, worldPosition.getY() + 1.5d, worldPosition.getZ() + .5d, crystal));
     }
 
     public void startInfusionTimer(int seconds) {
@@ -146,7 +146,7 @@ public class VaultAltarTileEntity extends TileEntity implements ITickableTileEnt
 
         float speed = ModConfigs.VAULT_ALTAR.PULL_SPEED / 20f; // blocks per second
 
-        List<ItemEntity> entities = world.getEntitiesWithinAABB(ItemEntity.class, getAABB(range, x, y, z));
+        List<ItemEntity> entities = world.getEntitiesOfClass(ItemEntity.class, getAABB(range, x, y, z));
         for (ItemEntity itemEntity : entities) {
             List<RequiredItem> itemsToPull = data.getRecipe(this.owner).getRequiredItems();
             if (itemsToPull == null) return;
@@ -158,7 +158,7 @@ public class VaultAltarTileEntity extends TileEntity implements ITickableTileEnt
                 if (required.isItemEqual(itemEntity.getItem())) {
                     int excess = required.getRemainder(itemEntity.getItem().getCount());
                     moveItemTowardPedestal(itemEntity, speed);
-                    if (isItemInRange(itemEntity.getPosition())) {
+                    if (isItemInRange(itemEntity.blockPosition())) {
                         if (excess > 0) {
                             required.setCurrentAmount(required.getAmountRequired());
                             itemEntity.getItem().setCount(excess);
@@ -167,7 +167,7 @@ public class VaultAltarTileEntity extends TileEntity implements ITickableTileEnt
                             itemEntity.getItem().setCount(excess);
                             itemEntity.remove();
                         }
-                        data.markDirty();
+                        data.setDirty();
                         sendUpdates();
                     }
                 }
@@ -176,16 +176,16 @@ public class VaultAltarTileEntity extends TileEntity implements ITickableTileEnt
     }
 
     private void moveItemTowardPedestal(ItemEntity itemEntity, float speed) {
-        Vector3d target = VectorHelper.getVectorFromPos(this.getPos());
-        Vector3d current = VectorHelper.getVectorFromPos(itemEntity.getPosition());
+        Vector3d target = VectorHelper.getVectorFromPos(this.getBlockPos());
+        Vector3d current = VectorHelper.getVectorFromPos(itemEntity.blockPosition());
 
         Vector3d velocity = VectorHelper.getMovementVelocity(current, target, speed);
 
-        itemEntity.addVelocity(velocity.x, velocity.y, velocity.z);
+        itemEntity.push(velocity.x, velocity.y, velocity.z);
     }
 
     private boolean isItemInRange(BlockPos itemPos) {
-        return itemPos.distanceSq(getPos()) <= (2 * 2);
+        return itemPos.distSqr(getBlockPos()) <= (2 * 2);
     }
 
     public AxisAlignedBB getAABB(double range, double x, double y, double z) {
@@ -193,44 +193,44 @@ public class VaultAltarTileEntity extends TileEntity implements ITickableTileEnt
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         compound.putBoolean("containsVaultRock", containsVaultRock);
-        if (owner != null) compound.putUniqueId("Owner", this.owner);
+        if (owner != null) compound.putUUID("Owner", this.owner);
         if (this.recipe != null) compound.put("Recipe", AltarInfusionRecipe.serialize(this.recipe));
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound) {
+    public void load(BlockState state, CompoundNBT compound) {
         containsVaultRock = compound.getBoolean("containsVaultRock");
-        if (compound.contains("Owner")) this.owner = compound.getUniqueId("Owner");
+        if (compound.contains("Owner")) this.owner = compound.getUUID("Owner");
         if (compound.contains("Recipe")) this.recipe = AltarInfusionRecipe.deserialize(compound.getCompound("Recipe"));
-        super.read(state, compound);
+        super.load(state, compound);
     }
 
     @Override
     public CompoundNBT getUpdateTag() {
         CompoundNBT tag = super.getUpdateTag();
         tag.putBoolean("containsVaultRock", containsVaultRock);
-        if (owner != null) tag.putUniqueId("Owner", this.owner);
+        if (owner != null) tag.putUUID("Owner", this.owner);
         if (this.recipe != null) tag.put("Recipe", AltarInfusionRecipe.serialize(this.recipe));
         return tag;
     }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-        read(state, tag);
+        load(state, tag);
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(pos, 1, getUpdateTag());
+        return new SUpdateTileEntityPacket(worldPosition, 1, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        CompoundNBT tag = pkt.getNbtCompound();
+        CompoundNBT tag = pkt.getTag();
         handleUpdateTag(getBlockState(), tag);
     }
 

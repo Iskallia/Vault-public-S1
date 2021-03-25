@@ -47,14 +47,14 @@ public class SetsConfig extends Config {
 				Effects.LUCK, 0, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD));
 		ASSASSIN = SetGroup.of("Assassin", 1, i -> new AssassinSet(1, 0.1F));
 		SLAYER = SetGroup.of("Slayer", 1, i -> new EffectSet(VaultGear.Set.SLAYER,
-				Effects.STRENGTH, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD));
+				Effects.DAMAGE_BOOST, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD));
 		VAMPIRE = SetGroup.of("Vampire", 1, i -> new VampirismSet(0.05f));
 		BRUTE = SetGroup.of("Brute", 1, i -> new EffectSet(VaultGear.Set.BRUTE,
-				Effects.STRENGTH, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD));
+				Effects.DAMAGE_BOOST, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD));
 		DRYAD = SetGroup.of("Dryad", 1, i -> new EffectSet(VaultGear.Set.DRYAD,
 				Effects.REGENERATION, 2, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD));
 		TITAN = SetGroup.of("Titan", 1, i -> new EffectSet(VaultGear.Set.TITAN,
-				Effects.RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD));
+				Effects.DAMAGE_RESISTANCE, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD));
 		NINJA = SetGroup.of("Ninja", 1, i -> new NinjaSet(0.2F));
 		TREASURE_HUNTER = SetGroup.of("Treasure Hunter", 1, i -> new EffectSet(VaultGear.Set.TREASURE_HUNTER,
 				Effects.LUCK, 1, EffectTalent.Type.ICON_ONLY, EffectTalent.Operator.ADD));

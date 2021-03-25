@@ -45,15 +45,15 @@ public class EternalEntity extends ZombieEntity {
 	public EternalEntity(EntityType<? extends ZombieEntity> type, World world) {
 		super(type, world);
 
-		if(!this.world.isRemote) {
+		if(!this.level.isClientSide) {
 			this.changeSize(this.sizeMultiplier);
-			this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(this.rand.nextFloat() * 0.15D + 0.20D);
+			this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(this.random.nextFloat() * 0.15D + 0.20D);
 		} else {
 			this.skin = new SkinProfile();
 		}
 
 		this.bossInfo = new ServerBossInfo(this.getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS);
-		this.bossInfo.setDarkenSky(true);
+		this.bossInfo.setDarkenScreen(true);
 		this.bossInfo.setVisible(false);
 
 		this.setCustomName(new StringTextComponent(this.lastName));
@@ -61,8 +61,8 @@ public class EternalEntity extends ZombieEntity {
 	}
 
 	@Override
-	protected void applyEntityAI() {
-		super.applyEntityAI();
+	protected void addBehaviourGoals() {
+		super.addBehaviourGoals();
 		this.targetSelector.addGoal(2, new FollowEntityGoal<>(this, 1.0D, 32.0F, 3.0F, false, () -> this.getOwner().right()));
 	}
 
@@ -75,18 +75,18 @@ public class EternalEntity extends ZombieEntity {
 	}
 
 	@Override
-	public boolean isChild() {
+	public boolean isBaby() {
 		return false;
 	}
 
 	@Override
-	protected boolean shouldBurnInDay() {
+	protected boolean isSunSensitive() {
 		return false;
 	}
 
 	public Either<UUID, PlayerEntity> getOwner() {
-		if(world.isRemote)return Either.left(this.owner);
-		ServerPlayerEntity player = this.getServer().getPlayerList().getPlayerByUUID(this.owner);
+		if(level.isClientSide)return Either.left(this.owner);
+		ServerPlayerEntity player = this.getServer().getPlayerList().getPlayer(this.owner);
 		return player == null ? Either.left(this.owner) : Either.right(player);
 	}
 
@@ -95,7 +95,7 @@ public class EternalEntity extends ZombieEntity {
 		super.tick();
 		if(this.dead)return;
 
-		if(this.world.isRemote) {
+		if(this.level.isClientSide) {
 			String name = this.getCustomName().getString();
 
 			if(name.startsWith("[")) {
@@ -108,11 +108,11 @@ public class EternalEntity extends ZombieEntity {
 				this.lastName = name;
 			}
 		} else {
-			if(this.getServer().getTickCounter() >= this.despawnTime) {
-				this.onKillCommand(); //TODO: better
+			if(this.getServer().getTickCount() >= this.despawnTime) {
+				this.kill(); //TODO: better
 			}
 
-			double amplitude = this.getMotion().squareDistanceTo(0.0D, this.getMotion().getY(), 0.0D);
+			double amplitude = this.getDeltaMovement().distanceToSqr(0.0D, this.getDeltaMovement().y(), 0.0D);
 
 			if(amplitude > 0.004D) {
 				this.setSprinting(true);
@@ -122,26 +122,26 @@ public class EternalEntity extends ZombieEntity {
 			}
 
 			this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
-			if(this.ticksExisted % 10 == 0)this.updateAttackTarget();
+			if(this.tickCount % 10 == 0)this.updateAttackTarget();
 		}
 	}
 
 	@Override
-	public void setAttackTarget(LivingEntity entity) {
+	public void setTarget(LivingEntity entity) {
 		if(entity == this.getOwner().right().orElse(null) || entity instanceof EternalEntity)return;
-		super.setAttackTarget(entity);
+		super.setTarget(entity);
 	}
 
 	@Override
-	public void setRevengeTarget(LivingEntity entity) {
+	public void setLastHurtByMob(LivingEntity entity) {
 		if(entity == this.getOwner().right().orElse(null) || entity instanceof EternalEntity)return;
-		super.setRevengeTarget(entity);
+		super.setLastHurtByMob(entity);
 	}
 
 	private void updateAttackTarget() {
-		AxisAlignedBB box = this.getBoundingBox().grow(32);
+		AxisAlignedBB box = this.getBoundingBox().inflate(32);
 
-		this.world.getLoadedEntitiesWithinAABB(LivingEntity.class, box, e -> {
+		this.level.getLoadedEntitiesOfClass(LivingEntity.class, box, e -> {
 			Either<UUID, PlayerEntity> o = this.getOwner();
 
 			if(o.right().isPresent() && o.right().get() == e) {
@@ -150,8 +150,8 @@ public class EternalEntity extends ZombieEntity {
 
 			return !(e instanceof EternalEntity);
 		}).stream()
-		.sorted(Comparator.comparingDouble(e -> e.getPositionVec().distanceTo(this.getPositionVec())))
-		.findFirst().ifPresent(this::setAttackTarget);
+		.sorted(Comparator.comparingDouble(e -> e.position().distanceTo(this.position())))
+		.findFirst().ifPresent(this::setTarget);
 	}
 
 	private Predicate<LivingEntity> ignoreEntities() {
@@ -166,12 +166,12 @@ public class EternalEntity extends ZombieEntity {
 
 	@Override
 	protected SoundEvent getDeathSound() {
-		return SoundEvents.ENTITY_PLAYER_DEATH;
+		return SoundEvents.PLAYER_DEATH;
 	}
 
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return SoundEvents.ENTITY_PLAYER_HURT;
+		return SoundEvents.PLAYER_HURT;
 	}
 
 	@Override
@@ -181,16 +181,16 @@ public class EternalEntity extends ZombieEntity {
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
+	public void addAdditionalSaveData(CompoundNBT compound) {
+		super.addAdditionalSaveData(compound);
 		compound.putFloat("SizeMultiplier", this.sizeMultiplier);
 		compound.putLong("DespawnTime", this.despawnTime);
 		if(this.owner != null)compound.putString("Owner", this.owner.toString());
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
 
 		if(compound.contains("SizeMultiplier", Constants.NBT.TAG_FLOAT)) {
 			this.changeSize(compound.getFloat("SizeMultiplier"));
@@ -205,19 +205,19 @@ public class EternalEntity extends ZombieEntity {
 	}
 
 	@Override
-	public void addTrackingPlayer(ServerPlayerEntity player) {
-		super.addTrackingPlayer(player);
+	public void startSeenByPlayer(ServerPlayerEntity player) {
+		super.startSeenByPlayer(player);
 		this.bossInfo.addPlayer(player);
 	}
 
 	@Override
-	public void removeTrackingPlayer(ServerPlayerEntity player) {
-		super.removeTrackingPlayer(player);
+	public void stopSeenByPlayer(ServerPlayerEntity player) {
+		super.stopSeenByPlayer(player);
 		this.bossInfo.removePlayer(player);
 	}
 
 	@Override
-	public EntitySize getSize(Pose pose) {
+	public EntitySize getDimensions(Pose pose) {
 		Field sizeField = Entity.class.getDeclaredFields()[79]; //Entity.size
 		sizeField.setAccessible(true);
 
@@ -225,7 +225,7 @@ public class EternalEntity extends ZombieEntity {
 			return (EntitySize)sizeField.get(this);
 		} catch(IllegalAccessException e) {
 			e.printStackTrace();
-			return super.getSize(pose);
+			return super.getDimensions(pose);
 		}
 	}
 
@@ -238,14 +238,14 @@ public class EternalEntity extends ZombieEntity {
 		sizeField.setAccessible(true);
 
 		try {
-			sizeField.set(this, this.getSize(Pose.STANDING).scale(this.sizeMultiplier = m));
+			sizeField.set(this, this.getDimensions(Pose.STANDING).scale(this.sizeMultiplier = m));
 		} catch(IllegalAccessException e) {
 			e.printStackTrace();
 		}
 
-		this.recalculateSize();
+		this.refreshDimensions();
 
-		if(!this.world.isRemote) {
+		if(!this.level.isClientSide) {
 			ModNetwork.CHANNEL.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new FighterSizeMessage(this, this.sizeMultiplier));
 		}
 
@@ -258,19 +258,19 @@ public class EternalEntity extends ZombieEntity {
 	}
 
 	@Override
-	public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData spawnData, CompoundNBT dataTag) {
+	public ILivingEntityData finalizeSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData spawnData, CompoundNBT dataTag) {
 		this.setCustomName(this.getCustomName());
-		this.setBreakDoorsAItask(true);
+		this.setCanBreakDoors(true);
 		this.setCanPickUpLoot(true);
-		this.enablePersistence();
+		this.setPersistenceRequired();
 
 		//Good ol' easter egg.
-		if(this.rand.nextInt(100) == 0) {
-			ChickenEntity chicken = EntityType.CHICKEN.create(this.world);
-			chicken.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
-			chicken.onInitialSpawn(world, difficulty, reason, spawnData, dataTag);
+		if(this.random.nextInt(100) == 0) {
+			ChickenEntity chicken = EntityType.CHICKEN.create(this.level);
+			chicken.moveTo(this.getX(), this.getY(), this.getZ(), this.yRot, 0.0F);
+			chicken.finalizeSpawn(world, difficulty, reason, spawnData, dataTag);
 			chicken.setChickenJockey(true);
-			((ServerWorld)this.world).summonEntity(chicken);
+			((ServerWorld)this.level).addWithUUID(chicken);
 			this.startRiding(chicken);
 		}
 
@@ -278,9 +278,9 @@ public class EternalEntity extends ZombieEntity {
 	}
 
 	@Override
-	protected void dropLoot(DamageSource damageSource, boolean attackedRecently) {
-		super.dropLoot(damageSource, attackedRecently);
-		if(this.world.isRemote())return;
+	protected void dropFromLootTable(DamageSource damageSource, boolean attackedRecently) {
+		super.dropFromLootTable(damageSource, attackedRecently);
+		if(this.level.isClientSide())return;
 
 		/* Drop the head.
 		if(!this.lastName.equals(this.getCustomName().getString())) {
@@ -293,16 +293,16 @@ public class EternalEntity extends ZombieEntity {
 	}
 
 	@Override
-	public boolean attackEntityAsMob(Entity entity) {
-		if (!this.world.isRemote) {
-			((ServerWorld)this.world).spawnParticle(ParticleTypes.SWEEP_ATTACK, this.getPosX(), this.getPosY(),
-					this.getPosZ(), 1, 0.0f, 0.0f, 0.0f, 0);
+	public boolean doHurtTarget(Entity entity) {
+		if (!this.level.isClientSide) {
+			((ServerWorld)this.level).sendParticles(ParticleTypes.SWEEP_ATTACK, this.getX(), this.getY(),
+					this.getZ(), 1, 0.0f, 0.0f, 0.0f, 0);
 
-			this.world.playSound(null, this.getPosition(), SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP,
-					SoundCategory.PLAYERS, 1.0f, this.rand.nextFloat() - this.rand.nextFloat());
+			this.level.playSound(null, this.blockPosition(), SoundEvents.PLAYER_ATTACK_SWEEP,
+					SoundCategory.PLAYERS, 1.0f, this.random.nextFloat() - this.random.nextFloat());
 		}
 
-		return super.attackEntityAsMob(entity);
+		return super.doHurtTarget(entity);
 	}
 
 }

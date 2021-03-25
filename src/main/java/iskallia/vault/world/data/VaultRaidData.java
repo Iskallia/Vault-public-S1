@@ -46,7 +46,7 @@ public class VaultRaidData extends WorldSavedData {
     }
 
     public VaultRaid getAt(BlockPos pos) {
-        return this.activeRaids.values().stream().filter(raid -> raid.box.isVecInside(pos)).findFirst().orElse(null);
+        return this.activeRaids.values().stream().filter(raid -> raid.box.isInside(pos)).findFirst().orElse(null);
     }
 
     public void remove(ServerWorld server, UUID playerId) {
@@ -59,7 +59,7 @@ public class VaultRaidData extends WorldSavedData {
     }
 
     public VaultRaid getActiveFor(ServerPlayerEntity player) {
-        return this.activeRaids.get(player.getUniqueID());
+        return this.activeRaids.get(player.getUUID());
     }
 
     public VaultRaid startNew(ServerPlayerEntity player, ItemVaultCrystal crystal, boolean isFinalVault) {
@@ -71,10 +71,10 @@ public class VaultRaidData extends WorldSavedData {
     }
 
     public VaultRaid startNew(List<ServerPlayerEntity> players, List<ServerPlayerEntity> spectators, int rarity, String playerBossName, CrystalData data, boolean isFinalVault) {
-        players.forEach(player -> player.sendStatusMessage(new StringTextComponent("Generating vault, please wait...").mergeStyle(TextFormatting.GREEN), true));
+        players.forEach(player -> player.displayClientMessage(new StringTextComponent("Generating vault, please wait...").withStyle(TextFormatting.GREEN), true));
 
         int level = players.stream()
-                .map(player -> PlayerVaultStatsData.get(player.getServerWorld()).getVaultStats(player).getVaultLevel())
+                .map(player -> PlayerVaultStatsData.get(player.getLevel()).getVaultStats(player).getVaultLevel())
                 .max(Integer::compareTo).get();
 
         VaultRaid raid = new VaultRaid(players, spectators, new MutableBoundingBox(
@@ -84,8 +84,8 @@ public class VaultRaidData extends WorldSavedData {
         raid.isFinalVault = isFinalVault;
 
         players.forEach(player -> {
-            if(this.activeRaids.containsKey(player.getUniqueID())) {
-                this.activeRaids.get(player.getUniqueID()).ticksLeft = 0;
+            if(this.activeRaids.containsKey(player.getUUID())) {
+                this.activeRaids.get(player.getUUID()).ticksLeft = 0;
             }
         });
 
@@ -93,19 +93,19 @@ public class VaultRaidData extends WorldSavedData {
             this.activeRaids.put(uuid, raid);
         });
 
-        this.markDirty();
+        this.setDirty();
 
-        ServerWorld world = players.get(0).getServer().getWorld(Vault.VAULT_KEY);
+        ServerWorld world = players.get(0).getServer().getLevel(Vault.VAULT_KEY);
 
-        players.get(0).getServer().runAsync(() -> {
+        players.get(0).getServer().submit(() -> {
             try {
-                ChunkPos chunkPos = new ChunkPos((raid.box.minX + raid.box.getXSize() / 2) >> 4, (raid.box.minZ + raid.box.getZSize() / 2) >> 4);
+                ChunkPos chunkPos = new ChunkPos((raid.box.x0 + raid.box.getXSpan() / 2) >> 4, (raid.box.z0 + raid.box.getZSpan() / 2) >> 4);
 
                 StructureSeparationSettings settings = new StructureSeparationSettings(1, 0, -1);
 
-                StructureStart<?> start = (raid.isFinalVault ? ModFeatures.FINAL_VAULT_FEATURE : ModFeatures.VAULT_FEATURE).func_242771_a(world.func_241828_r(),
-                        world.getChunkProvider().generator, world.getChunkProvider().generator.getBiomeProvider(),
-                        world.getStructureTemplateManager(), world.getSeed(), chunkPos,
+                StructureStart<?> start = (raid.isFinalVault ? ModFeatures.FINAL_VAULT_FEATURE : ModFeatures.VAULT_FEATURE).generate(world.registryAccess(),
+                        world.getChunkSource().generator, world.getChunkSource().generator.getBiomeSource(),
+                        world.getStructureManager(), world.getSeed(), chunkPos,
                         BiomeRegistry.PLAINS, 0, settings);
 
                 //This is some cursed calculations, don't ask me how it works.
@@ -113,7 +113,7 @@ public class VaultRaidData extends WorldSavedData {
 
                 for (int x = -chunkRadius; x <= chunkRadius; x += 17) {
                     for (int z = -chunkRadius; z <= chunkRadius; z += 17) {
-                        world.getChunk(chunkPos.x + x, chunkPos.z + z, ChunkStatus.EMPTY, true).func_230344_a_(ModStructures.VAULT, start);
+                        world.getChunk(chunkPos.x + x, chunkPos.z + z, ChunkStatus.EMPTY, true).setStartForFeature(ModStructures.VAULT, start);
                     }
                 }
 
@@ -144,19 +144,19 @@ public class VaultRaidData extends WorldSavedData {
         tasks.forEach(Runnable::run);
 
         if (removed || this.activeRaids.size() > 0) {
-            this.markDirty();
+            this.setDirty();
         }
     }
 
     @SubscribeEvent
     public static void onTick(TickEvent.WorldTickEvent event) {
-        if (event.side == LogicalSide.SERVER && event.phase == TickEvent.Phase.START && event.world.getDimensionKey() == Vault.VAULT_KEY) {
+        if (event.side == LogicalSide.SERVER && event.phase == TickEvent.Phase.START && event.world.dimension() == Vault.VAULT_KEY) {
             get((ServerWorld) event.world).tick((ServerWorld) event.world);
         }
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         this.activeRaids.clear();
 
         nbt.getList("ActiveRaids", Constants.NBT.TAG_COMPOUND).forEach(raidNBT -> {
@@ -168,7 +168,7 @@ public class VaultRaidData extends WorldSavedData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         ListNBT raidsList = new ListNBT();
         this.activeRaids.values().forEach(raid -> raidsList.add(raid.serializeNBT()));
         nbt.put("ActiveRaids", raidsList);
@@ -178,7 +178,7 @@ public class VaultRaidData extends WorldSavedData {
     }
 
     public static VaultRaidData get(ServerWorld world) {
-        return world.getServer().func_241755_D_().getSavedData().getOrCreate(VaultRaidData::new, DATA_NAME);
+        return world.getServer().overworld().getDataStorage().computeIfAbsent(VaultRaidData::new, DATA_NAME);
     }
 
 }

@@ -67,17 +67,17 @@ public class VaultPortalSize {
     }
 
     private static boolean canConnect(BlockState state) {
-        return state.isAir() || state.isIn(ModBlocks.VAULT_PORTAL);
+        return state.isAir() || state.is(ModBlocks.VAULT_PORTAL);
     }
 
     @Nullable
     private BlockPos getBottomLeft(BlockPos pos) {
-        for (int i = Math.max(0, pos.getY() - 21); pos.getY() > i && canConnect(this.world.getBlockState(pos.down())); pos = pos.down()) {
+        for (int i = Math.max(0, pos.getY() - 21); pos.getY() > i && canConnect(this.world.getBlockState(pos.below())); pos = pos.below()) {
         }
 
         Direction direction = this.rightDir.getOpposite();
         int j = this.getWidth(pos, direction) - 1;
-        return j < 0 ? null : pos.offset(direction, j);
+        return j < 0 ? null : pos.relative(direction, j);
     }
 
     private int getWidth() {
@@ -89,7 +89,7 @@ public class VaultPortalSize {
         BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
 
         for (int i = 0; i <= 21; ++i) {
-            blockpos$mutable.setPos(pos).move(direction, i);
+            blockpos$mutable.set(pos).move(direction, i);
             BlockState blockstate = this.world.getBlockState(blockpos$mutable);
             if (!canConnect(blockstate)) {
                 if (POSITION_PREDICATE.test(blockstate, this.world, blockpos$mutable)) {
@@ -115,7 +115,7 @@ public class VaultPortalSize {
 
     private boolean getHeight(BlockPos.Mutable mutablePos, int upDisplacement) {
         for (int i = 0; i < this.width; ++i) {
-            BlockPos.Mutable blockpos$mutable = mutablePos.setPos(this.bottomLeft).move(Direction.UP, upDisplacement).move(this.rightDir, i);
+            BlockPos.Mutable blockpos$mutable = mutablePos.set(this.bottomLeft).move(Direction.UP, upDisplacement).move(this.rightDir, i);
             if (!POSITION_PREDICATE.test(this.world.getBlockState(blockpos$mutable), this.world, blockpos$mutable)) {
                 return false;
             }
@@ -126,24 +126,24 @@ public class VaultPortalSize {
 
     private int getFrameColumnCount(BlockPos.Mutable mutablePos) {
         for (int i = 0; i < 21; ++i) {
-            mutablePos.setPos(this.bottomLeft).move(Direction.UP, i).move(this.rightDir, -1);
+            mutablePos.set(this.bottomLeft).move(Direction.UP, i).move(this.rightDir, -1);
             if (!POSITION_PREDICATE.test(this.world.getBlockState(mutablePos), this.world, mutablePos)) {
                 return i;
             }
 
-            mutablePos.setPos(this.bottomLeft).move(Direction.UP, i).move(this.rightDir, this.width);
+            mutablePos.set(this.bottomLeft).move(Direction.UP, i).move(this.rightDir, this.width);
             if (!POSITION_PREDICATE.test(this.world.getBlockState(mutablePos), this.world, mutablePos)) {
                 return i;
             }
 
             for (int j = 0; j < this.width; ++j) {
-                mutablePos.setPos(this.bottomLeft).move(Direction.UP, i).move(this.rightDir, j);
+                mutablePos.set(this.bottomLeft).move(Direction.UP, i).move(this.rightDir, j);
                 BlockState blockstate = this.world.getBlockState(mutablePos);
                 if (!canConnect(blockstate)) {
                     return i;
                 }
 
-                if (blockstate.isIn(ModBlocks.VAULT_PORTAL)) {
+                if (blockstate.is(ModBlocks.VAULT_PORTAL)) {
                     ++this.portalBlockCount;
                 }
             }
@@ -157,13 +157,13 @@ public class VaultPortalSize {
     }
 
     public void placePortalBlocks(ItemVaultCrystal item, String playerBossName, CrystalData data) {
-        BlockState blockstate = ModBlocks.VAULT_PORTAL.getDefaultState().with(VaultPortalBlock.AXIS, this.axis).with(VaultPortalBlock.RARITY, item.getRarity().ordinal());
+        BlockState blockstate = ModBlocks.VAULT_PORTAL.defaultBlockState().setValue(VaultPortalBlock.AXIS, this.axis).setValue(VaultPortalBlock.RARITY, item.getRarity().ordinal());
 
-        BlockPos.getAllInBoxMutable(this.bottomLeft, this.bottomLeft.offset(Direction.UP, this.height - 1).offset(this.rightDir, this.width - 1)).forEach((pos) -> {
-            this.world.setBlockState(pos, blockstate, 3);
-            TileEntity te = this.world.getTileEntity(pos);
+        BlockPos.betweenClosed(this.bottomLeft, this.bottomLeft.relative(Direction.UP, this.height - 1).relative(this.rightDir, this.width - 1)).forEach((pos) -> {
+            this.world.setBlock(pos, blockstate, 3);
+            TileEntity te = this.world.getBlockEntity(pos);
             if(!(te instanceof VaultPortalTileEntity))return;
-            VaultPortalTileEntity portal = (VaultPortalTileEntity)this.world.getTileEntity(pos);
+            VaultPortalTileEntity portal = (VaultPortalTileEntity)this.world.getBlockEntity(pos);
             portal.setPlayerBossName(playerBossName);
             portal.setCrystalData(data);
         });

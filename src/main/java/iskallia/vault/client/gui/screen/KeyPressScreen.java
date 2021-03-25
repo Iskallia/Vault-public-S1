@@ -21,15 +21,15 @@ public class KeyPressScreen extends ContainerScreen<KeyPressContainer> {
 
     @Override
     protected void
-    drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {}
+    renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {}
 
     @Override
     protected void
-    drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
+    renderLabels(MatrixStack matrixStack, int x, int y) {
         // For some reason, without this it won't render :V
-        this.font.func_243248_b(matrixStack,
+        this.font.draw(matrixStack,
                 new StringTextComponent(""),
-                (float) this.titleX, (float) this.titleY,
+                (float) this.titleLabelX, (float) this.titleLabelY,
                 4210752);
     }
 
@@ -46,27 +46,27 @@ public class KeyPressScreen extends ContainerScreen<KeyPressContainer> {
         int containerWidth = 176;
         int containerHeight = 166;
 
-        minecraft.getTextureManager().bindTexture(GUI_RESOURCE);
+        minecraft.getTextureManager().bind(GUI_RESOURCE);
         blit(matrixStack, (int) (midX - containerWidth / 2), (int) (midY - containerHeight / 2),
                 0, 0, containerWidth, containerHeight);
 
-        FontRenderer fontRenderer = minecraft.fontRenderer;
+        FontRenderer fontRenderer = minecraft.font;
 
         String title = "Mold Vault Keys";
-        fontRenderer.drawString(matrixStack, title,
+        fontRenderer.draw(matrixStack, title,
                 midX - 35,
                 midY - 63,
                 0x00_3f3f3f);
 
         String inventoryTitle = "Inventory";
-        fontRenderer.drawString(matrixStack, inventoryTitle,
+        fontRenderer.draw(matrixStack, inventoryTitle,
                 midX - 80,
                 midY - 11,
                 0x00_3f3f3f);
 
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
 }

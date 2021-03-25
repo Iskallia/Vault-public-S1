@@ -22,9 +22,9 @@ public abstract class MixinServerWorld extends World {
 		super(worldInfo, dimension, dimensionType, profiler, isRemote, isDebug, seed);
 	}
 
-	@Inject(method = "tickEnvironment", at = @At("HEAD"), cancellable = true)
-	public void tickEnvironment(Chunk chunk, int randomTickSpeed, CallbackInfo ci) {
-		if(this.getDimensionKey() == Vault.VAULT_KEY) {
+	@Inject(method = "tickChunk", at = @At("HEAD"), cancellable = true)
+	public void tickChunk(Chunk chunk, int randomTickSpeed, CallbackInfo ci) {
+		if(this.dimension() == Vault.VAULT_KEY) {
 			ci.cancel();
 		}
 	}

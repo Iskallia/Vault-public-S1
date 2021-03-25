@@ -27,31 +27,33 @@ import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class VaultRuneBlock extends Block {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty RUNE_PLACED = BooleanProperty.create("rune_placed");
 
     public VaultRuneBlock() {
-        super(Properties.create(Material.ROCK, MaterialColor.STONE)
-                .hardnessAndResistance(Float.MAX_VALUE, Float.MAX_VALUE)
-                .notSolid());
+        super(Properties.of(Material.STONE, MaterialColor.STONE)
+                .strength(Float.MAX_VALUE, Float.MAX_VALUE)
+                .noOcclusion());
 
-        this.setDefaultState(this.stateContainer.getBaseState()
-                .with(FACING, Direction.SOUTH)
-                .with(RUNE_PLACED, false));
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(FACING, Direction.SOUTH)
+                .setValue(RUNE_PLACED, false));
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState()
-                .with(FACING, context.getPlacementHorizontalFacing())
-                .with(RUNE_PLACED, false);
+        return this.defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection())
+                .setValue(RUNE_PLACED, false);
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
         builder.add(RUNE_PLACED);
     }
@@ -68,27 +70,27 @@ public class VaultRuneBlock extends Block {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        if (!world.isClientSide) {
+            TileEntity tileEntity = world.getBlockEntity(pos);
 
             if (tileEntity instanceof VaultRuneTileEntity) {
                 VaultRuneTileEntity vaultRuneTE = (VaultRuneTileEntity) tileEntity;
                 String playerNick = player.getDisplayName().getString();
 
                 if (vaultRuneTE.getBelongsTo().equals(playerNick)) {
-                    ItemStack heldStack = player.getHeldItem(hand);
+                    ItemStack heldStack = player.getItemInHand(hand);
 
                     if (heldStack.getItem() == ModItems.VAULT_RUNE) {
                         BlockState blockState = world.getBlockState(pos);
-                        world.setBlockState(pos, blockState.with(RUNE_PLACED, true), 3);
+                        world.setBlock(pos, blockState.setValue(RUNE_PLACED, true), 3);
                         heldStack.shrink(1);
                         ((ServerWorld) world).playSound(
                                 null,
                                 pos.getX(),
                                 pos.getY(),
                                 pos.getZ(),
-                                SoundEvents.BLOCK_END_PORTAL_FRAME_FILL,
+                                SoundEvents.END_PORTAL_FRAME_FILL,
                                 SoundCategory.BLOCKS,
                                 1f, 1f
                         );
@@ -96,13 +98,13 @@ public class VaultRuneBlock extends Block {
 
                 } else {
                     StringTextComponent text = new StringTextComponent(vaultRuneTE.getBelongsTo() + " is responsible with this block.");
-                    text.setStyle(Style.EMPTY.setColor(Color.fromInt(0xFF_ff9966)));
-                    player.sendStatusMessage(text, true);
+                    text.setStyle(Style.EMPTY.withColor(Color.fromRgb(0xFF_ff9966)));
+                    player.displayClientMessage(text, true);
                 }
             }
         }
 
-        return super.onBlockActivated(state, world, pos, player, hand, hit);
+        return super.use(state, world, pos, player, hand, hit);
     }
 
 }

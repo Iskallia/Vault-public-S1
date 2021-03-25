@@ -27,8 +27,8 @@ public class UnidentifiedGearRecipe extends SpecialRecipe {
 		RelicSet set = null;
 		Set<RelicPartItem> parts = new HashSet<>();
 
-		for(int i = 0; i < inv.getSizeInventory(); ++i) {
-			ItemStack stack = inv.getStackInSlot(i);
+		for(int i = 0; i < inv.getContainerSize(); ++i) {
+			ItemStack stack = inv.getItem(i);
 
 			if(stack.getItem() instanceof RelicPartItem) {
 				if(set != null && ((RelicPartItem)stack.getItem()).getRelicSet() != set) {
@@ -46,9 +46,9 @@ public class UnidentifiedGearRecipe extends SpecialRecipe {
 	}
 
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv) {
-		for(int i = 0; i < inv.getSizeInventory(); ++i) {
-			ItemStack stack = inv.getStackInSlot(i);
+	public ItemStack assemble(CraftingInventory inv) {
+		for(int i = 0; i < inv.getContainerSize(); ++i) {
+			ItemStack stack = inv.getItem(i);
 
 			if(stack.getItem() instanceof RelicPartItem) {
 				RelicSet set = ((RelicPartItem)stack.getItem()).getRelicSet();
@@ -60,7 +60,7 @@ public class UnidentifiedGearRecipe extends SpecialRecipe {
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		Optional<RelicSet> min = RelicSet.getAll().stream().min(Comparator.comparingInt(o -> o.getItemSet().size()));
 		return min.isPresent() && width * height >= min.get().getItemSet().size();
 	}

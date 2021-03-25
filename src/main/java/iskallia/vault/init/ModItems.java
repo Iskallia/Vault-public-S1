@@ -17,7 +17,7 @@ public class ModItems {
 
     public static ItemGroup VAULT_MOD_GROUP = new ItemGroup(Vault.MOD_ID) {
         @Override
-        public ItemStack createIcon() {
+        public ItemStack makeIcon() {
             return new ItemStack(VAULT_BURGER);
         }
 
@@ -27,7 +27,7 @@ public class ModItems {
         }
     };
 
-    public static VaultXPFoodItem VAULT_BURGER = new VaultXPFoodItem(Vault.id("vault_burger"), () -> ModConfigs.VAULT_ITEMS.VAULT_BURGER.minExpPercent, () -> ModConfigs.VAULT_ITEMS.VAULT_BURGER.maxExpPercent, new Item.Properties().group(VAULT_MOD_GROUP));
+    public static VaultXPFoodItem VAULT_BURGER = new VaultXPFoodItem(Vault.id("vault_burger"), () -> ModConfigs.VAULT_ITEMS.VAULT_BURGER.minExpPercent, () -> ModConfigs.VAULT_ITEMS.VAULT_BURGER.maxExpPercent, new Item.Properties().tab(VAULT_MOD_GROUP));
     public static ItemSkillOrb SKILL_ORB = new ItemSkillOrb(VAULT_MOD_GROUP);
     public static ItemVaultGem VAULT_ROCK = new ItemVaultGem(VAULT_MOD_GROUP, Vault.id("vault_rock"));
     public static ItemVaultGem ALEXANDRITE_GEM = new ItemVaultGem(VAULT_MOD_GROUP, Vault.id("gem_alexandrite"));
@@ -118,20 +118,20 @@ public class ModItems {
     public static ItemVaultFruit.BitterLemon BITTER_LEMON = new ItemVaultFruit.BitterLemon(VAULT_MOD_GROUP, Vault.id("bitter_lemon"), 30 * 20);
     public static ItemVaultFruit.SourOrange SOUR_ORANGE = new ItemVaultFruit.SourOrange(VAULT_MOD_GROUP, Vault.id("sour_orange"), 60 * 20);
     public static ItemVaultFruit.MysticPear MYSTIC_PEAR = new ItemVaultFruit.MysticPear(VAULT_MOD_GROUP, Vault.id("mystic_pear"), 5 * 60 * 20);
-    public static BasicItem KEY_PIECE = new BasicItem(Vault.id("key_piece"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem KEY_MOULD = new BasicItem(Vault.id("key_mould"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem BLANK_KEY = new BasicItem(Vault.id("blank_key"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem NETHERITE_CLUSTER = new BasicItem(Vault.id("cluster_netherite"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem ALEXANDRITE_CLUSTER = new BasicItem(Vault.id("cluster_alexandrite"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem BENITOITE_CLUSTER = new BasicItem(Vault.id("cluster_benitoite"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem LARIMAR_CLUSTER = new BasicItem(Vault.id("cluster_larimar"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem BLACK_OPAL_CLUSTER = new BasicItem(Vault.id("cluster_black_opal"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem PAINITE_CLUSTER = new BasicItem(Vault.id("cluster_painite"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem ISKALLIUM_CLUSTER = new BasicItem(Vault.id("cluster_iskallium"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem RENIUM_CLUSTER = new BasicItem(Vault.id("cluster_renium"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem GORGINITE_CLUSTER = new BasicItem(Vault.id("cluster_gorginite"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem SPARKLETINE_CLUSTER = new BasicItem(Vault.id("cluster_sparkletine"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem WUTODIE_CLUSTER = new BasicItem(Vault.id("cluster_wutodie"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
+    public static BasicItem KEY_PIECE = new BasicItem(Vault.id("key_piece"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem KEY_MOULD = new BasicItem(Vault.id("key_mould"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem BLANK_KEY = new BasicItem(Vault.id("blank_key"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem NETHERITE_CLUSTER = new BasicItem(Vault.id("cluster_netherite"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem ALEXANDRITE_CLUSTER = new BasicItem(Vault.id("cluster_alexandrite"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem BENITOITE_CLUSTER = new BasicItem(Vault.id("cluster_benitoite"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem LARIMAR_CLUSTER = new BasicItem(Vault.id("cluster_larimar"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem BLACK_OPAL_CLUSTER = new BasicItem(Vault.id("cluster_black_opal"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem PAINITE_CLUSTER = new BasicItem(Vault.id("cluster_painite"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem ISKALLIUM_CLUSTER = new BasicItem(Vault.id("cluster_iskallium"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem RENIUM_CLUSTER = new BasicItem(Vault.id("cluster_renium"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem GORGINITE_CLUSTER = new BasicItem(Vault.id("cluster_gorginite"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem SPARKLETINE_CLUSTER = new BasicItem(Vault.id("cluster_sparkletine"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem WUTODIE_CLUSTER = new BasicItem(Vault.id("cluster_wutodie"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
     public static RelicPartItem TWOLF999_HEAD_RELIC = new RelicPartItem(VAULT_MOD_GROUP, Vault.id("relic_twolf999_head"));
     public static RelicPartItem TWOLF999_COMBAT_VEST_RELIC = new RelicPartItem(VAULT_MOD_GROUP, Vault.id("relic_twolf999_combat_vest"));
     public static RelicPartItem TWOLF999_COMBAT_LEGGINGS_RELIC = new RelicPartItem(VAULT_MOD_GROUP, Vault.id("relic_twolf999_combat_leggings"));
@@ -143,67 +143,67 @@ public class ModItems {
     public static RelicPartItem REVERENCE_EDGE_RELIC = new RelicPartItem(VAULT_MOD_GROUP, Vault.id("relic_reverence_edge"));
     public static RelicPartItem WINGS_OF_EQUITY_RELIC = new RelicPartItem(VAULT_MOD_GROUP, Vault.id("relic_wings_of_equity"));
 
-    public static VaultStewItem VAULT_STEW_MYSTERY = new VaultStewItem(Vault.id("vault_stew_mystery"), VaultStewItem.Rarity.MYSTERY, new Item.Properties().food(VaultStewItem.FOOD).maxStackSize(1).group(VAULT_MOD_GROUP));
-    public static VaultStewItem VAULT_STEW_NORMAL = new VaultStewItem(Vault.id("vault_stew_normal"), VaultStewItem.Rarity.NORMAL, new Item.Properties().food(VaultStewItem.FOOD).maxStackSize(1).group(VAULT_MOD_GROUP));
-    public static VaultStewItem VAULT_STEW_RARE = new VaultStewItem(Vault.id("vault_stew_rare"), VaultStewItem.Rarity.RARE, new Item.Properties().food(VaultStewItem.FOOD).maxStackSize(1).group(VAULT_MOD_GROUP));
-    public static VaultStewItem VAULT_STEW_EPIC = new VaultStewItem(Vault.id("vault_stew_epic"), VaultStewItem.Rarity.EPIC, new Item.Properties().food(VaultStewItem.FOOD).maxStackSize(1).group(VAULT_MOD_GROUP));
-    public static VaultStewItem VAULT_STEW_OMEGA = new VaultStewItem(Vault.id("vault_stew_omega"), VaultStewItem.Rarity.OMEGA, new Item.Properties().food(VaultStewItem.FOOD).maxStackSize(1).group(VAULT_MOD_GROUP));
-    public static BasicItem POISONOUS_MUSHROOM = new BasicItem(Vault.id("poisonous_mushroom"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static BasicItem VAULT_GOLD = new BasicItem(Vault.id("vault_gold"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static BasicItem VAULT_DIAMOND = new BasicItem(Vault.id("vault_diamond"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static BasicItem SKILL_ESSENCE = new BasicItem(Vault.id("skill_essence"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static VaultXPFoodItem OOZING_PIZZA = new VaultXPFoodItem(Vault.id("oozing_pizza"), () -> 0.0F, () -> 0.0F, new Item.Properties().group(VAULT_MOD_GROUP));
-    public static LootableItem UNIDENTIFIED_RELIC = new LootableItem(Vault.id("unidentified_relic"), new Item.Properties().group(VAULT_MOD_GROUP), () -> new ItemStack(ModConfigs.VAULT_RELICS.getRandomPart()));
+    public static VaultStewItem VAULT_STEW_MYSTERY = new VaultStewItem(Vault.id("vault_stew_mystery"), VaultStewItem.Rarity.MYSTERY, new Item.Properties().food(VaultStewItem.FOOD).stacksTo(1).tab(VAULT_MOD_GROUP));
+    public static VaultStewItem VAULT_STEW_NORMAL = new VaultStewItem(Vault.id("vault_stew_normal"), VaultStewItem.Rarity.NORMAL, new Item.Properties().food(VaultStewItem.FOOD).stacksTo(1).tab(VAULT_MOD_GROUP));
+    public static VaultStewItem VAULT_STEW_RARE = new VaultStewItem(Vault.id("vault_stew_rare"), VaultStewItem.Rarity.RARE, new Item.Properties().food(VaultStewItem.FOOD).stacksTo(1).tab(VAULT_MOD_GROUP));
+    public static VaultStewItem VAULT_STEW_EPIC = new VaultStewItem(Vault.id("vault_stew_epic"), VaultStewItem.Rarity.EPIC, new Item.Properties().food(VaultStewItem.FOOD).stacksTo(1).tab(VAULT_MOD_GROUP));
+    public static VaultStewItem VAULT_STEW_OMEGA = new VaultStewItem(Vault.id("vault_stew_omega"), VaultStewItem.Rarity.OMEGA, new Item.Properties().food(VaultStewItem.FOOD).stacksTo(1).tab(VAULT_MOD_GROUP));
+    public static BasicItem POISONOUS_MUSHROOM = new BasicItem(Vault.id("poisonous_mushroom"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static BasicItem VAULT_GOLD = new BasicItem(Vault.id("vault_gold"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static BasicItem VAULT_DIAMOND = new BasicItem(Vault.id("vault_diamond"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static BasicItem SKILL_ESSENCE = new BasicItem(Vault.id("skill_essence"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static VaultXPFoodItem OOZING_PIZZA = new VaultXPFoodItem(Vault.id("oozing_pizza"), () -> 0.0F, () -> 0.0F, new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static LootableItem UNIDENTIFIED_RELIC = new LootableItem(Vault.id("unidentified_relic"), new Item.Properties().tab(VAULT_MOD_GROUP), () -> new ItemStack(ModConfigs.VAULT_RELICS.getRandomPart()));
     public static ItemVaultFruit.SweetKiwi SWEET_KIWI = new ItemVaultFruit.SweetKiwi(VAULT_MOD_GROUP, Vault.id("sweet_kiwi"), 20 * 5);
-    public static BasicItem HUNTER_EYE = new BasicItem(Vault.id("hunter_eye"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static BasicItem BURGER_PATTY = new BasicItem(Vault.id("burger_patty"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static BasicItem BURGER_BUN = new BasicItem(Vault.id("burger_bun"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static BasicItem MATURE_CHEDDAR = new BasicItem(Vault.id("mature_cheddar"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static BasicItem MYSTIC_TOMATO = new BasicItem(Vault.id("mystic_tomato"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static VialOfSandItem VIAL_OF_SAND = new VialOfSandItem(Vault.id("vial_of_sand"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static BasicItem VAULT_SCRAP = new BasicItem(Vault.id("vault_scrap"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static BasicItem VAULT_INGOT = new BasicItem(Vault.id("vault_ingot"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static BasicItem VAULT_PLATINUM = new BasicItem(Vault.id("vault_platinum"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static LootableItem MYSTERY_BOX = new LootableItem(Vault.id("mystery_box"), new Item.Properties().group(VAULT_MOD_GROUP), () -> ModConfigs.MYSTERY_BOX.POOL.getRandom(new Random()).toStack());
+    public static BasicItem HUNTER_EYE = new BasicItem(Vault.id("hunter_eye"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static BasicItem BURGER_PATTY = new BasicItem(Vault.id("burger_patty"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static BasicItem BURGER_BUN = new BasicItem(Vault.id("burger_bun"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static BasicItem MATURE_CHEDDAR = new BasicItem(Vault.id("mature_cheddar"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static BasicItem MYSTIC_TOMATO = new BasicItem(Vault.id("mystic_tomato"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static VialOfSandItem VIAL_OF_SAND = new VialOfSandItem(Vault.id("vial_of_sand"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static BasicItem VAULT_SCRAP = new BasicItem(Vault.id("vault_scrap"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static BasicItem VAULT_INGOT = new BasicItem(Vault.id("vault_ingot"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static BasicItem VAULT_PLATINUM = new BasicItem(Vault.id("vault_platinum"), new Item.Properties().tab(VAULT_MOD_GROUP));
+    public static LootableItem MYSTERY_BOX = new LootableItem(Vault.id("mystery_box"), new Item.Properties().tab(VAULT_MOD_GROUP), () -> ModConfigs.MYSTERY_BOX.POOL.getRandom(new Random()).toStack());
 
-    public static BasicItem ACCELERATION_CHIP = new BasicItem(Vault.id("acceleration_chip"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static LootableItem PANDORAS_BOX = new LootableItem(Vault.id("pandoras_box"), new Item.Properties().group(VAULT_MOD_GROUP), () -> ModConfigs.PANDORAS_BOX.POOL.getRandom(new Random()).toStack());
+    public static BasicItem ACCELERATION_CHIP = new BasicItem(Vault.id("acceleration_chip"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static LootableItem PANDORAS_BOX = new LootableItem(Vault.id("pandoras_box"), new Item.Properties().tab(VAULT_MOD_GROUP), () -> ModConfigs.PANDORAS_BOX.POOL.getRandom(new Random()).toStack());
 
-    public static BasicItem NETHERITE_CHUNK = new BasicItem(Vault.id("chunk_netherite"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem ALEXANDRITE_CHUNK = new BasicItem(Vault.id("chunk_alexandrite"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem BENITOITE_CHUNK = new BasicItem(Vault.id("chunk_benitoite"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem LARIMAR_CHUNK = new BasicItem(Vault.id("chunk_larimar"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem BLACK_OPAL_CHUNK = new BasicItem(Vault.id("chunk_black_opal"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem PAINITE_CHUNK = new BasicItem(Vault.id("chunk_painite"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem ISKALLIUM_CHUNK = new BasicItem(Vault.id("chunk_iskallium"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem RENIUM_CHUNK = new BasicItem(Vault.id("chunk_renium"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem GORGINITE_CHUNK = new BasicItem(Vault.id("chunk_gorginite"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem SPARKLETINE_CHUNK = new BasicItem(Vault.id("chunk_sparkletine"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem WUTODIE_CHUNK = new BasicItem(Vault.id("chunk_wutodie"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem OMEGA_POG = new BasicItem(Vault.id("omega_pog"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
+    public static BasicItem NETHERITE_CHUNK = new BasicItem(Vault.id("chunk_netherite"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem ALEXANDRITE_CHUNK = new BasicItem(Vault.id("chunk_alexandrite"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem BENITOITE_CHUNK = new BasicItem(Vault.id("chunk_benitoite"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem LARIMAR_CHUNK = new BasicItem(Vault.id("chunk_larimar"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem BLACK_OPAL_CHUNK = new BasicItem(Vault.id("chunk_black_opal"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem PAINITE_CHUNK = new BasicItem(Vault.id("chunk_painite"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem ISKALLIUM_CHUNK = new BasicItem(Vault.id("chunk_iskallium"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem RENIUM_CHUNK = new BasicItem(Vault.id("chunk_renium"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem GORGINITE_CHUNK = new BasicItem(Vault.id("chunk_gorginite"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem SPARKLETINE_CHUNK = new BasicItem(Vault.id("chunk_sparkletine"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem WUTODIE_CHUNK = new BasicItem(Vault.id("chunk_wutodie"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem OMEGA_POG = new BasicItem(Vault.id("omega_pog"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
 
-    public static BasicItem ETERNAL_SOUL = new BasicItem(Vault.id("eternal_soul"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem SPARK = new BasicItem(Vault.id("spark"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem VOID_CORE = new BasicItem(Vault.id("void_core"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
+    public static BasicItem ETERNAL_SOUL = new BasicItem(Vault.id("eternal_soul"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem SPARK = new BasicItem(Vault.id("spark"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem VOID_CORE = new BasicItem(Vault.id("void_core"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
 
-    public static BasicItem STAR_SHARD = new BasicItem(Vault.id("star_shard"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem STAR_CORE = new BasicItem(Vault.id("star_core"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
-    public static BasicItem STAR_ESSENCE = new BasicItem(Vault.id("star_essence"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
+    public static BasicItem STAR_SHARD = new BasicItem(Vault.id("star_shard"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem STAR_CORE = new BasicItem(Vault.id("star_core"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
+    public static BasicItem STAR_ESSENCE = new BasicItem(Vault.id("star_essence"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
     public static ItemKnowledgeStar KNOWLEDGE_STAR = new ItemKnowledgeStar(VAULT_MOD_GROUP);
 
-    public static VaultSwordItem SWORD = new VaultSwordItem(Vault.id("sword"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
-    public static VaultAxeItem AXE = new VaultAxeItem(Vault.id("axe"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
-    public static VaultDaggerItem DAGGER = new VaultDaggerItem(Vault.id("dagger"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
-    public static VaultArmorItem HELMET = new VaultArmorItem(Vault.id("helmet"), EquipmentSlotType.HEAD, new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
-    public static VaultArmorItem CHESTPLATE = new VaultArmorItem(Vault.id("chestplate"), EquipmentSlotType.CHEST, new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
-    public static VaultArmorItem LEGGINGS = new VaultArmorItem(Vault.id("leggings"), EquipmentSlotType.LEGS, new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
-    public static VaultArmorItem BOOTS = new VaultArmorItem(Vault.id("boots"), EquipmentSlotType.FEET, new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
-    public static EtchingItem ETCHING = new EtchingItem(Vault.id("etching"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
-    public static BasicItem ETCHING_FRAGMENT = new BasicItem(Vault.id("etching_fragment"), new Item.Properties().group(VAULT_MOD_GROUP));
+    public static VaultSwordItem SWORD = new VaultSwordItem(Vault.id("sword"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(1));
+    public static VaultAxeItem AXE = new VaultAxeItem(Vault.id("axe"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(1));
+    public static VaultDaggerItem DAGGER = new VaultDaggerItem(Vault.id("dagger"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(1));
+    public static VaultArmorItem HELMET = new VaultArmorItem(Vault.id("helmet"), EquipmentSlotType.HEAD, new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(1));
+    public static VaultArmorItem CHESTPLATE = new VaultArmorItem(Vault.id("chestplate"), EquipmentSlotType.CHEST, new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(1));
+    public static VaultArmorItem LEGGINGS = new VaultArmorItem(Vault.id("leggings"), EquipmentSlotType.LEGS, new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(1));
+    public static VaultArmorItem BOOTS = new VaultArmorItem(Vault.id("boots"), EquipmentSlotType.FEET, new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(1));
+    public static EtchingItem ETCHING = new EtchingItem(Vault.id("etching"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(1));
+    public static BasicItem ETCHING_FRAGMENT = new BasicItem(Vault.id("etching_fragment"), new Item.Properties().tab(VAULT_MOD_GROUP));
 
-    public static PuzzleRuneItem PUZZLE_RUNE = new PuzzleRuneItem(Vault.id("puzzle_rune"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(1));
+    public static PuzzleRuneItem PUZZLE_RUNE = new PuzzleRuneItem(Vault.id("puzzle_rune"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(1));
 
-    public static BasicItem INFUSED_ETERNAL_SOUL = new BasicItem(Vault.id("infused_eternal_soul"), new Item.Properties().group(VAULT_MOD_GROUP).maxStackSize(64));
+    public static BasicItem INFUSED_ETERNAL_SOUL = new BasicItem(Vault.id("infused_eternal_soul"), new Item.Properties().tab(VAULT_MOD_GROUP).stacksTo(64));
 
     public static void registerItems(RegistryEvent.Register<Item> event) {
         IForgeRegistry<Item> registry = event.getRegistry();

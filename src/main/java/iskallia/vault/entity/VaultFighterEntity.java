@@ -21,14 +21,14 @@ public class VaultFighterEntity extends FighterEntity {
 	}
 
 	@Override
-	public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData spawnData, CompoundNBT dataTag) {
-		ILivingEntityData livingData = super.onInitialSpawn(world, difficulty, reason, spawnData, dataTag);
+	public ILivingEntityData finalizeSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData spawnData, CompoundNBT dataTag) {
+		ILivingEntityData livingData = super.finalizeSpawn(world, difficulty, reason, spawnData, dataTag);
 
-		if(!this.world.isRemote) {
-			VaultRaid raid = VaultRaidData.get((ServerWorld)this.world).getAt(this.getPosition());
+		if(!this.level.isClientSide) {
+			VaultRaid raid = VaultRaidData.get((ServerWorld)this.level).getAt(this.blockPosition());
 
 			if(raid != null) {
-				ServerPlayerEntity player = ((ServerWorld)world).getServer().getPlayerList().getPlayerByUUID(raid.playerIds.get(0));
+				ServerPlayerEntity player = ((ServerWorld)world).getServer().getPlayerList().getPlayer(raid.playerIds.get(0));
 				String name = player != null ? player.getName().getString() : "";
 				this.setCustomName(new StringTextComponent(name));
 			}

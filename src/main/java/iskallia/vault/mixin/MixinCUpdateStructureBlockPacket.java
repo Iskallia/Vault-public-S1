@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(CUpdateStructureBlockPacket.class)
 public class MixinCUpdateStructureBlockPacket {
 
-	@Redirect(method = "readPacketData", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;clamp(III)I"))
-	private int readPacketData(int num, int min, int max) {
+	@Redirect(method = "read", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;clamp(III)I"))
+	private int read(int num, int min, int max) {
 		return MathHelper.clamp(num, min * 11, max * 11);
 	}
 

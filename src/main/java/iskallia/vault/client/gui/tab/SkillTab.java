@@ -83,7 +83,7 @@ public abstract class SkillTab extends Screen {
     }
 
     @Override
-    public void onClose() {
+    public void removed() {
         System.out.println(getClass().getSimpleName() + " closed.");
         persistedTranslations.put(getClass(), viewportTranslation);
         persistedScales.put(getClass(), viewportScale);

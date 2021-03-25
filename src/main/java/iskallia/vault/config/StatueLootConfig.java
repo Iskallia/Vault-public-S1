@@ -109,7 +109,7 @@ public class StatueLootConfig extends Config {
             Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(randomEntry.ITEM));
             stack = new ItemStack(item);
             if (randomEntry.NBT != null) {
-                CompoundNBT nbt = JsonToNBT.getTagFromJson(randomEntry.NBT);
+                CompoundNBT nbt = JsonToNBT.parseTag(randomEntry.NBT);
                 stack.setTag(nbt);
             }
 
@@ -122,16 +122,16 @@ public class StatueLootConfig extends Config {
 
     public void dumpAll(PlayerEntity player) {
         for (SingleItemEntry entry : GIFT_NORMAL_STATUE_LOOT) {
-            player.dropItem(getItem(entry), false);
+            player.drop(getItem(entry), false);
         }
         for (SingleItemEntry entry : GIFT_MEGA_STATUE_LOOT) {
-            player.dropItem(getItem(entry), false);
+            player.drop(getItem(entry), false);
         }
         for (SingleItemEntry entry : ARENA_CHAMPION_STATUE_LOOT) {
-            player.dropItem(getItem(entry), false);
+            player.drop(getItem(entry), false);
         }
         for (SingleItemEntry entry : VAULT_BOSS_STATUE_LOOT) {
-            player.dropItem(getItem(entry), false);
+            player.drop(getItem(entry), false);
         }
     }
 
@@ -141,7 +141,7 @@ public class StatueLootConfig extends Config {
             Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(entry.ITEM));
             stack = new ItemStack(item);
             if (entry.NBT != null) {
-                CompoundNBT nbt = JsonToNBT.getTagFromJson(entry.NBT);
+                CompoundNBT nbt = JsonToNBT.parseTag(entry.NBT);
                 stack.setTag(nbt);
             }
 

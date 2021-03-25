@@ -32,9 +32,9 @@ public class RaidCommand extends Command {
 
 	private int startRaid(CommandContext<CommandSource> context, Type type) throws CommandSyntaxException {
 		if(type == Type.VAULT) {
-			VaultRaidData.get(context.getSource().getWorld()).startNew(context.getSource().asPlayer(), ModItems.VAULT_CRYSTAL_OMEGA, false);
+			VaultRaidData.get(context.getSource().getLevel()).startNew(context.getSource().getPlayerOrException(), ModItems.VAULT_CRYSTAL_OMEGA, false);
 		} else if(type == Type.FINAL_VAULT) {
-			VaultRaidData.get(context.getSource().getWorld()).startNew(context.getSource().asPlayer(), ModItems.VAULT_CRYSTAL_OMEGA, true);
+			VaultRaidData.get(context.getSource().getLevel()).startNew(context.getSource().getPlayerOrException(), ModItems.VAULT_CRYSTAL_OMEGA, true);
 		}
 
 		return 0;

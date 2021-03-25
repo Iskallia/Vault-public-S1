@@ -18,16 +18,16 @@ public class CleanseAbility extends PlayerAbility {
 
     @Override
     public void onAction(PlayerEntity player, boolean active) {
-        List<Effect> effects = player.getActivePotionEffects().stream()
-                .map(EffectInstance::getPotion)
+        List<Effect> effects = player.getActiveEffects().stream()
+                .map(EffectInstance::getEffect)
                 .filter(effect -> !effect.isBeneficial())
                 .collect(Collectors.toList());
 
-        effects.forEach(player::removePotionEffect);
+        effects.forEach(player::removeEffect);
 
-        player.world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(),
+        player.level.playSound(player, player.getX(), player.getY(), player.getZ(),
                 ModSounds.CLEANSE_SFX, SoundCategory.MASTER, 0.7f, 1f);
-        player.playSound(ModSounds.CLEANSE_SFX, SoundCategory.MASTER, 0.7f, 1f);
+        player.playNotifySound(ModSounds.CLEANSE_SFX, SoundCategory.MASTER, 0.7f, 1f);
     }
 
 }

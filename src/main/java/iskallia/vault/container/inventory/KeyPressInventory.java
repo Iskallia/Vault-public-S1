@@ -17,7 +17,7 @@ public class KeyPressInventory implements IInventory {
     private final NonNullList<ItemStack> slots = NonNullList.withSize(3, ItemStack.EMPTY);
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return this.slots.size();
     }
 
@@ -27,58 +27,58 @@ public class KeyPressInventory implements IInventory {
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
+    public ItemStack getItem(int index) {
         return this.slots.get(index);
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count) {
+    public ItemStack removeItem(int index, int count) {
         ItemStack itemStack = slots.get(index);
 
         if (index == RESULT_SLOT && !itemStack.isEmpty()) {
-            ItemStack andSplit = ItemStackHelper.getAndSplit(slots, index, itemStack.getCount());
-            decrStackSize(KEY_SLOT, 1);
-            decrStackSize(CLUSTER_SLOT, 1);
+            ItemStack andSplit = ItemStackHelper.removeItem(slots, index, itemStack.getCount());
+            removeItem(KEY_SLOT, 1);
+            removeItem(CLUSTER_SLOT, 1);
             updateResult();
             return andSplit;
         }
 
-        ItemStack splitStack = ItemStackHelper.getAndSplit(slots, index, count);
+        ItemStack splitStack = ItemStackHelper.removeItem(slots, index, count);
         updateResult();
         return splitStack;
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index) {
-        ItemStack andRemove = ItemStackHelper.getAndRemove(this.slots, index);
+    public ItemStack removeItemNoUpdate(int index) {
+        ItemStack andRemove = ItemStackHelper.takeItem(this.slots, index);
         updateResult();
         return andRemove;
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setItem(int index, ItemStack stack) {
         slots.set(index, stack);
         updateResult();
     }
 
     @Override
-    public void markDirty() { }
+    public void setChanged() { }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
+    public boolean stillValid(PlayerEntity player) {
         return true;
     }
 
     public void updateResult() {
-        Item keyItem = getStackInSlot(KEY_SLOT).getItem();
-        Item clusterItem = getStackInSlot(CLUSTER_SLOT).getItem();
+        Item keyItem = getItem(KEY_SLOT).getItem();
+        Item clusterItem = getItem(CLUSTER_SLOT).getItem();
 
         ItemStack result = ModConfigs.KEY_PRESS.getResultFor(keyItem, clusterItem);
         slots.set(RESULT_SLOT, result);
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         this.slots.clear();
     }
 

@@ -22,12 +22,12 @@ public class RelicStatueBlockItem extends BlockItem {
 
     public RelicStatueBlockItem() {
         super(ModBlocks.RELIC_STATUE, new Item.Properties()
-                .group(ModItems.VAULT_MOD_GROUP)
-                .maxStackSize(1));
+                .tab(ModItems.VAULT_MOD_GROUP)
+                .stacksTo(1));
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         CompoundNBT nbt = stack.getTag();
 
         if (nbt != null) {
@@ -38,12 +38,12 @@ public class RelicStatueBlockItem extends BlockItem {
 
             if(set != null) {
                 StringTextComponent titleText = new StringTextComponent(" Relic Set: " + set.getName());
-                titleText.setStyle(Style.EMPTY.setColor(Color.fromInt(0xFF_ff9966)));
+                titleText.setStyle(Style.EMPTY.withColor(Color.fromRgb(0xFF_ff9966)));
                 tooltip.add(titleText);
             }
         }
 
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
     public static ItemStack withRelicSet(RelicSet relicSet) {

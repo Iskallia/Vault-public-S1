@@ -31,7 +31,7 @@ public class PlayerResearchesData extends WorldSavedData {
     }
 
     public ResearchTree getResearches(PlayerEntity player) {
-        return getResearches(player.getUniqueID());
+        return getResearches(player.getUUID());
     }
 
     public ResearchTree getResearches(UUID uuid) {
@@ -46,7 +46,7 @@ public class PlayerResearchesData extends WorldSavedData {
 
         researchTree.sync(player.getServer());
 
-        markDirty();
+        setDirty();
         return this;
     }
 
@@ -56,14 +56,14 @@ public class PlayerResearchesData extends WorldSavedData {
 
         researchTree.sync(player.getServer());
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     /* ------------------------------- */
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         ListNBT playerList = nbt.getList("PlayerEntries", Constants.NBT.TAG_STRING);
         ListNBT researchesList = nbt.getList("ResearchEntries", Constants.NBT.TAG_COMPOUND);
 
@@ -78,7 +78,7 @@ public class PlayerResearchesData extends WorldSavedData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         ListNBT playerList = new ListNBT();
         ListNBT researchesList = new ListNBT();
 
@@ -94,8 +94,8 @@ public class PlayerResearchesData extends WorldSavedData {
     }
 
     public static PlayerResearchesData get(ServerWorld world) {
-        return world.getServer().func_241755_D_()
-                .getSavedData().getOrCreate(PlayerResearchesData::new, DATA_NAME);
+        return world.getServer().overworld()
+                .getDataStorage().computeIfAbsent(PlayerResearchesData::new, DATA_NAME);
     }
 
 }

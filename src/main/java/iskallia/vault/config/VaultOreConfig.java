@@ -94,7 +94,7 @@ public class VaultOreConfig extends Config {
 		}
 
 		public OreFeatureConfig toConfig() {
-			BlockState state = Registry.BLOCK.getOptional(new ResourceLocation(this.NAME)).orElse(Blocks.DIORITE).getDefaultState();
+			BlockState state = Registry.BLOCK.getOptional(new ResourceLocation(this.NAME)).orElse(Blocks.DIORITE).defaultBlockState();
 			return new OreFeatureConfig(VaultRuleTest.INSTANCE, state, this.SIZE);
 		}
 	}

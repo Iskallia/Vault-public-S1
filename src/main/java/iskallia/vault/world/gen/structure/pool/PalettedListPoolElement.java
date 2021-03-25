@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class PalettedListPoolElement extends JigsawPiece {
 
 	public static final Codec<PalettedListPoolElement> CODEC = RecordCodecBuilder.create(instance -> {
-		return instance.group(JigsawPiece.field_236847_e_.listOf().fieldOf("elements").forGetter(piece -> {
+		return instance.group(JigsawPiece.CODEC.listOf().fieldOf("elements").forGetter(piece -> {
 			return piece.elements;
 		}), projection(), processors()).apply(instance, PalettedListPoolElement::new);
 	});
@@ -47,29 +47,29 @@ public class PalettedListPoolElement extends JigsawPiece {
 	}
 
 	protected static <E extends JigsawPiece> RecordCodecBuilder<E, JigsawPattern.PlacementBehaviour> projection() {
-		return JigsawPattern.PlacementBehaviour.field_236858_c_.fieldOf("projection").forGetter(JigsawPiece::getPlacementBehaviour);
+		return JigsawPattern.PlacementBehaviour.CODEC.fieldOf("projection").forGetter(JigsawPiece::getProjection);
 	}
 
 	protected static <E extends PalettedListPoolElement> RecordCodecBuilder<E, List<Supplier<StructureProcessorList>>> processors() {
-		return IStructureProcessorType.field_242922_m.listOf().fieldOf("processors").forGetter(piece -> {
+		return IStructureProcessorType.LIST_CODEC.listOf().fieldOf("processors").forGetter(piece -> {
 			return piece.processors;
 		});
 	}
 
 	@Override
-	public List<Template.BlockInfo> getJigsawBlocks(TemplateManager templateManager, BlockPos pos, Rotation rotation, Random random) {
-		return this.elements.get(0).getJigsawBlocks(templateManager, pos, rotation, random);
+	public List<Template.BlockInfo> getShuffledJigsawBlocks(TemplateManager templateManager, BlockPos pos, Rotation rotation, Random random) {
+		return this.elements.get(0).getShuffledJigsawBlocks(templateManager, pos, rotation, random);
 	}
 
 	@Override
 	public MutableBoundingBox getBoundingBox(TemplateManager templateManager, BlockPos pos, Rotation rotation) {
-		MutableBoundingBox mutableboundingbox = MutableBoundingBox.getNewBoundingBox();
-		this.elements.stream().map(piece -> piece.getBoundingBox(templateManager, pos, rotation)).forEach(mutableboundingbox::expandTo);
+		MutableBoundingBox mutableboundingbox = MutableBoundingBox.getUnknownBox();
+		this.elements.stream().map(piece -> piece.getBoundingBox(templateManager, pos, rotation)).forEach(mutableboundingbox::expand);
 		return mutableboundingbox;
 	}
 
 	@Override
-	public boolean func_230378_a_(TemplateManager templateManager, ISeedReader world, StructureManager structureManager,
+	public boolean place(TemplateManager templateManager, ISeedReader world, StructureManager structureManager,
 	                              ChunkGenerator chunkGen, BlockPos pos1, BlockPos pos2, Rotation rotation,
 	                              MutableBoundingBox box, Random random, boolean keepJigsaws) {
 		Supplier<StructureProcessorList> extra = this.processors.isEmpty() ? null : this.processors.get(random.nextInt(this.processors.size()));
@@ -81,7 +81,7 @@ public class PalettedListPoolElement extends JigsawPiece {
 					return false;
 				}
 			} else {
-				if(!piece.func_230378_a_(templateManager, world, structureManager, chunkGen, pos1, pos2, rotation, box,
+				if(!piece.place(templateManager, world, structureManager, chunkGen, pos1, pos2, rotation, box,
 						random, keepJigsaws)) {
 					return false;
 				}
@@ -97,8 +97,8 @@ public class PalettedListPoolElement extends JigsawPiece {
 	}
 
 	@Override
-	public JigsawPiece setPlacementBehaviour(JigsawPattern.PlacementBehaviour placementBehaviour) {
-		super.setPlacementBehaviour(placementBehaviour);
+	public JigsawPiece setProjection(JigsawPattern.PlacementBehaviour placementBehaviour) {
+		super.setProjection(placementBehaviour);
 		this.setProjectionOnEachElement(placementBehaviour);
 		return this;
 	}
@@ -110,7 +110,7 @@ public class PalettedListPoolElement extends JigsawPiece {
 
 	private void setProjectionOnEachElement(JigsawPattern.PlacementBehaviour p_214864_1_) {
 		this.elements.forEach((p_214863_1_) -> {
-			p_214863_1_.setPlacementBehaviour(p_214864_1_);
+			p_214863_1_.setProjection(p_214864_1_);
 		});
 	}
 

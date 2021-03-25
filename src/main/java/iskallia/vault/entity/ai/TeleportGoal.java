@@ -25,16 +25,16 @@ public class TeleportGoal<T extends LivingEntity> extends GoalTask<T> {
 	}
 
 	@Override
-	public boolean shouldExecute() {
+	public boolean canUse() {
 		return this.startCondition.test(this.getEntity());
 	}
 
 	@Override
-	public void startExecuting() {
+	public void start() {
 		Vector3d target = this.targetSupplier.apply(this.getEntity());
 
 		if(target != null) {
-			boolean teleported = this.getEntity().attemptTeleport(target.getX(), target.getY(), target.getZ(), true);
+			boolean teleported = this.getEntity().randomTeleport(target.x(), target.y(), target.z(), true);
 
 			if(teleported) {
 				this.postTeleport.accept(this.getEntity());

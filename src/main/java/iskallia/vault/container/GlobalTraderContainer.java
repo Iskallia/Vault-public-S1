@@ -42,8 +42,8 @@ public class GlobalTraderContainer extends Container {
         this.traderInventory = new TraderInventory();
         this.addSlot(new Slot(traderInventory, TraderInventory.BUY_SLOT, 210, 43) {
             @Override
-            public void onSlotChanged() {
-                super.onSlotChanged();
+            public void setChanged() {
+                super.setChanged();
                 traderInventory.updateRecipe();
                 if (hasTraded()) {
                     lockAllTrades();
@@ -52,8 +52,8 @@ public class GlobalTraderContainer extends Container {
             }
 
             @Override
-            public void onSlotChange(ItemStack oldStackIn, ItemStack newStackIn) {
-                super.onSlotChange(oldStackIn, newStackIn);
+            public void onQuickCraft(ItemStack oldStackIn, ItemStack newStackIn) {
+                super.onQuickCraft(oldStackIn, newStackIn);
                 traderInventory.updateRecipe();
                 if (hasTraded()) {
                     lockAllTrades();
@@ -62,8 +62,8 @@ public class GlobalTraderContainer extends Container {
         });
         this.addSlot(new VendingSellSlot(traderInventory, TraderInventory.SELL_SLOT, 268, 43) {
             @Override
-            public void onSlotChanged() {
-                super.onSlotChanged();
+            public void setChanged() {
+                super.setChanged();
 
                 if (hasTraded()) {
                     lockAllTrades();
@@ -114,20 +114,20 @@ public class GlobalTraderContainer extends Container {
         traderInventory.updateTrade(trade);
         traderInventory.updateRecipe();
 
-        if (traderInventory.getStackInSlot(TraderInventory.BUY_SLOT) != ItemStack.EMPTY) {
-            ItemStack buyStack = traderInventory.removeStackFromSlot(TraderInventory.BUY_SLOT);
-            playerInventory.addItemStackToInventory(buyStack);
+        if (traderInventory.getItem(TraderInventory.BUY_SLOT) != ItemStack.EMPTY) {
+            ItemStack buyStack = traderInventory.removeItemNoUpdate(TraderInventory.BUY_SLOT);
+            playerInventory.add(buyStack);
         }
 
         if (trade.getTradesLeft() <= 0) return;
 
         int slot = slotForItem(trade.getBuy().getItem());
         if (slot != -1) {
-            ItemStack buyStack = playerInventory.removeStackFromSlot(slot);
-            traderInventory.setInventorySlotContents(TraderInventory.BUY_SLOT, buyStack);
+            ItemStack buyStack = playerInventory.removeItemNoUpdate(slot);
+            traderInventory.setItem(TraderInventory.BUY_SLOT, buyStack);
         }
-        World world = this.tileEntity.getWorld();
-        if (world != null && !world.isRemote) {
+        World world = this.tileEntity.getLevel();
+        if (world != null && !world.isClientSide) {
             GlobalTraderData.get((ServerWorld) world).updatePlayerTrades(this.playerInventory.player, this.playerTrades);
         }
 
@@ -149,8 +149,8 @@ public class GlobalTraderContainer extends Container {
     }
 
     private int slotForItem(Item item) {
-        for (int i = 0; i < playerInventory.getSizeInventory(); i++) {
-            if (playerInventory.getStackInSlot(i).getItem() == item) {
+        for (int i = 0; i < playerInventory.getContainerSize(); i++) {
+            if (playerInventory.getItem(i).getItem() == item) {
                 return i;
             }
         }
@@ -158,28 +158,28 @@ public class GlobalTraderContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player) {
+    public boolean stillValid(PlayerEntity player) {
         return true;
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity player) {
-        super.onContainerClosed(player);
+    public void removed(PlayerEntity player) {
+        super.removed(player);
 
-        ItemStack buy = traderInventory.getStackInSlot(0);
+        ItemStack buy = traderInventory.getItem(0);
 
         if (!buy.isEmpty()) {
             EntityHelper.giveItem(player, buy);
         }
 
-        if (!player.world.isRemote) {
+        if (!player.level.isClientSide) {
             if (hasTraded()) lockAllTrades();
-            GlobalTraderData.get((ServerWorld) player.world).updatePlayerTrades(player, this.getPlayerTrades());
+            GlobalTraderData.get((ServerWorld) player.level).updatePlayerTrades(player, this.getPlayerTrades());
         }
 
     }

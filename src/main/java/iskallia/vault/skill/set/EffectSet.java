@@ -9,7 +9,7 @@ import net.minecraft.util.registry.Registry;
 public class EffectSet extends TalentSet<EffectTalent> {
 
 	public EffectSet(VaultGear.Set set, Effect effect, int amplifier, EffectTalent.Type type, EffectTalent.Operator operator) {
-		this(set, Registry.EFFECTS.getKey(effect).toString(), amplifier, type.toString(), operator.toString());
+		this(set, Registry.MOB_EFFECT.getKey(effect).toString(), amplifier, type.toString(), operator.toString());
 	}
 
 	public EffectSet(VaultGear.Set set, String effect, int amplifier, String type, String operator) {

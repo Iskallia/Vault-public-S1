@@ -25,12 +25,12 @@ public class AbilityUpgradeMessage {
     }
 
     public static void encode(AbilityUpgradeMessage message, PacketBuffer buffer) {
-        buffer.writeString(message.abilityName, 32767);
+        buffer.writeUtf(message.abilityName, 32767);
     }
 
     public static AbilityUpgradeMessage decode(PacketBuffer buffer) {
         AbilityUpgradeMessage message = new AbilityUpgradeMessage();
-        message.abilityName = buffer.readString(32767);
+        message.abilityName = buffer.readUtf(32767);
         return message;
     }
 
@@ -43,8 +43,8 @@ public class AbilityUpgradeMessage {
 
             AbilityGroup<?> abilityGroup = ModConfigs.ABILITIES.getByName(message.abilityName);
 
-            PlayerVaultStatsData statsData = PlayerVaultStatsData.get((ServerWorld) sender.world);
-            PlayerAbilitiesData abilitiesData = PlayerAbilitiesData.get((ServerWorld) sender.world);
+            PlayerVaultStatsData statsData = PlayerVaultStatsData.get((ServerWorld) sender.level);
+            PlayerAbilitiesData abilitiesData = PlayerAbilitiesData.get((ServerWorld) sender.level);
             AbilityTree abilityTree = abilitiesData.getAbilities(sender);
 
             AbilityNode<?> abilityNode = abilityTree.getNodeByName(message.abilityName);

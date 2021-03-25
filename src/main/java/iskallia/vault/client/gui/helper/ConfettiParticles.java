@@ -106,8 +106,8 @@ public class ConfettiParticles {
 
     public void render(MatrixStack matrixStack) {
         for (ConfettiParticle particle : particles) {
-            double x0 = particle.pos.getX() - particle.size / 2.0;
-            double y0 = particle.pos.getY() - particle.size / 2.0;
+            double x0 = particle.pos.x() - particle.size / 2.0;
+            double y0 = particle.pos.y() - particle.size / 2.0;
             double x1 = x0 + particle.size;
             double y1 = y0 + particle.size;
             AbstractGui.fill(matrixStack,
@@ -124,7 +124,7 @@ public class ConfettiParticles {
             ConfettiParticle particle = new ConfettiParticle();
             particle.pos = new Vector3d(spawnerPos.x, spawnerPos.y, 0);
             particle.velocity = new Vector3d(1, 0, 0)
-                    .rotateRoll(-randf(angleMin, angleMax))
+                    .zRot(-randf(angleMin, angleMax))
                     .scale(randf(speedMin, speedMax));
             particle.size = randi(sizeMin, sizeMax);
             particle.color = PARTICLE_COLORS[random.nextInt(PARTICLE_COLORS.length)];

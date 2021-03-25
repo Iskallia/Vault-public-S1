@@ -32,18 +32,18 @@ public class RampageAbility extends EffectAbility {
 
     @Override
     public void onAction(PlayerEntity player, boolean active) {
-        EffectInstance activeEffect = player.getActivePotionEffect(this.getEffect());
+        EffectInstance activeEffect = player.getEffect(this.getEffect());
         EffectInstance newEffect = new EffectInstance(this.getEffect(),
                 getDurationTicks(), this.getAmplifier(), false,
                 this.getType().showParticles, this.getType().showIcon);
 
         if (activeEffect == null) {
-            player.addPotionEffect(newEffect);
+            player.addEffect(newEffect);
         }
 
-        player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(),
+        player.level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     ModSounds.RAMPAGE_SFX, SoundCategory.MASTER, 0.7f * 0.25f, 1f);
-        player.playSound(ModSounds.RAMPAGE_SFX, SoundCategory.MASTER, 0.7f * 0.25f, 1f);
+        player.playNotifySound(ModSounds.RAMPAGE_SFX, SoundCategory.MASTER, 0.7f * 0.25f, 1f);
     }
 
     @Override

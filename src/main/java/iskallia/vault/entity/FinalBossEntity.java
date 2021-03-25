@@ -32,7 +32,7 @@ import java.util.UUID;
 public class FinalBossEntity extends FighterEntity  {
 
 	public TeleportRandomly<FinalBossEntity> teleportTask = new TeleportRandomly<>(this, (entity, source, amount) -> {
-		if(!(source.getTrueSource() instanceof LivingEntity)) {
+		if(!(source.getEntity() instanceof LivingEntity)) {
 			return 0.2D;
 		}
 
@@ -44,14 +44,14 @@ public class FinalBossEntity extends FighterEntity  {
 	public FinalBossEntity(EntityType<? extends ZombieEntity> type, World world) {
 		super(type, world);
 
-		if(!this.world.isRemote) {
+		if(!this.level.isClientSide) {
 			this.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
 		}
 
 		this.bossInfo = new ServerBossInfo(this.getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS) {
 			@Override
-			public UUID getUniqueId() {
-				return FinalBossEntity.this.getUniqueID();
+			public UUID getId() {
+				return FinalBossEntity.this.getUUID();
 			}
 		};
 
@@ -60,41 +60,41 @@ public class FinalBossEntity extends FighterEntity  {
 
 	@Override
 	public void tick() {
-		if(!this.world.isRemote) {
+		if(!this.level.isClientSide) {
 			String name = this.getCustomName().getString();
 
-			ServerPlayerEntity player = this.getServer().getPlayerList().getPlayerByUsername(name);
+			ServerPlayerEntity player = this.getServer().getPlayerList().getPlayerByName(name);
 
-			if((this.getAttackTarget() instanceof PlayerEntity
-					&& !this.getAttackTarget().getName().getString().equals(name))
-					|| this.world.rand.nextInt(600) == 0) {
+			if((this.getTarget() instanceof PlayerEntity
+					&& !this.getTarget().getName().getString().equals(name))
+					|| this.level.random.nextInt(600) == 0) {
 
-				if(player != null && player.world.getDimensionKey() == this.world.getDimensionKey()
-						&& player.getDistance(this) <= 200.0D) {
-					this.setAttackTarget(player);
+				if(player != null && player.level.dimension() == this.level.dimension()
+						&& player.distanceTo(this) <= 200.0D) {
+					this.setTarget(player);
 				}
 			}
 
-			if(this.getAttackTarget() == null && this.rand.nextInt(100) == 0) {
-				this.setAttackTarget(this.world.getClosestEntityWithinAABB(LivingEntity.class, new EntityPredicate()
-								.setCustomPredicate(entity -> {
+			if(this.getTarget() == null && this.random.nextInt(100) == 0) {
+				this.setTarget(this.level.getNearestEntity(LivingEntity.class, new EntityPredicate()
+								.selector(entity -> {
 									return entity instanceof PlayerEntity || entity instanceof EternalEntity;
 								}),
-							this, this.getPosX(), this.getPosY(), this.getPosZ(),
-								this.getBoundingBox().grow(128.0D, 128.0D, 128.0D)));
+							this, this.getX(), this.getY(), this.getZ(),
+								this.getBoundingBox().inflate(128.0D, 128.0D, 128.0D)));
 			}
 
 			if(player != null) {
-				this.setItemStackToSlot(EquipmentSlotType.HEAD, player.getItemStackFromSlot(EquipmentSlotType.HEAD).copy());
-				this.setItemStackToSlot(EquipmentSlotType.CHEST, player.getItemStackFromSlot(EquipmentSlotType.CHEST).copy());
-				this.setItemStackToSlot(EquipmentSlotType.LEGS, player.getItemStackFromSlot(EquipmentSlotType.LEGS).copy());
-				this.setItemStackToSlot(EquipmentSlotType.FEET, player.getItemStackFromSlot(EquipmentSlotType.FEET).copy());
-				this.setItemStackToSlot(EquipmentSlotType.MAINHAND, player.getItemStackFromSlot(EquipmentSlotType.MAINHAND).copy());
+				this.setItemSlot(EquipmentSlotType.HEAD, player.getItemBySlot(EquipmentSlotType.HEAD).copy());
+				this.setItemSlot(EquipmentSlotType.CHEST, player.getItemBySlot(EquipmentSlotType.CHEST).copy());
+				this.setItemSlot(EquipmentSlotType.LEGS, player.getItemBySlot(EquipmentSlotType.LEGS).copy());
+				this.setItemSlot(EquipmentSlotType.FEET, player.getItemBySlot(EquipmentSlotType.FEET).copy());
+				this.setItemSlot(EquipmentSlotType.MAINHAND, player.getItemBySlot(EquipmentSlotType.MAINHAND).copy());
 
-				ItemStack offhand = player.getItemStackFromSlot(EquipmentSlotType.OFFHAND);
+				ItemStack offhand = player.getItemBySlot(EquipmentSlotType.OFFHAND);
 
 				if(offhand.getItem() != Items.SNOWBALL && offhand.getItem() != Items.FIRE_CHARGE) {
-					this.setItemStackToSlot(EquipmentSlotType.OFFHAND, offhand.copy());
+					this.setItemSlot(EquipmentSlotType.OFFHAND, offhand.copy());
 				}
 			}
 
@@ -105,15 +105,15 @@ public class FinalBossEntity extends FighterEntity  {
 	}
 
 	@Override
-	protected void applyEntityAI() {
-		super.applyEntityAI();
+	protected void addBehaviourGoals() {
+		super.addBehaviourGoals();
 		//this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, ArenaFighterEntity.class, false));
 
 		this.goalSelector.addGoal(1, TeleportGoal.builder(this).start(entity -> {
-			return entity.getAttackTarget() != null && entity.ticksExisted % 60 == 0;
+			return entity.getTarget() != null && entity.tickCount % 60 == 0;
 		}).to(entity -> {
-			return entity.getAttackTarget().getPositionVec().add((entity.rand.nextDouble() - 0.5D) * 8.0D,
-					entity.rand.nextInt(16) - 8, (entity.rand.nextDouble() - 0.5D) * 8.0D);
+			return entity.getTarget().position().add((entity.random.nextDouble() - 0.5D) * 8.0D,
+					entity.random.nextInt(16) - 8, (entity.random.nextDouble() - 0.5D) * 8.0D);
 		}).then(entity -> {
 			entity.playSound(ModSounds.BOSS_TP_SFX, 1.0F, 1.0F);
 		}).build());
@@ -127,54 +127,54 @@ public class FinalBossEntity extends FighterEntity  {
 
 	private float knockbackAttack(Entity entity) {
 		for(int i = 0; i < 20; ++i) {
-			double d0 = this.world.rand.nextGaussian() * 0.02D;
-			double d1 = this.world.rand.nextGaussian() * 0.02D;
-			double d2 = this.world.rand.nextGaussian() * 0.02D;
+			double d0 = this.level.random.nextGaussian() * 0.02D;
+			double d1 = this.level.random.nextGaussian() * 0.02D;
+			double d2 = this.level.random.nextGaussian() * 0.02D;
 
-			((ServerWorld)this.world).spawnParticle(ParticleTypes.POOF,
-					entity.getPosX() + this.world.rand.nextDouble() - d0,
-					entity.getPosY() + this.world.rand.nextDouble() - d1,
-					entity.getPosZ() + this.world.rand.nextDouble() - d2, 10, d0, d1, d2, 1.0D);
+			((ServerWorld)this.level).sendParticles(ParticleTypes.POOF,
+					entity.getX() + this.level.random.nextDouble() - d0,
+					entity.getY() + this.level.random.nextDouble() - d1,
+					entity.getZ() + this.level.random.nextDouble() - d2, 10, d0, d1, d2, 1.0D);
 		}
 
-		this.world.playSound(null, entity.getPosition(), SoundEvents.ENTITY_IRON_GOLEM_HURT, this.getSoundCategory(), 1.0F, 1.0F);
+		this.level.playSound(null, entity.blockPosition(), SoundEvents.IRON_GOLEM_HURT, this.getSoundSource(), 1.0F, 1.0F);
 		return 15.0F;
 	}
 
 	@Override
-	public boolean attackEntityAsMob(Entity entity) {
+	public boolean doHurtTarget(Entity entity) {
 		boolean ret = false;
 
-		if(this.rand.nextInt(12) == 0) {
+		if(this.random.nextInt(12) == 0) {
 			double old = this.getAttribute(Attributes.ATTACK_KNOCKBACK).getBaseValue();
 			this.getAttribute(Attributes.ATTACK_KNOCKBACK).setBaseValue(this.knockbackAttack(entity));
-			boolean result = super.attackEntityAsMob(entity);
+			boolean result = super.doHurtTarget(entity);
 			this.getAttribute(Attributes.ATTACK_KNOCKBACK).setBaseValue(old);
 			ret |= result;
 		}
 
-		if(this.rand.nextInt(6) == 0) {
-			this.world.setEntityState(this, (byte)4);
+		if(this.random.nextInt(6) == 0) {
+			this.level.broadcastEntityEvent(this, (byte)4);
 			float f = (float)this.getAttributeValue(Attributes.ATTACK_DAMAGE);
-			float f1 = (int)f > 0 ? f / 2.0F + (float)this.rand.nextInt((int)f) : f;
-			boolean flag = entity.attackEntityFrom(DamageSource.causeMobDamage(this), f1);
+			float f1 = (int)f > 0 ? f / 2.0F + (float)this.random.nextInt((int)f) : f;
+			boolean flag = entity.hurt(DamageSource.mobAttack(this), f1);
 
 			if(flag) {
-				entity.setMotion(entity.getMotion().add(0.0D, 0.6F, 0.0D));
-				this.applyEnchantments(this, entity);
+				entity.setDeltaMovement(entity.getDeltaMovement().add(0.0D, 0.6F, 0.0D));
+				this.doEnchantDamageEffects(this, entity);
 			}
 
-			this.world.playSound(null, entity.getPosition(), SoundEvents.ENTITY_IRON_GOLEM_HURT, this.getSoundCategory(), 1.0F, 1.0F);
+			this.level.playSound(null, entity.blockPosition(), SoundEvents.IRON_GOLEM_HURT, this.getSoundSource(), 1.0F, 1.0F);
 			ret |= flag;
 		}
 
-		return ret || super.attackEntityAsMob(entity);
+		return ret || super.doHurtTarget(entity);
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if(!(source.getTrueSource() instanceof PlayerEntity)
-				&& !(source.getTrueSource() instanceof EternalEntity)
+	public boolean hurt(DamageSource source, float amount) {
+		if(!(source.getEntity() instanceof PlayerEntity)
+				&& !(source.getEntity() instanceof EternalEntity)
 				&& source != DamageSource.OUT_OF_WORLD) {
 			return false;
 		}
@@ -185,38 +185,38 @@ public class FinalBossEntity extends FighterEntity  {
 			return true;
 		}
 
-		return super.attackEntityFrom(source, amount);
+		return super.hurt(source, amount);
 	}
 
 	@Override
-	public boolean isImmuneToFire() {
+	public boolean fireImmune() {
 		return true;
 	}
 
 	@Override
-	public boolean isImmuneToExplosions() {
+	public boolean ignoreExplosion() {
 		return true;
 	}
 
 	@Override
-	public boolean canRenderOnFire() {
+	public boolean displayFireAnimation() {
 		return false;
 	}
 
 	@Override
-	public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData spawnData, CompoundNBT dataTag) {
-		super.onInitialSpawn(world, difficulty, reason, spawnData, dataTag);
+	public ILivingEntityData finalizeSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData spawnData, CompoundNBT dataTag) {
+		super.finalizeSpawn(world, difficulty, reason, spawnData, dataTag);
 		this.changeSize(5.0F);
 		return spawnData;
 	}
 
-	public static AttributeModifierMap.MutableAttribute getAttributes() {
-		return MonsterEntity.func_234295_eP_()
-				.createMutableAttribute(Attributes.FOLLOW_RANGE, 100.0D)
-				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.23F)
-				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D)
-				.createMutableAttribute(Attributes.ARMOR, 2.0D)
-				.createMutableAttribute(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS);
+	public static AttributeModifierMap.MutableAttribute getCustomAttributes() {
+		return MonsterEntity.createMonsterAttributes()
+				.add(Attributes.FOLLOW_RANGE, 100.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.23F)
+				.add(Attributes.ATTACK_DAMAGE, 3.0D)
+				.add(Attributes.ARMOR, 2.0D)
+				.add(Attributes.SPAWN_REINFORCEMENTS_CHANCE);
 	}
 
 }

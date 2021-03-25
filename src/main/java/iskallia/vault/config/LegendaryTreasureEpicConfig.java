@@ -38,7 +38,7 @@ public class LegendaryTreasureEpicConfig extends Config {
         try {
             Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(singleItemEntry.ITEM));
             stack = new ItemStack(item);
-            CompoundNBT nbt = JsonToNBT.getTagFromJson(singleItemEntry.NBT);
+            CompoundNBT nbt = JsonToNBT.parseTag(singleItemEntry.NBT);
             stack.setTag(nbt);
 
         } catch (Exception e) {

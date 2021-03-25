@@ -17,8 +17,8 @@ public class VaultGuardianRenderer extends PiglinRenderer {
     }
 
     @Override
-    protected void preRenderCallback(MobEntity entity, MatrixStack matrixStack, float partialTickTime) {
-        super.preRenderCallback(entity, matrixStack, partialTickTime);
+    protected void scale(MobEntity entity, MatrixStack matrixStack, float partialTickTime) {
+        super.scale(entity, matrixStack, partialTickTime);
 
         if(entity instanceof FinalDummyEntity) {
             float size = ((FinalDummyEntity) entity).sizeMultiplier;
@@ -30,7 +30,7 @@ public class VaultGuardianRenderer extends PiglinRenderer {
     }
 
     @Override
-    public ResourceLocation getEntityTexture(MobEntity entity) {
+    public ResourceLocation getTextureLocation(MobEntity entity) {
         return TEXTURE;
     }
 

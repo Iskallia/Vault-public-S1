@@ -24,15 +24,15 @@ public class GlobalTraderTileEntity extends SkinnableTileEntity implements ITick
 
     @Override
     protected void updateSkin() {
-        if (this.getWorld() == null) return;
-        if (this.getWorld().isRemote) {
+        if (this.getLevel() == null) return;
+        if (this.getLevel().isClientSide) {
             skin.updateSkin(lastName);
         }
     }
 
     private void updateLastName() {
-        if (this.getWorld() == null || this.getWorld().isRemote) return;
-        List<String> names = EternalsData.get((ServerWorld) this.getWorld()).getAllEternalNamesExcept(lastName);
+        if (this.getLevel() == null || this.getLevel().isClientSide) return;
+        List<String> names = EternalsData.get((ServerWorld) this.getLevel()).getAllEternalNamesExcept(lastName);
         if (names.isEmpty()) {
             lastName = "Player1";
         }
@@ -43,13 +43,13 @@ public class GlobalTraderTileEntity extends SkinnableTileEntity implements ITick
 
     @Override
     public void tick() {
-        if (this.getWorld() == null) return;
-        if (this.getWorld().isRemote) {
+        if (this.getLevel() == null) return;
+        if (this.getLevel().isClientSide) {
             if (skin.getLatestNickname() == null) skin.updateSkin("Player1");
             if (skin.getLatestNickname().equalsIgnoreCase(lastName)) return;
             updateSkin();
         } else {
-            if (this.getWorld().getGameTime() % 20 != 0) return;
+            if (this.getLevel().getGameTime() % 20 != 0) return;
 
             long time = Instant.now().getEpochSecond();
 
@@ -58,15 +58,15 @@ public class GlobalTraderTileEntity extends SkinnableTileEntity implements ITick
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         nbt.putString("Name", lastName);
-        return super.write(nbt);
+        return super.save(nbt);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void load(BlockState state, CompoundNBT nbt) {
         lastName = nbt.getString("Name");
-        super.read(state, nbt);
+        super.load(state, nbt);
     }
 
     @Override

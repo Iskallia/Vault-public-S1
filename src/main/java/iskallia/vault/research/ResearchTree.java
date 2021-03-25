@@ -72,8 +72,8 @@ public class ResearchTree implements INBTSerializable<CompoundNBT> {
     public void sync(MinecraftServer server) {
         NetcodeUtils.runIfPresent(server, this.playerUUID, player -> {
             ModNetwork.CHANNEL.sendTo(
-                    new ResearchTreeMessage(this, player.getUniqueID()),
-                    player.connection.netManager,
+                    new ResearchTreeMessage(this, player.getUUID()),
+                    player.connection.connection,
                     NetworkDirection.PLAY_TO_CLIENT
             );
         });
@@ -83,7 +83,7 @@ public class ResearchTree implements INBTSerializable<CompoundNBT> {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
 
-        nbt.putUniqueId("playerUUID", playerUUID);
+        nbt.putUUID("playerUUID", playerUUID);
 
         ListNBT researches = new ListNBT();
         for (int i = 0; i < researchesDone.size(); i++) {
@@ -98,7 +98,7 @@ public class ResearchTree implements INBTSerializable<CompoundNBT> {
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        this.playerUUID = nbt.getUniqueId("playerUUID");
+        this.playerUUID = nbt.getUUID("playerUUID");
 
         ListNBT researches = nbt.getList("researches", Constants.NBT.TAG_COMPOUND);
         this.researchesDone = new LinkedList<>();

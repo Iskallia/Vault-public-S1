@@ -16,13 +16,13 @@ public class BlueBlazeRenderer extends BlazeRenderer {
     }
 
     @Override
-    protected void preRenderCallback(BlazeEntity entitylivingbase, MatrixStack matrixStack, float partialTickTime) {
-        super.preRenderCallback(entitylivingbase, matrixStack, partialTickTime);
+    protected void scale(BlazeEntity entitylivingbase, MatrixStack matrixStack, float partialTickTime) {
+        super.scale(entitylivingbase, matrixStack, partialTickTime);
         matrixStack.scale(2, 2, 2);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(BlazeEntity entity) {
+    public ResourceLocation getTextureLocation(BlazeEntity entity) {
         return TEXTURE;
     }
 

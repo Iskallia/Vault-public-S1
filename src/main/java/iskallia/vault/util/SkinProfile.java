@@ -31,7 +31,7 @@ public class SkinProfile {
 
 		SERVICE.submit(() -> {
 			gameProfile.set(new GameProfile(null, name));
-			gameProfile.set(SkullTileEntity.updateGameProfile(gameProfile.get()));
+			gameProfile.set(SkullTileEntity.updateGameprofile(gameProfile.get()));
 			AddPlayerData data = new SPlayerListItemPacket().new AddPlayerData(gameProfile.get(), 0, null, null);
 			playerInfo.set(new NetworkPlayerInfo(data));
 
@@ -40,22 +40,22 @@ public class SkinProfile {
 
 	public ResourceLocation getLocationSkin() {
 		if (this.playerInfo == null || this.playerInfo.get() == null) {
-			return DefaultPlayerSkin.getDefaultSkinLegacy();
+			return DefaultPlayerSkin.getDefaultSkin();
 		}
 
 		try {
-			return this.playerInfo.get().getLocationSkin();
+			return this.playerInfo.get().getSkinLocation();
 		} catch (Exception e) {
 			System.err.println("stupid! how did you even do this?");
 			e.printStackTrace();
 		}
 
-		return DefaultPlayerSkin.getDefaultSkinLegacy();
+		return DefaultPlayerSkin.getDefaultSkin();
 	}
 
 	public static void updateGameProfile(GameProfile input, Consumer<GameProfile> consumer) {
 		SERVICE.submit(() -> {
-			GameProfile output = SkullTileEntity.updateGameProfile(input);
+			GameProfile output = SkullTileEntity.updateGameprofile(input);
 			consumer.accept(output);
 		});
 	}

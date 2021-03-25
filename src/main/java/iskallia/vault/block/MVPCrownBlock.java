@@ -9,15 +9,17 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class MVPCrownBlock extends Block {
 
-    public static final VoxelShape SHAPE = Block.makeCuboidShape(2, 0, 2, 14, 6, 14);
+    public static final VoxelShape SHAPE = Block.box(2, 0, 2, 14, 6, 14);
 
     public MVPCrownBlock() {
-        super(Properties.create(Material.ROCK, MaterialColor.STONE)
-                .hardnessAndResistance(1.0F, 3600000.0F)
-                .notSolid()
-                .doesNotBlockMovement());
+        super(Properties.of(Material.STONE, MaterialColor.STONE)
+                .strength(1.0F, 3600000.0F)
+                .noOcclusion()
+                .noCollission());
     }
 
     @Override

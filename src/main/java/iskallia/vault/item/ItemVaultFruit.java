@@ -22,19 +22,21 @@ import net.minecraft.world.server.ServerWorld;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class ItemVaultFruit extends Item {
 
     public static Food VAULT_FRUIT_FOOD = new Food.Builder()
-            .saturation(0).hunger(0)
-            .fastToEat().setAlwaysEdible().build();
+            .saturationMod(0).nutrition(0)
+            .fast().alwaysEat().build();
 
     protected int extraVaultTicks;
 
     public ItemVaultFruit(ItemGroup group, ResourceLocation id, int extraVaultTicks) {
         super(new Properties()
-                .group(group)
+                .tab(group)
                 .food(VAULT_FRUIT_FOOD)
-                .maxStackSize(64));
+                .stacksTo(64));
 
         this.setRegistryName(id);
 
@@ -46,194 +48,194 @@ public class ItemVaultFruit extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        ItemStack itemStack = playerIn.getHeldItem(handIn);
-        if (playerIn.world.getDimensionKey() != Vault.VAULT_KEY)
-            return ActionResult.resultFail(itemStack);
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        ItemStack itemStack = playerIn.getItemInHand(handIn);
+        if (playerIn.level.dimension() != Vault.VAULT_KEY)
+            return ActionResult.fail(itemStack);
+        return super.use(worldIn, playerIn, handIn);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         tooltip.add(new StringTextComponent(""));
         StringTextComponent comp = new StringTextComponent("[!] Only edible inside a Vault");
-        comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FF0000)).setItalic(true));
+        comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FF0000)).withItalic(true));
         tooltip.add(comp);
 
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
     @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        IFormattableTextComponent displayName = (IFormattableTextComponent) super.getDisplayName(stack);
-        return displayName.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_fcbd00)));
+    public ITextComponent getName(ItemStack stack) {
+        IFormattableTextComponent displayName = (IFormattableTextComponent) super.getName(stack);
+        return displayName.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_fcbd00)));
     }
 
     public static class BitterLemon extends ItemVaultFruit {
-        protected DamageSource damageSource = new DamageSource("bitter_lemon").setDamageBypassesArmor();
+        protected DamageSource damageSource = new DamageSource("bitter_lemon").bypassArmor();
 
         public BitterLemon(ItemGroup group, ResourceLocation id, int extraVaultTicks) {
             super(group, id, extraVaultTicks);
         }
 
         @Override
-        public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-            if (!worldIn.isRemote && entityLiving instanceof ServerPlayerEntity) {
+        public ItemStack finishUsingItem(ItemStack stack, World worldIn, LivingEntity entityLiving) {
+            if (!worldIn.isClientSide && entityLiving instanceof ServerPlayerEntity) {
                 ServerPlayerEntity player = (ServerPlayerEntity) entityLiving;
                 VaultRaid raid = VaultRaidData.get((ServerWorld) worldIn).getActiveFor(player);
                 raid.ticksLeft += getExtraVaultTicks();
                 raid.sTickLeft += this.getExtraVaultTicks();
 
-                player.attackEntityFrom(this.damageSource, 6);
+                player.hurt(this.damageSource, 6);
 
                 worldIn.playSound(null,
-                        player.getPosX(),
-                        player.getPosY(),
-                        player.getPosZ(),
-                        SoundEvents.BLOCK_CONDUIT_ACTIVATE,
+                        player.getX(),
+                        player.getY(),
+                        player.getZ(),
+                        SoundEvents.CONDUIT_ACTIVATE,
                         SoundCategory.MASTER,
                         1.0F, 1.0F);
             }
 
-            return super.onItemUseFinish(stack, worldIn, entityLiving);
+            return super.finishUsingItem(stack, worldIn, entityLiving);
         }
 
         @Override
-        public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
             StringTextComponent comp;
 
             tooltip.add(new StringTextComponent(""));
             comp = new StringTextComponent("A magical lemon with a bitter taste");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_BEEBEE)).setItalic(true));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_BEEBEE)).withItalic(true));
             tooltip.add(comp);
             comp = new StringTextComponent("It is grown on the gorgeous trees of Iskallia.");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_BEEBEE)).setItalic(true));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_BEEBEE)).withItalic(true));
             tooltip.add(comp);
 
             tooltip.add(new StringTextComponent(""));
             comp = new StringTextComponent("- Wipes away 3 hearts");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FF0000)));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FF0000)));
             tooltip.add(comp);
             comp = new StringTextComponent("- Adds 30 seconds to the Vault Timer");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_00FF00)));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_00FF00)));
             tooltip.add(comp);
 
-            super.addInformation(stack, worldIn, tooltip, flagIn);
+            super.appendHoverText(stack, worldIn, tooltip, flagIn);
         }
     }
 
     public static class SourOrange extends ItemVaultFruit {
-        protected DamageSource damageSource = new DamageSource("sour_orange").setDamageBypassesArmor();
+        protected DamageSource damageSource = new DamageSource("sour_orange").bypassArmor();
 
         public SourOrange(ItemGroup group, ResourceLocation id, int extraVaultTicks) {
             super(group, id, extraVaultTicks);
         }
 
         @Override
-        public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-            if (!worldIn.isRemote && entityLiving instanceof ServerPlayerEntity) {
+        public ItemStack finishUsingItem(ItemStack stack, World worldIn, LivingEntity entityLiving) {
+            if (!worldIn.isClientSide && entityLiving instanceof ServerPlayerEntity) {
                 ServerPlayerEntity player = (ServerPlayerEntity) entityLiving;
                 VaultRaid raid = VaultRaidData.get((ServerWorld) worldIn).getActiveFor(player);
                 raid.ticksLeft += getExtraVaultTicks();
                 raid.sTickLeft += this.getExtraVaultTicks();
 
-                player.attackEntityFrom(this.damageSource, 10);
+                player.hurt(this.damageSource, 10);
 
                 worldIn.playSound(null,
-                        player.getPosX(),
-                        player.getPosY(),
-                        player.getPosZ(),
-                        SoundEvents.BLOCK_CONDUIT_ACTIVATE,
+                        player.getX(),
+                        player.getY(),
+                        player.getZ(),
+                        SoundEvents.CONDUIT_ACTIVATE,
                         SoundCategory.MASTER,
                         1.0F, 1.0F);
             }
 
-            return super.onItemUseFinish(stack, worldIn, entityLiving);
+            return super.finishUsingItem(stack, worldIn, entityLiving);
         }
 
         @Override
-        public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
             StringTextComponent comp;
 
             tooltip.add(new StringTextComponent(""));
             comp = new StringTextComponent("A magical orange with a sour taste");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_BEEBEE)).setItalic(true));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_BEEBEE)).withItalic(true));
             tooltip.add(comp);
             comp = new StringTextComponent("It is grown on the gorgeous trees of Iskallia.");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_BEEBEE)).setItalic(true));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_BEEBEE)).withItalic(true));
             tooltip.add(comp);
 
             tooltip.add(new StringTextComponent(""));
             comp = new StringTextComponent("- Wipes away 5 hearts");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FF0000)));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FF0000)));
             tooltip.add(comp);
             comp = new StringTextComponent("- Adds 60 seconds to the Vault Timer");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_00FF00)));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_00FF00)));
             tooltip.add(comp);
 
-            super.addInformation(stack, worldIn, tooltip, flagIn);
+            super.appendHoverText(stack, worldIn, tooltip, flagIn);
         }
     }
 
     public static class MysticPear extends ItemVaultFruit {
-        protected DamageSource damageSource = new DamageSource("mystic_pear").setDamageBypassesArmor();
+        protected DamageSource damageSource = new DamageSource("mystic_pear").bypassArmor();
 
         public MysticPear(ItemGroup group, ResourceLocation id, int extraVaultTicks) {
             super(group, id, extraVaultTicks);
         }
 
         @Override
-        public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-            if (!worldIn.isRemote && entityLiving instanceof ServerPlayerEntity) {
+        public ItemStack finishUsingItem(ItemStack stack, World worldIn, LivingEntity entityLiving) {
+            if (!worldIn.isClientSide && entityLiving instanceof ServerPlayerEntity) {
                 ServerPlayerEntity player = (ServerPlayerEntity) entityLiving;
                 VaultRaid raid = VaultRaidData.get((ServerWorld) worldIn).getActiveFor(player);
                 raid.ticksLeft += getExtraVaultTicks();
                 raid.sTickLeft += this.getExtraVaultTicks();
 
-                player.attackEntityFrom(this.damageSource, MathUtilities.getRandomInt(10, 20));
+                player.hurt(this.damageSource, MathUtilities.getRandomInt(10, 20));
 
                 if (MathUtilities.randomFloat(0, 100) <= 50) {
-                    player.addPotionEffect(new EffectInstance(Effects.POISON, 30 * 20));
+                    player.addEffect(new EffectInstance(Effects.POISON, 30 * 20));
                 } else {
-                    player.addPotionEffect(new EffectInstance(Effects.WITHER, 30 * 20));
+                    player.addEffect(new EffectInstance(Effects.WITHER, 30 * 20));
                 }
 
                 worldIn.playSound(null,
-                        player.getPosX(),
-                        player.getPosY(),
-                        player.getPosZ(),
-                        SoundEvents.BLOCK_CONDUIT_ACTIVATE,
+                        player.getX(),
+                        player.getY(),
+                        player.getZ(),
+                        SoundEvents.CONDUIT_ACTIVATE,
                         SoundCategory.MASTER,
                         1.0F, 1.0F);
             }
 
-            return super.onItemUseFinish(stack, worldIn, entityLiving);
+            return super.finishUsingItem(stack, worldIn, entityLiving);
         }
 
         @Override
-        public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
             StringTextComponent comp;
 
             tooltip.add(new StringTextComponent(""));
             comp = new StringTextComponent("A magical pear with a strange taste");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_BEEBEE)).setItalic(true));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_BEEBEE)).withItalic(true));
             tooltip.add(comp);
             comp = new StringTextComponent("It is grown on the gorgeous trees of Iskallia.");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_BEEBEE)).setItalic(true));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_BEEBEE)).withItalic(true));
             tooltip.add(comp);
 
             tooltip.add(new StringTextComponent(""));
             comp = new StringTextComponent("- Wipes away 5 to 10 hearts");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FF0000)));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FF0000)));
             tooltip.add(comp);
             comp = new StringTextComponent("- Inflicts with either Wither or Poison effect");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FF0000)));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FF0000)));
             tooltip.add(comp);
             comp = new StringTextComponent("- Adds 5 minutes to the Vault Timer");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_00FF00)));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_00FF00)));
             tooltip.add(comp);
 
-            super.addInformation(stack, worldIn, tooltip, flagIn);
+            super.appendHoverText(stack, worldIn, tooltip, flagIn);
         }
     }
 
@@ -243,33 +245,33 @@ public class ItemVaultFruit extends Item {
         }
 
         @Override
-        public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-            if (!worldIn.isRemote && entityLiving instanceof ServerPlayerEntity) {
+        public ItemStack finishUsingItem(ItemStack stack, World worldIn, LivingEntity entityLiving) {
+            if (!worldIn.isClientSide && entityLiving instanceof ServerPlayerEntity) {
                 ServerPlayerEntity player = (ServerPlayerEntity) entityLiving;
                 VaultRaid raid = VaultRaidData.get((ServerWorld) worldIn).getActiveFor(player);
                 raid.ticksLeft += getExtraVaultTicks();
                 raid.sTickLeft += this.getExtraVaultTicks();
 
                 worldIn.playSound(null,
-                        player.getPosX(),
-                        player.getPosY(),
-                        player.getPosZ(),
-                        SoundEvents.BLOCK_CONDUIT_ACTIVATE,
+                        player.getX(),
+                        player.getY(),
+                        player.getZ(),
+                        SoundEvents.CONDUIT_ACTIVATE,
                         SoundCategory.MASTER,
                         1.0F, 1.0F);
             }
 
-            return super.onItemUseFinish(stack, worldIn, entityLiving);
+            return super.finishUsingItem(stack, worldIn, entityLiving);
         }
 
         @Override
-        public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
             StringTextComponent comp;
             tooltip.add(new StringTextComponent(""));
             comp = new StringTextComponent("- Adds 5 seconds to the Vault Timer");
-            comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_00FF00)));
+            comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_00FF00)));
             tooltip.add(comp);
-            super.addInformation(stack, worldIn, tooltip, flagIn);
+            super.appendHoverText(stack, worldIn, tooltip, flagIn);
         }
     }
 

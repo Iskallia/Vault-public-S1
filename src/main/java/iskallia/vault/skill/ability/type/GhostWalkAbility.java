@@ -34,18 +34,18 @@ public class GhostWalkAbility extends EffectAbility {
 
     @Override
     public void onAction(PlayerEntity player, boolean active) {
-        EffectInstance activeEffect = player.getActivePotionEffect(this.getEffect());
+        EffectInstance activeEffect = player.getEffect(this.getEffect());
         EffectInstance newEffect = new EffectInstance(this.getEffect(),
                 getDurationTicks(), this.getAmplifier(), false,
                 this.getType().showParticles, this.getType().showIcon);
 
         if (activeEffect == null) {
-            player.addPotionEffect(newEffect);
+            player.addEffect(newEffect);
         }
 
-        player.world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(),
+        player.level.playSound(player, player.getX(), player.getY(), player.getZ(),
                 ModSounds.GHOST_WALK_SFX, SoundCategory.MASTER, 0.7f, 1f);
-        player.playSound(ModSounds.GHOST_WALK_SFX, SoundCategory.MASTER, 0.7f, 1f);
+        player.playNotifySound(ModSounds.GHOST_WALK_SFX, SoundCategory.MASTER, 0.7f, 1f);
     }
 
     @Override
@@ -53,12 +53,12 @@ public class GhostWalkAbility extends EffectAbility {
 
     @SubscribeEvent
     public static void onDamage(LivingDamageEvent event) {
-        Entity e = event.getSource().getTrueSource();
+        Entity e = event.getSource().getEntity();
         if (e instanceof LivingEntity) {
             LivingEntity living = (LivingEntity) e;
-            EffectInstance ghostWalk = living.getActivePotionEffect(ModEffects.GHOST_WALK);
+            EffectInstance ghostWalk = living.getEffect(ModEffects.GHOST_WALK);
             if (ghostWalk != null) {
-                living.removePotionEffect(ModEffects.GHOST_WALK);
+                living.removeEffect(ModEffects.GHOST_WALK);
             }
         }
     }

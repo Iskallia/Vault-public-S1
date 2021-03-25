@@ -40,12 +40,12 @@ public class VaultAltarRenderer extends TileEntityRenderer<VaultAltarTileEntity>
             return;
 
         ClientPlayerEntity player = mc.player;
-        int lightLevel = getLightAtPos(altar.getWorld(), altar.getPos().up());
+        int lightLevel = getLightAtPos(altar.getLevel(), altar.getBlockPos().above());
 
         // render vault rock for all players
         renderItem(new ItemStack(ModItems.VAULT_ROCK),
                 new double[]{.5d, 1.60d, .5d},
-                Vector3f.YP.rotationDegrees(180.0F - player.rotationYaw),
+                Vector3f.YP.rotationDegrees(180.0F - player.yRot),
                 matrixStack, buffer, partialTicks, combinedOverlay, lightLevel);
 
         if (altar.getRecipe() == null || altar.getRecipe().getRequiredItems().isEmpty()) return;
@@ -73,42 +73,42 @@ public class VaultAltarRenderer extends TileEntityRenderer<VaultAltarTileEntity>
     }
 
     private void renderItem(ItemStack stack, double[] translation, Quaternion rotation, MatrixStack matrixStack, IRenderTypeBuffer buffer, float partialTicks, int combinedOverlay, int lightLevel) {
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(translation[0], translation[1], translation[2]);
-        matrixStack.rotate(rotation);
-        IBakedModel ibakedmodel = mc.getItemRenderer().getItemModelWithOverrides(stack, null, null);
-        mc.getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GROUND, true, matrixStack, buffer, lightLevel, combinedOverlay, ibakedmodel);
-        matrixStack.pop();
+        matrixStack.mulPose(rotation);
+        IBakedModel ibakedmodel = mc.getItemRenderer().getModel(stack, null, null);
+        mc.getItemRenderer().render(stack, ItemCameraTransforms.TransformType.GROUND, true, matrixStack, buffer, lightLevel, combinedOverlay, ibakedmodel);
+        matrixStack.popPose();
     }
 
     private void renderLabel(RequiredItem item, MatrixStack matrixStack, IRenderTypeBuffer buffer, int lightLevel, double[] corner, StringTextComponent text, int color) {
-        FontRenderer fontRenderer = mc.fontRenderer;
+        FontRenderer fontRenderer = mc.font;
 
         //render amount required for the item
-        matrixStack.push();
+        matrixStack.pushPose();
         float scale = 0.01f;
         int opacity = (int) (.4f * 255.0F) << 24;
-        float offset = (float) (-fontRenderer.getStringPropertyWidth(text) / 2);
-        Matrix4f matrix4f = matrixStack.getLast().getMatrix();
+        float offset = (float) (-fontRenderer.width(text) / 2);
+        Matrix4f matrix4f = matrixStack.last().pose();
 
         matrixStack.translate(corner[0], corner[1] + .4f, corner[2]);
         matrixStack.scale(scale, scale, scale);
-        matrixStack.rotate(mc.getRenderManager().getCameraOrientation()); // face the camera
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(180.0F)); // flip vertical
-        fontRenderer.func_243247_a(text, offset, 0, color, false, matrix4f, buffer, false, opacity, lightLevel);
-        matrixStack.pop();
+        matrixStack.mulPose(mc.getEntityRenderDispatcher().cameraOrientation()); // face the camera
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F)); // flip vertical
+        fontRenderer.drawInBatch(text, offset, 0, color, false, matrix4f, buffer, false, opacity, lightLevel);
+        matrixStack.popPose();
     }
 
     private float getAngle(ClientPlayerEntity player, float partialTicks) {
-        currentTick = player.ticksExisted;
+        currentTick = player.tickCount;
         float angle = (currentTick + partialTicks) % 360;
         return angle;
     }
 
     private int getLightAtPos(World world, BlockPos pos) {
-        int blockLight = world.getLightFor(LightType.BLOCK, pos);
-        int skyLight = world.getLightFor(LightType.SKY, pos);
-        return LightTexture.packLight(blockLight, skyLight);
+        int blockLight = world.getBrightness(LightType.BLOCK, pos);
+        int skyLight = world.getBrightness(LightType.SKY, pos);
+        return LightTexture.pack(blockLight, skyLight);
     }
 
     private double[] getTranslation(int index) {

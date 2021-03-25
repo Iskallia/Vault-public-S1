@@ -23,7 +23,7 @@ public class AltarInfusionRecipe {
     }
 
     public AltarInfusionRecipe(ServerWorld world, PlayerEntity player) {
-        this(player.getUniqueID(), ModConfigs.VAULT_ALTAR.generateItems(world, player));
+        this(player.getUUID(), ModConfigs.VAULT_ALTAR.generateItems(world, player));
     }
 
     public AltarInfusionRecipe(UUID player) {
@@ -32,7 +32,7 @@ public class AltarInfusionRecipe {
 
 
     public static AltarInfusionRecipe deserialize(CompoundNBT nbt) {
-        UUID player = nbt.getUniqueId("player");
+        UUID player = nbt.getUUID("player");
         ListNBT list = nbt.getList("requiredItems", Constants.NBT.TAG_COMPOUND);
         List<RequiredItem> requiredItems = new ArrayList<>();
         for (INBT tag : list) {
@@ -48,7 +48,7 @@ public class AltarInfusionRecipe {
         for (RequiredItem item : recipe.getRequiredItems()) {
             list.add(RequiredItem.serializeNBT(item));
         }
-        nbt.putUniqueId("player", recipe.getPlayer());
+        nbt.putUUID("player", recipe.getPlayer());
         nbt.put("requiredItems", list);
         return nbt;
     }
@@ -60,7 +60,7 @@ public class AltarInfusionRecipe {
         for (RequiredItem item : this.getRequiredItems()) {
             list.add(RequiredItem.serializeNBT(item));
         }
-        nbt.putUniqueId("player", this.getPlayer());
+        nbt.putUUID("player", this.getPlayer());
         nbt.put("requiredItems", list);
         return nbt;
     }

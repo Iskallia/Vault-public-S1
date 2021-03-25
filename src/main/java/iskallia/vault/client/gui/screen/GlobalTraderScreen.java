@@ -52,14 +52,14 @@ public class GlobalTraderScreen extends ContainerScreen<GlobalTraderContainer> {
 
         refreshWidgets();
 
-        xSize = 394;
-        ySize = 170;
+        imageWidth = 394;
+        imageHeight = 170;
     }
 
     public void refreshWidgets() {
         tradeWidgets.clear();
 
-        List<Trade> trades = this.getContainer().getPlayerTrades();
+        List<Trade> trades = this.getMenu().getPlayerTrades();
 
         for (int i = 0; i < trades.size(); i++) {
             Trade trade = trades.get(i);
@@ -115,10 +115,10 @@ public class GlobalTraderScreen extends ContainerScreen<GlobalTraderContainer> {
 
             if (isHovered) {
 
-                getContainer().selectTrade(i);
+                getMenu().selectTrade(i);
                 ModNetwork.CHANNEL.sendToServer(VendingUIMessage.selectTrade(i));
-                Minecraft.getInstance().getSoundHandler()
-                        .play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1f));
+                Minecraft.getInstance().getSoundManager()
+                        .play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1f));
 
                 break;
             }
@@ -143,16 +143,16 @@ public class GlobalTraderScreen extends ContainerScreen<GlobalTraderContainer> {
 
     @Override
     protected void
-    drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
+    renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
     }
 
     @Override
     protected void
-    drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
+    renderLabels(MatrixStack matrixStack, int x, int y) {
         // For some reason, without this it won't render :V
-        this.font.func_243248_b(matrixStack,
+        this.font.draw(matrixStack,
                 new StringTextComponent(""),
-                (float) this.titleX, (float) this.titleY,
+                (float) this.titleLabelX, (float) this.titleLabelY,
                 4210752);
     }
 
@@ -168,12 +168,12 @@ public class GlobalTraderScreen extends ContainerScreen<GlobalTraderContainer> {
         int containerWidth = 276;
         int containerHeight = 166;
 
-        minecraft.getTextureManager().bindTexture(HUD_RESOURCE);
+        minecraft.getTextureManager().bind(HUD_RESOURCE);
         blit(matrixStack, (int) (midX - containerWidth / 2), (int) (midY - containerHeight / 2),
                 0, 0, containerWidth, containerHeight,
                 512, 256);
 
-        GlobalTraderContainer container = getContainer();
+        GlobalTraderContainer container = getMenu();
         GlobalTraderTileEntity tileEntity = container.getTileEntity();
         Rectangle tradeBoundaries = getTradeBoundaries();
 
@@ -185,17 +185,17 @@ public class GlobalTraderScreen extends ContainerScreen<GlobalTraderContainer> {
         drawSkin((int) midX + 175, (int) midY - 10, -45, tileEntity.getSkin(), false);
 
 
-        minecraft.fontRenderer.drawString(matrixStack,
+        minecraft.font.draw(matrixStack,
                 "Trades", midX - 108, midY - 77, 0xFF_3f3f3f);
 
         String name = "Vendor - " + tileEntity.getSkin().getLatestNickname();
-        int nameWidth = minecraft.fontRenderer.getStringWidth(name);
-        minecraft.fontRenderer.drawString(matrixStack,
+        int nameWidth = minecraft.font.width(name);
+        minecraft.font.draw(matrixStack,
                 name,
                 midX + 50 - nameWidth / 2f,
                 midY - 70, 0xFF_3f3f3f);
 
-        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     public void
@@ -211,7 +211,7 @@ public class GlobalTraderScreen extends ContainerScreen<GlobalTraderContainer> {
     }
 
     @Override
-    protected void renderHoveredTooltip(MatrixStack matrixStack, int mouseX, int mouseY) {
+    protected void renderTooltip(MatrixStack matrixStack, int mouseX, int mouseY) {
         Rectangle tradeBoundaries = getTradeBoundaries();
 
         int tradeContainerX = mouseX - tradeBoundaries.x0;
@@ -225,13 +225,13 @@ public class GlobalTraderScreen extends ContainerScreen<GlobalTraderContainer> {
                     renderTooltip(matrixStack, sellStack, mouseX, mouseY);
                 } else {
                     StringTextComponent text = new StringTextComponent("Sold out, sorry!");
-                    text.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FF0000)));
+                    text.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FF0000)));
                     renderTooltip(matrixStack, text, mouseX, mouseY);
                 }
             }
         }
 
-        super.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        super.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     public static void drawSkin(int posX, int posY, int yRotation, SkinProfile skin, boolean megahead) {
@@ -245,44 +245,44 @@ public class GlobalTraderScreen extends ContainerScreen<GlobalTraderContainer> {
         matrixStack.scale((float) scale, (float) scale, (float) scale);
         Quaternion quaternion = Vector3f.ZP.rotationDegrees(180.0F + 20f);
         Quaternion quaternion1 = Vector3f.XP.rotationDegrees(45f);
-        quaternion.multiply(quaternion1);
+        quaternion.mul(quaternion1);
 //        matrixStack.rotate(quaternion);
-        EntityRendererManager entityrenderermanager = Minecraft.getInstance().getRenderManager();
-        quaternion1.conjugate();
-        entityrenderermanager.setCameraOrientation(quaternion1);
+        EntityRendererManager entityrenderermanager = Minecraft.getInstance().getEntityRenderDispatcher();
+        quaternion1.conj();
+        entityrenderermanager.overrideCameraOrientation(quaternion1);
         entityrenderermanager.setRenderShadow(false);
-        IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().renderBuffers().bufferSource();
         StatuePlayerModel<PlayerEntity> model = VendingMachineRenderer.PLAYER_MODEL;
         RenderSystem.runAsFancy(() -> {
             matrixStack.scale(scale, scale, scale);
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(20));
-            matrixStack.rotate(Vector3f.YN.rotationDegrees(yRotation));
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(20));
+            matrixStack.mulPose(Vector3f.YN.rotationDegrees(yRotation));
             int lighting = 0xf00000;
             int overlay = 0xf0000;
-            RenderType renderType = model.getRenderType(skin.getLocationSkin());
+            RenderType renderType = model.renderType(skin.getLocationSkin());
             IVertexBuilder vertexBuilder = irendertypebuffer$impl.getBuffer(renderType);
-            model.bipedBody.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
-            model.bipedLeftLeg.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
-            model.bipedRightLeg.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
-            model.bipedLeftArm.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
-            model.bipedRightArm.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
+            model.body.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
+            model.leftLeg.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
+            model.rightLeg.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
+            model.leftArm.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
+            model.rightArm.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
 
-            model.bipedBodyWear.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
-            model.bipedLeftLegwear.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
-            model.bipedRightLegwear.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
-            model.bipedLeftArmwear.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
+            model.jacket.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
+            model.leftPants.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
+            model.rightPants.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
+            model.leftSleeve.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
 
-            matrixStack.push();
+            matrixStack.pushPose();
             matrixStack.translate(0, 0, -0.62f);
-            model.bipedRightArmwear.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
-            matrixStack.pop();
+            model.rightSleeve.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
+            matrixStack.popPose();
 
             matrixStack.scale(headScale, headScale, headScale);
-            model.bipedHeadwear.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
-            model.bipedHead.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
-            matrixStack.pop();
+            model.hat.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
+            model.head.render(matrixStack, vertexBuilder, lighting, overlay, 1, 1, 1, 1);
+            matrixStack.popPose();
         });
-        irendertypebuffer$impl.finish();
+        irendertypebuffer$impl.endBatch();
         entityrenderermanager.setRenderShadow(true);
         RenderSystem.popMatrix();
     }

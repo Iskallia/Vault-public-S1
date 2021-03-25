@@ -36,11 +36,11 @@ public class VaultSpawner {
 	}
 
 	public void tick(ServerPlayerEntity player) {
-		if(player.world.getDimensionKey() != Vault.VAULT_KEY)return;
+		if(player.level.dimension() != Vault.VAULT_KEY)return;
 		if(this.raid.ticksLeft + 15 * 20 > this.raid.sTickLeft)return;
 
 		this.mobs.removeIf(entity -> {
-			if(entity.getDistanceSq(player) > 24 * 24) {
+			if(entity.distanceToSqr(player) > 24 * 24) {
 				entity.remove();
 				return true;
 			}
@@ -53,8 +53,8 @@ public class VaultSpawner {
 		List<BlockPos> spaces = this.getSpawningSpaces(player);
 
 		while(this.mobs.size() < this.getMaxMobs() && spaces.size() > 0) {
-			 BlockPos pos = spaces.remove(player.getServerWorld().getRandom().nextInt(spaces.size()));
-			 this.spawn(player.getServerWorld(), pos);
+			 BlockPos pos = spaces.remove(player.getLevel().getRandom().nextInt(spaces.size()));
+			 this.spawn(player.getLevel(), pos);
 		}
 	}
 
@@ -64,25 +64,25 @@ public class VaultSpawner {
 		for(int x = -18; x <= 18; x++) {
 			for(int z = -18; z <= 18; z++) {
 				for(int y = -5; y <= 5; y++) {
-					ServerWorld world = player.getServerWorld();
-					BlockPos pos = player.getPosition().add(new BlockPos(x, y, z));
+					ServerWorld world = player.getLevel();
+					BlockPos pos = player.blockPosition().offset(new BlockPos(x, y, z));
 
-					if(player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()) < 10 * 10) {
+					if(player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 10 * 10) {
 						continue;
 					}
 
-					if(!world.getBlockState(pos).canEntitySpawn(world, pos, EntityType.ZOMBIE))continue;
+					if(!world.getBlockState(pos).isValidSpawn(world, pos, EntityType.ZOMBIE))continue;
 					boolean isAir = true;
 
 					for(int o = 1; o <= 2; o++) {
-						if(world.getBlockState(pos.up(o)).isSuffocating(world, pos)) {
+						if(world.getBlockState(pos.above(o)).isSuffocating(world, pos)) {
 							isAir = false;
 							break;
 						}
 					}
 
 					if(isAir) {
-						spaces.add(pos.up());
+						spaces.add(pos.above());
 					}
 				}
 			}
@@ -92,17 +92,17 @@ public class VaultSpawner {
 	}
 
 	public void spawn(ServerWorld world, BlockPos pos) {
-		VaultMobsConfig.Mob mob = ModConfigs.VAULT_MOBS.getForLevel(this.raid.level).MOB_POOL.getRandom(world.rand);
+		VaultMobsConfig.Mob mob = ModConfigs.VAULT_MOBS.getForLevel(this.raid.level).MOB_POOL.getRandom(world.random);
 		if(mob == null)return;
 		LivingEntity entity = mob.create(world);
 
 		if(entity != null) {
-			entity.setLocationAndAngles(pos.getX() + 0.5F, pos.getY() + 0.2F, pos.getZ() + 0.5F, 0.0F, 0.0F);
-			world.summonEntity(entity);
+			entity.moveTo(pos.getX() + 0.5F, pos.getY() + 0.2F, pos.getZ() + 0.5F, 0.0F, 0.0F);
+			world.addWithUUID(entity);
 
 			if(entity instanceof MobEntity) {
-				((MobEntity)entity).spawnExplosionParticle();
-				((MobEntity)entity).onInitialSpawn(world, new DifficultyInstance(Difficulty.PEACEFUL, 13000L, 0L, 0L),
+				((MobEntity)entity).spawnAnim();
+				((MobEntity)entity).finalizeSpawn(world, new DifficultyInstance(Difficulty.PEACEFUL, 13000L, 0L, 0L),
 						SpawnReason.STRUCTURE, null, null);
 			}
 

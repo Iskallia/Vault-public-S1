@@ -21,23 +21,25 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class MazeBlock extends Block {
 
 
     public static final EnumProperty<MazeColor> COLOR = EnumProperty.create("color", MazeColor.class);
 
     public MazeBlock() {
-        super(Properties.create(Material.IRON, MaterialColor.IRON)
-                .hardnessAndResistance(-1, 3600000.0F)
+        super(Properties.of(Material.METAL, MaterialColor.METAL)
+                .strength(-1, 3600000.0F)
                 .sound(SoundType.METAL));
 
-        this.setDefaultState(this.stateContainer.getBaseState()
-                .with(COLOR, MazeColor.RED));
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(COLOR, MazeColor.RED));
 
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(COLOR);
     }
 
@@ -49,8 +51,8 @@ public class MazeBlock extends Block {
 
     //RED = 0, BLUE = 1
     @Override
-    public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
-        if (worldIn.isRemote) return;
+    public void stepOn(World worldIn, BlockPos pos, Entity entityIn) {
+        if (worldIn.isClientSide) return;
         if (!(entityIn instanceof PlayerEntity)) return;
 
         PlayerEntity player = (PlayerEntity) entityIn;
@@ -63,21 +65,21 @@ public class MazeBlock extends Block {
         assert colorObjective != null;
 
         // DEBUG: worldIn.getScoreboard().setObjectiveInDisplaySlot(Scoreboard.getObjectiveDisplaySlotNumber("sidebar"), colorObjective);
-        Score colorScore = worldIn.getScoreboard().getOrCreateScore(player.getDisplayName().getString(), colorObjective);
-        MazeColor playerColor = MazeColor.values()[colorScore.getScorePoints()];
+        Score colorScore = worldIn.getScoreboard().getOrCreatePlayerScore(player.getDisplayName().getString(), colorObjective);
+        MazeColor playerColor = MazeColor.values()[colorScore.getScore()];
 
-        BlockPos nextPosition = player.getPosition();
-        if (playerColor == worldIn.getBlockState(pos).get(MazeBlock.COLOR)) {
-            nextPosition = nextPosition.offset(player.getHorizontalFacing().getOpposite(), 1);
+        BlockPos nextPosition = player.blockPosition();
+        if (playerColor == worldIn.getBlockState(pos).getValue(MazeBlock.COLOR)) {
+            nextPosition = nextPosition.relative(player.getDirection().getOpposite(), 1);
         } else {
-            nextPosition = nextPosition.offset(player.getHorizontalFacing(), 1);
-            colorScore.setScorePoints(playerColor == MazeColor.RED ? MazeColor.BLUE.ordinal() : MazeColor.RED.ordinal());
+            nextPosition = nextPosition.relative(player.getDirection(), 1);
+            colorScore.setScore(playerColor == MazeColor.RED ? MazeColor.BLUE.ordinal() : MazeColor.RED.ordinal());
         }
 
-        player.setPositionAndUpdate(nextPosition.getX() + 0.5d, nextPosition.getY(), nextPosition.getZ() + 0.5d);
+        player.teleportTo(nextPosition.getX() + 0.5d, nextPosition.getY(), nextPosition.getZ() + 0.5d);
 
 
-        super.onEntityWalk(worldIn, pos, entityIn);
+        super.stepOn(worldIn, pos, entityIn);
     }
 
     public enum MazeColor implements IStringSerializable {
@@ -91,7 +93,7 @@ public class MazeBlock extends Block {
         }
 
         @Override
-        public String getString() {
+        public String getSerializedName() {
             return this.name;
         }
     }

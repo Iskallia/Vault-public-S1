@@ -25,7 +25,7 @@ public class AbilitiesTab extends SkillTab {
     public void refresh() {
         this.abilityWidgets.clear();
 
-        AbilityTree abilityTree = parentScreen.getContainer().getAbilityTree();
+        AbilityTree abilityTree = parentScreen.getMenu().getAbilityTree();
         ModConfigs.ABILITIES_GUI.getStyles().forEach((abilityName, style) -> {
             this.abilityWidgets.add(new AbilityWidget(
                     ModConfigs.ABILITIES.getByName(abilityName),
@@ -62,7 +62,7 @@ public class AbilitiesTab extends SkillTab {
 
         Vector2f midpoint = parentScreen.getContainerBounds().midpoint();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(midpoint.x, midpoint.y, 0);
         matrixStack.scale(viewportScale, viewportScale, 1);
         matrixStack.translate(viewportTranslation.x, viewportTranslation.y, 0);
@@ -74,7 +74,7 @@ public class AbilitiesTab extends SkillTab {
             abilityWidget.render(matrixStack, containerMouseX, containerMouseY, partialTicks);
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
 }

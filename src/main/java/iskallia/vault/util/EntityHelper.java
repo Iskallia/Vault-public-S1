@@ -20,19 +20,19 @@ public class EntityHelper {
         sizeField.setAccessible(true);
 
         try {
-            sizeField.set(entity, entity.getSize(Pose.STANDING).scale(size));
+            sizeField.set(entity, entity.getDimensions(Pose.STANDING).scale(size));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
 
-        entity.recalculateSize();
+        entity.refreshDimensions();
 
         return entity;
     }
 
     public static void giveItem(PlayerEntity player, ItemStack itemStack) {
-        boolean added = player.inventory.addItemStackToInventory(itemStack);
-        if (!added) player.dropItem(itemStack, false, false);
+        boolean added = player.inventory.add(itemStack);
+        if (!added) player.drop(itemStack, false, false);
     }
 
 }

@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 @Mixin(AnvilScreen.class)
 public class MixinAnvilScreen {
 
-    @ModifyConstant(method = "drawGuiContainerForegroundLayer", constant = @Constant(intValue = 40))
+    @ModifyConstant(method = "renderLabels", constant = @Constant(intValue = 40))
     private int overrideMaxRepairLevel(int oldValue) {
         return Integer.MAX_VALUE;
     }

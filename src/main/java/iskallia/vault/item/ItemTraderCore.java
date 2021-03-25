@@ -35,12 +35,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import net.minecraft.item.Item.Properties;
+
 public class ItemTraderCore extends Item {
 
     public ItemTraderCore(ItemGroup group, ResourceLocation id) {
         super(new Properties()
-                .group(group)
-                .maxStackSize(1));
+                .tab(group)
+                .stacksTo(1));
 
         this.setRegistryName(id);
     }
@@ -103,7 +105,7 @@ public class ItemTraderCore extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         CompoundNBT nbt = stack.getOrCreateTag();
         if (nbt.contains("core")) {
             TraderCore core;
@@ -119,7 +121,7 @@ public class ItemTraderCore extends Item {
                 tooltip.add(new StringTextComponent(""));
                 tooltip.add(new StringTextComponent("Trader: "));
                 StringTextComponent tip = new StringTextComponent(" Right-click to generate trade!");
-                tip.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFAA00)));
+                tip.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FFAA00)));
                 tooltip.add(tip);
                 return;
             }
@@ -131,28 +133,28 @@ public class ItemTraderCore extends Item {
             tooltip.add(new StringTextComponent(""));
             tooltip.add(new StringTextComponent("Trader: "));
             StringTextComponent traderName = new StringTextComponent(" " + core.getName());
-            traderName.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFAA00)));
+            traderName.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FFAA00)));
             tooltip.add(traderName);
             tooltip.add(new StringTextComponent(""));
             tooltip.add(new StringTextComponent("Trades: "));
             if (buy != null && buy.isValid()) {
                 StringTextComponent comp = new StringTextComponent(" - Buy: ");
-                TranslationTextComponent name = new TranslationTextComponent(buy.getItem().getTranslationKey());
-                name.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFAA00)));
+                TranslationTextComponent name = new TranslationTextComponent(buy.getItem().getDescriptionId());
+                name.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FFAA00)));
                 comp.append(name).append(new StringTextComponent(" x" + buy.getAmount()));
                 tooltip.add(comp);
             }
             if (extra != null && extra.isValid()) {
                 StringTextComponent comp = new StringTextComponent(" - Extra: ");
-                TranslationTextComponent name = new TranslationTextComponent(extra.getItem().getTranslationKey());
-                name.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFAA00)));
+                TranslationTextComponent name = new TranslationTextComponent(extra.getItem().getDescriptionId());
+                name.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FFAA00)));
                 comp.append(name).append(new StringTextComponent(" x" + extra.getAmount()));
                 tooltip.add(comp);
             }
             if (sell != null && sell.isValid()) {
                 StringTextComponent comp = new StringTextComponent(" - Sell: ");
-                TranslationTextComponent name = new TranslationTextComponent(sell.getItem().getTranslationKey());
-                name.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFAA00)));
+                TranslationTextComponent name = new TranslationTextComponent(sell.getItem().getDescriptionId());
+                name.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FFAA00)));
                 comp.append(name).append(new StringTextComponent(" x" + sell.getAmount()));
                 tooltip.add(comp);
             }
@@ -160,33 +162,33 @@ public class ItemTraderCore extends Item {
             if (core.isMegahead()) {
                 tooltip.add(new StringTextComponent(""));
                 StringTextComponent comp = new StringTextComponent("MEGAHEAD!");
-                comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_00FF00)));
+                comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_00FF00)));
                 tooltip.add(comp);
             }
 
             tooltip.add(new StringTextComponent(""));
             if (trade.getTradesLeft() == 0) {
                 StringTextComponent comp = new StringTextComponent("[0] Sold out, sorry!");
-                comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FF0000)));
+                comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FF0000)));
                 tooltip.add(comp);
             } else if (trade.getTradesLeft() == -1) {
                 StringTextComponent comp = new StringTextComponent("[\u221e] Has unlimited trades.");
-                comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_00AAFF)));
+                comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_00AAFF)));
                 tooltip.add(comp);
             } else {
                 StringTextComponent comp = new StringTextComponent("[" + trade.getTradesLeft() + "] Has a limited stock.");
-                comp.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFAA00)));
+                comp.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FFAA00)));
                 tooltip.add(comp);
             }
         } else {
             tooltip.add(new StringTextComponent(""));
             tooltip.add(new StringTextComponent("Trader: "));
             StringTextComponent tip = new StringTextComponent(" Right-click to generate trade!");
-            tip.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFAA00)));
+            tip.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FFAA00)));
             tooltip.add(tip);
             return;
         }
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
     @Override
@@ -195,8 +197,8 @@ public class ItemTraderCore extends Item {
     }
 
     @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        ITextComponent text = super.getDisplayName(stack);
+    public ITextComponent getName(ItemStack stack) {
+        ITextComponent text = super.getName(stack);
         CompoundNBT nbt = stack.getOrCreateTag();
 
         if (nbt.contains("core", Constants.NBT.TAG_COMPOUND)) {
@@ -212,12 +214,12 @@ public class ItemTraderCore extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity player, Hand handIn) {
-        if (worldIn.isRemote) return super.onItemRightClick(worldIn, player, handIn);
-        if (handIn == Hand.OFF_HAND) return super.onItemRightClick(worldIn, player, handIn);
-        ItemStack stack = player.getHeldItemMainhand();
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity player, Hand handIn) {
+        if (worldIn.isClientSide) return super.use(worldIn, player, handIn);
+        if (handIn == Hand.OFF_HAND) return super.use(worldIn, player, handIn);
+        ItemStack stack = player.getMainHandItem();
 
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             CompoundNBT nbt = new CompoundNBT();
             nbt.putInt("RenameType", RenameType.TRADER_CORE.ordinal());
             nbt.put("Data", stack.serializeNBT());
@@ -236,7 +238,7 @@ public class ItemTraderCore extends Item {
                         }
                     },
                     (buffer) -> {
-                        buffer.writeCompoundTag(nbt);
+                        buffer.writeNbt(nbt);
                     }
             );
         } else {
@@ -247,7 +249,7 @@ public class ItemTraderCore extends Item {
                     core = NBTSerializer.deserialize(TraderCore.class, nbt.getCompound("core"));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return super.onItemRightClick(worldIn, player, handIn);
+                    return super.use(worldIn, player, handIn);
                 }
                 if (core.getTrade() == null) {
                     String name = "Trader";
@@ -255,14 +257,14 @@ public class ItemTraderCore extends Item {
                         name = core.getName();
                     }
                     ItemStack newTraderCore = generate(name, 1, false, CoreType.COMMON);
-                    player.setHeldItem(Hand.MAIN_HAND, newTraderCore);
+                    player.setItemInHand(Hand.MAIN_HAND, newTraderCore);
                 }
             } else {
                 ItemStack newTraderCore = generate("Trader", 1, false, CoreType.COMMON);
-                player.setHeldItem(Hand.MAIN_HAND, newTraderCore);
+                player.setItemInHand(Hand.MAIN_HAND, newTraderCore);
             }
         }
-        return super.onItemRightClick(worldIn, player, handIn);
+        return super.use(worldIn, player, handIn);
     }
 
     public static String getTraderName(ItemStack stack) {

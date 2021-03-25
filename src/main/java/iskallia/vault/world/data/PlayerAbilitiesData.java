@@ -36,7 +36,7 @@ public class PlayerAbilitiesData extends WorldSavedData {
     }
 
     public AbilityTree getAbilities(PlayerEntity player) {
-        return this.getAbilities(player.getUniqueID());
+        return this.getAbilities(player.getUUID());
     }
 
     public AbilityTree getAbilities(UUID uuid) {
@@ -48,14 +48,14 @@ public class PlayerAbilitiesData extends WorldSavedData {
     public PlayerAbilitiesData add(ServerPlayerEntity player, AbilityNode<?>... nodes) {
         this.getAbilities(player).add(player.getServer(), nodes);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerAbilitiesData remove(ServerPlayerEntity player, AbilityNode<?>... nodes) {
         this.getAbilities(player).remove(player.getServer(), nodes);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
@@ -65,12 +65,12 @@ public class PlayerAbilitiesData extends WorldSavedData {
         abilityTree.upgradeAbility(player.getServer(), abilityNode);
 
         abilityTree.sync(player.server);
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerAbilitiesData resetAbilityTree(ServerPlayerEntity player) {
-        UUID uniqueID = player.getUniqueID();
+        UUID uniqueID = player.getUUID();
 
         AbilityTree oldAbilityTree = playerMap.get(uniqueID);
         if (oldAbilityTree != null) {
@@ -84,7 +84,7 @@ public class PlayerAbilitiesData extends WorldSavedData {
         this.playerMap.put(uniqueID, abilityTree);
 
         abilityTree.sync(player.server);
-        markDirty();
+        setDirty();
         return this;
     }
 
@@ -94,7 +94,7 @@ public class PlayerAbilitiesData extends WorldSavedData {
     public static void onTick(TickEvent.PlayerTickEvent event) {
         if(event.phase != TickEvent.Phase.START) return;
         if (event.side == LogicalSide.SERVER) {
-            AbilityTree abilities = get((ServerWorld) event.player.world)
+            AbilityTree abilities = get((ServerWorld) event.player.level)
                     .getAbilities(event.player);
             abilities.tick(event);
         }
@@ -103,7 +103,7 @@ public class PlayerAbilitiesData extends WorldSavedData {
     /* ---------------------------------------------- */
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         ListNBT playerList = nbt.getList("PlayerEntries", Constants.NBT.TAG_STRING);
         ListNBT abilitiesList = nbt.getList("AbilityEntries", Constants.NBT.TAG_COMPOUND);
 
@@ -118,7 +118,7 @@ public class PlayerAbilitiesData extends WorldSavedData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         ListNBT playerList = new ListNBT();
         ListNBT abilitiesList = new ListNBT();
 
@@ -134,8 +134,8 @@ public class PlayerAbilitiesData extends WorldSavedData {
     }
 
     public static PlayerAbilitiesData get(ServerWorld world) {
-        return world.getServer().func_241755_D_()
-                .getSavedData().getOrCreate(PlayerAbilitiesData::new, DATA_NAME);
+        return world.getServer().overworld()
+                .getDataStorage().computeIfAbsent(PlayerAbilitiesData::new, DATA_NAME);
     }
 
 }

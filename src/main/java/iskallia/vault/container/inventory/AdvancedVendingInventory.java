@@ -30,7 +30,7 @@ public class AdvancedVendingInventory implements IInventory {
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return this.slots.size();
     }
 
@@ -40,46 +40,46 @@ public class AdvancedVendingInventory implements IInventory {
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
+    public ItemStack getItem(int index) {
         return this.slots.get(index);
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count) {
+    public ItemStack removeItem(int index, int count) {
         ItemStack itemStack = slots.get(index);
 
         if (index == SELL_SLOT && !itemStack.isEmpty()) {
-            ItemStack andSplit = ItemStackHelper.getAndSplit(slots, index, itemStack.getCount());
-            decrStackSize(BUY_SLOT, selectedCore.getTrade().getBuy().getAmount());
+            ItemStack andSplit = ItemStackHelper.removeItem(slots, index, itemStack.getCount());
+            removeItem(BUY_SLOT, selectedCore.getTrade().getBuy().getAmount());
             selectedCore.getTrade().onTraded();
             tileEntity.sendUpdates();
             updateRecipe();
             return andSplit;
         }
 
-        ItemStack splitStack = ItemStackHelper.getAndSplit(slots, index, count);
+        ItemStack splitStack = ItemStackHelper.removeItem(slots, index, count);
         updateRecipe();
         return splitStack;
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index) {
-        ItemStack andRemove = ItemStackHelper.getAndRemove(this.slots, index);
+    public ItemStack removeItemNoUpdate(int index) {
+        ItemStack andRemove = ItemStackHelper.takeItem(this.slots, index);
         updateRecipe();
         return andRemove;
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setItem(int index, ItemStack stack) {
         slots.set(index, stack);
         updateRecipe();
     }
 
     @Override
-    public void markDirty() { }
+    public void setChanged() { }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
+    public boolean stillValid(PlayerEntity player) {
         return true;
     }
 
@@ -104,7 +104,7 @@ public class AdvancedVendingInventory implements IInventory {
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         this.slots.clear();
     }
 

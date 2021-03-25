@@ -8,19 +8,21 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.Random;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class VaultOreBlock extends OreBlock {
 
     public VaultOreBlock() {
-        super(Properties.create(Material.ROCK, MaterialColor.DIAMOND)
-                .setRequiresTool()
-                .setLightLevel(state -> 9)
-                .hardnessAndResistance(3f, 3f)
+        super(Properties.of(Material.STONE, MaterialColor.DIAMOND)
+                .requiresCorrectToolForDrops()
+                .lightLevel(state -> 9)
+                .strength(3f, 3f)
                 .sound(ModSounds.VAULT_GEM)
         );
     }
 
     @Override
-    protected int getExperience(Random rand) {
+    protected int xpOnDrop(Random rand) {
         return MathHelper.nextInt(rand, 3, 7);
     }
 

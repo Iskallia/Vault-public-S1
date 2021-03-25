@@ -28,7 +28,7 @@ public class CrystalData implements INBTSerializable<CompoundNBT> {
 		this.delegate = delegate;
 
 		if(this.delegate != null) {
-			this.deserializeNBT(this.delegate.getOrCreateChildTag("CrystalData"));
+			this.deserializeNBT(this.delegate.getOrCreateTagElement("CrystalData"));
 		}
 	}
 
@@ -69,11 +69,11 @@ public class CrystalData implements INBTSerializable<CompoundNBT> {
 	public void addInformation(World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
 		for(Modifier modifier: this.modifiers) {
 			tooltip.add(new StringTextComponent("- Has ")
-					.append(new StringTextComponent(Math.round(modifier.chance * 100.0F) + "%").mergeStyle(modifier.operation.color))
+					.append(new StringTextComponent(Math.round(modifier.chance * 100.0F) + "%").withStyle(modifier.operation.color))
 					.append(new StringTextComponent(" chance to "))
-					.append(new StringTextComponent(modifier.operation.title).mergeStyle(modifier.operation.color))
+					.append(new StringTextComponent(modifier.operation.title).withStyle(modifier.operation.color))
 					.append(new StringTextComponent(" the "))
-					.append(new StringTextComponent(modifier.name).mergeStyle(TextFormatting.AQUA))
+					.append(new StringTextComponent(modifier.name).withStyle(TextFormatting.AQUA))
 					.append(new StringTextComponent(" modifier!")));
 		}
 	}

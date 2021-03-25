@@ -9,13 +9,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class ModScreens {
 
     public static void register(final FMLClientSetupEvent event) {
-        ScreenManager.registerFactory(ModContainers.SKILL_TREE_CONTAINER, SkillTreeScreen::new);
-        ScreenManager.registerFactory(ModContainers.VAULT_CRATE_CONTAINER, VaultCrateScreen::new);
-        ScreenManager.registerFactory(ModContainers.VENDING_MACHINE_CONTAINER, VendingMachineScreen::new);
-        ScreenManager.registerFactory(ModContainers.ADVANCED_VENDING_MACHINE_CONTAINER, AdvancedVendingMachineScreen::new);
-        ScreenManager.registerFactory(ModContainers.RENAMING_CONTAINER, RenameScreen::new);
-        ScreenManager.registerFactory(ModContainers.KEY_PRESS_CONTAINER, KeyPressScreen::new);
-        ScreenManager.registerFactory(ModContainers.TRADER_CONTAINER, GlobalTraderScreen::new);
+        ScreenManager.register(ModContainers.SKILL_TREE_CONTAINER, SkillTreeScreen::new);
+        ScreenManager.register(ModContainers.VAULT_CRATE_CONTAINER, VaultCrateScreen::new);
+        ScreenManager.register(ModContainers.VENDING_MACHINE_CONTAINER, VendingMachineScreen::new);
+        ScreenManager.register(ModContainers.ADVANCED_VENDING_MACHINE_CONTAINER, AdvancedVendingMachineScreen::new);
+        ScreenManager.register(ModContainers.RENAMING_CONTAINER, RenameScreen::new);
+        ScreenManager.register(ModContainers.KEY_PRESS_CONTAINER, KeyPressScreen::new);
+        ScreenManager.register(ModContainers.TRADER_CONTAINER, GlobalTraderScreen::new);
     }
 
     public static void registerOverlays() {

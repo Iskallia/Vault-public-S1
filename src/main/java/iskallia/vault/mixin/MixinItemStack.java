@@ -28,9 +28,9 @@ import java.util.Random;
 @Mixin(value = ItemStack.class, priority = 1001)
 public abstract class MixinItemStack {
 
-	@Shadow public abstract boolean isDamageable();
-	@Shadow public abstract int getDamage();
-	@Shadow public abstract void setDamage(int damage);
+	@Shadow public abstract boolean isDamageableItem();
+	@Shadow public abstract int getDamageValue();
+	@Shadow public abstract void setDamageValue(int damage);
 	@Shadow public abstract int getMaxDamage();
 
 	@Shadow public abstract ItemStack copy();
@@ -41,14 +41,14 @@ public abstract class MixinItemStack {
 	 * @author Vault (Iskallia)
 	 */
 	@Overwrite
-	public boolean attemptDamageItem(int amount, Random rand, @Nullable ServerPlayerEntity damager) {
-		if(!this.isDamageable()) return false;
+	public boolean hurt(int amount, Random rand, @Nullable ServerPlayerEntity damager) {
+		if(!this.isDamageableItem()) return false;
 
 		if(amount > 0) {
-			int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.UNBREAKING, (ItemStack)(Object)this);
+			int i = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, (ItemStack)(Object)this);
 
 			if(damager != null) {
-				TalentTree abilities = PlayerTalentsData.get(damager.getServerWorld()).getTalents(damager);
+				TalentTree abilities = PlayerTalentsData.get(damager.getLevel()).getTalents(damager);
 
 				for(TalentNode<?> node: abilities.getNodes()) {
 					if(!(node.getTalent() instanceof UnbreakableTalent))continue;
@@ -60,7 +60,7 @@ public abstract class MixinItemStack {
 			int j = 0;
 
 			for(int k = 0; i > 0 && k < amount; ++k) {
-				if(UnbreakingEnchantment.negateDamage((ItemStack)(Object)this, i, rand)) {
+				if(UnbreakingEnchantment.shouldIgnoreDurabilityDrop((ItemStack)(Object)this, i, rand)) {
 					++j;
 				}
 			}
@@ -73,11 +73,11 @@ public abstract class MixinItemStack {
 		}
 
 		if(damager != null && amount != 0) {
-			CriteriaTriggers.ITEM_DURABILITY_CHANGED.trigger(damager, (ItemStack)(Object)this, this.getDamage() + amount);
+			CriteriaTriggers.ITEM_DURABILITY_CHANGED.trigger(damager, (ItemStack)(Object)this, this.getDamageValue() + amount);
 		}
 
-		int l = this.getDamage() + amount;
-		this.setDamage(l);
+		int l = this.getDamageValue() + amount;
+		this.setDamageValue(l);
 
 		return l >= this.getMaxDamage();
 	}
@@ -97,7 +97,7 @@ public abstract class MixinItemStack {
 		}
 
 		IFormattableTextComponent returnValue = (IFormattableTextComponent) ci.getReturnValue();
-		ci.setReturnValue(returnValue.mergeStyle(rarity.color));
+		ci.setReturnValue(returnValue.withStyle(rarity.color));
 	}
 
 }

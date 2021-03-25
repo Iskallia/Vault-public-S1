@@ -30,8 +30,8 @@ public class UpgradeCrystalRecipe extends SpecialRecipe {
 		boolean hasSpark = false;
 		int count = 0;
 
-		for(int i = 0; i < inv.getSizeInventory(); ++i) {
-			ItemStack stack = inv.getStackInSlot(i);
+		for(int i = 0; i < inv.getContainerSize(); ++i) {
+			ItemStack stack = inv.getItem(i);
 
 			if(stack.getItem() instanceof ItemVaultCrystal) {
 				if(rarity != null && ((ItemVaultCrystal)stack.getItem()).getRarity() != rarity) {
@@ -61,12 +61,12 @@ public class UpgradeCrystalRecipe extends SpecialRecipe {
 	}
 
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv) {
+	public ItemStack assemble(CraftingInventory inv) {
 		List<ItemStack> crystals = new ArrayList<>();
 		VaultRarity rarity = null;
 
-		for(int i = 0; i < inv.getSizeInventory(); ++i) {
-			ItemStack stack = inv.getStackInSlot(i);
+		for(int i = 0; i < inv.getContainerSize(); ++i) {
+			ItemStack stack = inv.getItem(i);
 
 			if(stack.getItem() instanceof ItemVaultCrystal) {
 				rarity = ((ItemVaultCrystal)stack.getItem()).getRarity();
@@ -90,7 +90,7 @@ public class UpgradeCrystalRecipe extends SpecialRecipe {
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return width * height >= Math.min(Math.min(ModConfigs.CRYSTAL_UPGRADE.COMMON_TO_RARE, ModConfigs.CRYSTAL_UPGRADE.RARE_TO_EPIC), ModConfigs.CRYSTAL_UPGRADE.EPIC_TO_OMEGA);
 	}
 

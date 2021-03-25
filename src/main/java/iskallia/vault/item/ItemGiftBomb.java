@@ -25,28 +25,30 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.item.Item.Properties;
+
 public class ItemGiftBomb extends Item {
 
     protected Variant variant;
 
     public ItemGiftBomb(ItemGroup group, Variant variant, ResourceLocation id) {
         super(new Properties()
-                .group(group)
-                .maxStackSize(64));
+                .tab(group)
+                .stacksTo(64));
 
         this.variant = variant;
         this.setRegistryName(id);
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack heldStack = player.getHeldItem(hand);
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack heldStack = player.getItemInHand(hand);
         Item heldItem = heldStack.getItem();
 
         if (heldItem instanceof ItemGiftBomb) {
             ItemGiftBomb giftBomb = (ItemGiftBomb) heldItem;
 
-            if (!world.isRemote) {
+            if (!world.isClientSide) {
                 ItemStack randomLoot = ModConfigs.GIFT_BOMB.randomLoot(giftBomb.variant);
 
                 while(randomLoot.getCount() > 0) {
@@ -54,7 +56,7 @@ public class ItemGiftBomb extends Item {
                     ItemStack copy = randomLoot.copy();
                     copy.setCount(amount);
                     randomLoot.shrink(amount);
-                    player.dropItem(copy, false, false);
+                    player.drop(copy, false, false);
                 }
 
                 heldStack.shrink(1);
@@ -63,10 +65,10 @@ public class ItemGiftBomb extends Item {
                     CompoundNBT nbt = Optional.ofNullable(heldStack.getTag()).orElse(new CompoundNBT());
                     String gifter = nbt.getString("Gifter");
                     ItemStack gifterStatue = LootStatueBlockItem.forGift(gifter, variant.ordinal, false);
-                    player.dropItem(gifterStatue, false, false);
+                    player.drop(gifterStatue, false, false);
                 }
 
-                Vector3d position = player.getPositionVec();
+                Vector3d position = player.position();
 
                 world.playSound(
                         null,
@@ -78,7 +80,7 @@ public class ItemGiftBomb extends Item {
                         0.55f, 1f
                 );
 
-                ((ServerWorld) world).spawnParticle(ParticleTypes.EXPLOSION_EMITTER,
+                ((ServerWorld) world).sendParticles(ParticleTypes.EXPLOSION_EMITTER,
                         position.x,
                         position.y,
                         position.z,
@@ -92,18 +94,18 @@ public class ItemGiftBomb extends Item {
             }
         }
 
-        return ActionResult.func_233538_a_(heldStack, world.isRemote());
+        return ActionResult.sidedSuccess(heldStack, world.isClientSide());
     }
 
     @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        IFormattableTextComponent displayName = (IFormattableTextComponent) super.getDisplayName(stack);
-        displayName.setStyle(Style.EMPTY.setColor(colorForVariant(variant)));
+    public ITextComponent getName(ItemStack stack) {
+        IFormattableTextComponent displayName = (IFormattableTextComponent) super.getName(stack);
+        displayName.setStyle(Style.EMPTY.withColor(colorForVariant(variant)));
         return displayName;
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         Color color = colorForVariant(variant);
 
         if (stack.hasTag()) {
@@ -117,32 +119,32 @@ public class ItemGiftBomb extends Item {
             tooltip.add(getPropertyInfo("Gifted", giftedSubs + " subscribers", color));
         }
 
-        super.addInformation(stack, world, tooltip, flagIn);
+        super.appendHoverText(stack, world, tooltip, flagIn);
     }
 
     private IFormattableTextComponent getPropertyInfo(String title, String value, Color color) {
         StringTextComponent titleComponent = new StringTextComponent(title + ": ");
-        titleComponent.setStyle(Style.EMPTY.setColor(color));
+        titleComponent.setStyle(Style.EMPTY.withColor(color));
 
         StringTextComponent valueComponent = new StringTextComponent(value);
-        valueComponent.setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_FFFFFF)));
+        valueComponent.setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_FFFFFF)));
 
         return titleComponent.append(valueComponent);
     }
 
     private static Color colorForVariant(Variant variant) {
         if (variant == Variant.NORMAL) {
-            return Color.fromInt(0x00_bc0b0b);
+            return Color.fromRgb(0x00_bc0b0b);
 
         } else if (variant == Variant.SUPER) {
-            return Color.fromInt(0x00_9f0bbc);
+            return Color.fromRgb(0x00_9f0bbc);
 
         } else if (variant == Variant.MEGA) {
-            return Color.fromInt(0x00_0b8fbc);
+            return Color.fromRgb(0x00_0b8fbc);
 
         } else if (variant == Variant.OMEGA) {
             int color = (int) System.currentTimeMillis();
-            return Color.fromInt(color);
+            return Color.fromRgb(color);
         }
 
         throw new InternalError("Unknown variant -> " + variant);

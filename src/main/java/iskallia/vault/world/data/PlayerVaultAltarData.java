@@ -29,12 +29,12 @@ public class PlayerVaultAltarData extends WorldSavedData {
     }
 
     public static PlayerVaultAltarData get(ServerWorld world) {
-        return world.getServer().func_241755_D_()
-                .getSavedData().getOrCreate(PlayerVaultAltarData::new, DATA_NAME);
+        return world.getServer().overworld()
+                .getDataStorage().computeIfAbsent(PlayerVaultAltarData::new, DATA_NAME);
     }
 
     public AltarInfusionRecipe getRecipe(PlayerEntity player) {
-        return this.getRecipe(player.getUniqueID());
+        return this.getRecipe(player.getUUID());
     }
 
     public AltarInfusionRecipe getRecipe(UUID uuid) {
@@ -42,8 +42,8 @@ public class PlayerVaultAltarData extends WorldSavedData {
     }
 
     public AltarInfusionRecipe getRecipe(ServerWorld world, PlayerEntity player) {
-        AltarInfusionRecipe recipe = this.playerMap.computeIfAbsent(player.getUniqueID(), k -> new AltarInfusionRecipe(world, player));
-        this.markDirty();
+        AltarInfusionRecipe recipe = this.playerMap.computeIfAbsent(player.getUUID(), k -> new AltarInfusionRecipe(world, player));
+        this.setDirty();
         return recipe;
     }
 
@@ -58,14 +58,14 @@ public class PlayerVaultAltarData extends WorldSavedData {
     public PlayerVaultAltarData add(UUID uuid, AltarInfusionRecipe recipe) {
         this.playerMap.put(uuid, recipe);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     public PlayerVaultAltarData remove(UUID uuid) {
         this.playerMap.remove(uuid);
 
-        markDirty();
+        setDirty();
         return this;
     }
 
@@ -74,12 +74,12 @@ public class PlayerVaultAltarData extends WorldSavedData {
         this.add(id, recipe);
 
 
-        markDirty();
+        setDirty();
         return this;
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void load(CompoundNBT nbt) {
         ListNBT playerList = nbt.getList("PlayerEntries", Constants.NBT.TAG_STRING);
         ListNBT recipeList = nbt.getList("AltarRecipeEntries", Constants.NBT.TAG_COMPOUND);
 
@@ -94,7 +94,7 @@ public class PlayerVaultAltarData extends WorldSavedData {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         ListNBT playerList = new ListNBT();
         ListNBT recipeList = new ListNBT();
 

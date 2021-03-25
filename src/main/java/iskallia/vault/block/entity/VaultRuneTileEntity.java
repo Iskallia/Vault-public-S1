@@ -23,15 +23,15 @@ public class VaultRuneTileEntity extends TileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         nbt.putString("BelongsTo", belongsTo);
-        return super.write(nbt);
+        return super.save(nbt);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void load(BlockState state, CompoundNBT nbt) {
         this.belongsTo = nbt.getString("BelongsTo");
-        super.read(state, nbt);
+        super.load(state, nbt);
     }
 
     @Override
@@ -50,12 +50,12 @@ public class VaultRuneTileEntity extends TileEntity {
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(pos, 1, getUpdateTag());
+        return new SUpdateTileEntityPacket(worldPosition, 1, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        CompoundNBT tag = pkt.getNbtCompound();
+        CompoundNBT tag = pkt.getTag();
         handleUpdateTag(getBlockState(), tag);
     }
 

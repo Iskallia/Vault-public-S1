@@ -107,7 +107,7 @@ public class LootStatueTileEntity extends TileEntity implements ITickableTileEnt
 
     @Override
     public void tick() {
-        if (world.isRemote) return;
+        if (level.isClientSide) return;
         if (currentTick++ == getModifiedInterval()) {
             currentTick = 0;
 
@@ -131,7 +131,7 @@ public class LootStatueTileEntity extends TileEntity implements ITickableTileEnt
     }
 
     public ItemStack poopItem(ItemStack stack, boolean simulate) {
-        TileEntity tileEntity = world.getTileEntity(getPos().down());
+        TileEntity tileEntity = level.getBlockEntity(getBlockPos().below());
         if (tileEntity == null) return stack;
 
         LazyOptional<IItemHandler> handler = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP);
@@ -144,14 +144,14 @@ public class LootStatueTileEntity extends TileEntity implements ITickableTileEnt
 
 
     public void sendUpdates() {
-        this.world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
-        this.world.notifyNeighborsOfStateChange(pos, this.getBlockState().getBlock());
-        markDirty();
+        this.level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        this.level.updateNeighborsAt(worldPosition, this.getBlockState().getBlock());
+        setChanged();
     }
 
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundNBT save(CompoundNBT nbt) {
         String nickname = skin.getLatestNickname();
         nbt.putString("PlayerNickname", nickname == null ? "" : nickname);
         if (getInterval() == 0) migrate(this.getBlockState());
@@ -163,24 +163,24 @@ public class LootStatueTileEntity extends TileEntity implements ITickableTileEnt
         nbt.putBoolean("HasCrown", hasCrown());
         nbt.putInt("ChipCount", chipCount);
 
-        return super.write(nbt);
+        return super.save(nbt);
     }
 
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void load(BlockState state, CompoundNBT nbt) {
         String nickname = nbt.getString("PlayerNickname");
         skin.updateSkin(nickname);
         if (!nbt.contains("Interval")) migrate(state);
 
-        setLootItem(ItemStack.read(nbt.getCompound("LootItem")));
+        setLootItem(ItemStack.of(nbt.getCompound("LootItem")));
         setCurrentTick(nbt.getInt("CurrentTick"));
         setInterval(nbt.getInt("Interval"));
         setStatueType(StatueType.values()[nbt.getInt("StatueType")]);
         hasCrown = nbt.getBoolean("HasCrown");
         chipCount = nbt.getInt("ChipCount");
 
-        super.read(state, nbt);
+        super.load(state, nbt);
     }
 
     private void migrate(BlockState state) {
@@ -210,18 +210,18 @@ public class LootStatueTileEntity extends TileEntity implements ITickableTileEnt
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-        read(state, tag);
+        load(state, tag);
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(pos, 1, getUpdateTag());
+        return new SUpdateTileEntityPacket(worldPosition, 1, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        CompoundNBT nbt = pkt.getNbtCompound();
+        CompoundNBT nbt = pkt.getTag();
         handleUpdateTag(getBlockState(), nbt);
     }
 }

@@ -9,7 +9,7 @@ buildscript {
         maven { url = 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.0.+'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
@@ -25,10 +25,10 @@ mixin {
 }
 
 
-def mc_version = "1.16.3"
+def mc_version = "1.16.5"
 version = "${mc_version}-1"
 
-version = '1.0.1-public'
+version = '1.1.0-public'
 group = 'iskallia.vault' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 
 archivesBaseName = 'the_vault'
@@ -36,7 +36,7 @@ archivesBaseName = 'the_vault'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200916-1.16.2'
+    mappings channel: 'official', version: '1.16.5'
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -72,7 +72,7 @@ allprojects {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${mc_version}-34.1.42"
+    minecraft "net.minecraftforge:forge:${mc_version}-36.1.2"
     annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 }
 

@@ -23,46 +23,48 @@ import net.minecraft.world.server.ServerWorld;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class ItemKnowledgeStar extends Item {
 
     public ItemKnowledgeStar(ItemGroup group) {
         super(new Properties()
-                .group(group)
-                .maxStackSize(64));
+                .tab(group)
+                .stacksTo(64));
 
         this.setRegistryName(Vault.id("knowledge_star"));
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack heldItemStack = player.getHeldItem(hand);
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack heldItemStack = player.getItemInHand(hand);
 
-        world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(),
-                SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.NEUTRAL,
+        world.playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.PLAYER_LEVELUP, SoundCategory.NEUTRAL,
                 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             PlayerVaultStatsData statsData = PlayerVaultStatsData.get((ServerWorld) world);
             statsData.addKnowledgePoints(((ServerPlayerEntity) player), 1);
         }
 
-        player.addStat(Stats.ITEM_USED.get(this));
-        if (!player.abilities.isCreativeMode) {
+        player.awardStat(Stats.ITEM_USED.get(this));
+        if (!player.abilities.instabuild) {
             heldItemStack.shrink(1);
         }
 
-        return ActionResult.func_233538_a_(heldItemStack, world.isRemote());
+        return ActionResult.sidedSuccess(heldItemStack, world.isClientSide());
     }
 
     @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
-        return ((IFormattableTextComponent) super.getDisplayName(stack))
-                .setStyle(Style.EMPTY.setColor(Color.fromInt(0x00_40d7b1)));
+    public ITextComponent getName(ItemStack stack) {
+        return ((IFormattableTextComponent) super.getName(stack))
+                .setStyle(Style.EMPTY.withColor(Color.fromRgb(0x00_40d7b1)));
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
 }

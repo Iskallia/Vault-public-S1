@@ -33,24 +33,26 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class VaultCrateBlock extends Block {
 
 
     public VaultCrateBlock() {
-        super(Properties.create(Material.IRON, MaterialColor.IRON).hardnessAndResistance(2.0F, 3600000.0F).sound(SoundType.METAL));
+        super(Properties.of(Material.METAL, MaterialColor.METAL).strength(2.0F, 3600000.0F).sound(SoundType.METAL));
     }
 
     public static ItemStack getCrateWithLoot(VaultCrateBlock crateType, NonNullList<ItemStack> items) {
         if(items.size() > 54) {
             Vault.LOGGER.error("Attempted to get a crate with more than 54 items. Check crate loot table.");
-            items = NonNullList.from(ItemStack.EMPTY, items.stream().limit(54).toArray(ItemStack[]::new));
+            items = NonNullList.of(ItemStack.EMPTY, items.stream().limit(54).toArray(ItemStack[]::new));
         }
 
         ItemStack crate = new ItemStack(crateType);
         CompoundNBT nbt = new CompoundNBT();
         ItemStackHelper.saveAllItems(nbt, items);
         if (!nbt.isEmpty()) {
-            crate.setTagInfo("BlockEntityTag", nbt);
+            crate.addTagElement("BlockEntityTag", nbt);
         }
         return crate;
     }
@@ -67,9 +69,9 @@ public class VaultCrateBlock extends Block {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (!world.isClientSide) {
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if (tileEntity instanceof VaultCrateTileEntity) {
                 INamedContainerProvider containerProvider = new INamedContainerProvider() {
                     @Override
@@ -82,7 +84,7 @@ public class VaultCrateBlock extends Block {
                         return new VaultCrateContainer(i, world, pos, playerInventory, playerEntity);
                     }
                 };
-                NetworkHooks.openGui((ServerPlayerEntity) player, containerProvider, tileEntity.getPos());
+                NetworkHooks.openGui((ServerPlayerEntity) player, containerProvider, tileEntity.getBlockPos());
             } else {
                 throw new IllegalStateException("Our named container provider is missing!");
             }
@@ -90,27 +92,27 @@ public class VaultCrateBlock extends Block {
         return ActionResultType.SUCCESS;
     }
 
-    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-        if (worldIn.isRemote) super.onBlockHarvested(worldIn, pos, state, player);
+    public void playerWillDestroy(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
+        if (worldIn.isClientSide) super.playerWillDestroy(worldIn, pos, state, player);
 
         VaultCrateBlock block = getBlockVariant();
-        TileEntity tileentity = worldIn.getTileEntity(pos);
+        TileEntity tileentity = worldIn.getBlockEntity(pos);
         if (tileentity instanceof VaultCrateTileEntity) {
             VaultCrateTileEntity crate = (VaultCrateTileEntity) tileentity;
 
             ItemStack itemstack = new ItemStack(block);
             CompoundNBT compoundnbt = crate.saveToNbt();
             if (!compoundnbt.isEmpty()) {
-                itemstack.setTagInfo("BlockEntityTag", compoundnbt);
+                itemstack.addTagElement("BlockEntityTag", compoundnbt);
             }
 
             ItemEntity itementity = new ItemEntity(worldIn, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, itemstack);
-            itementity.setDefaultPickupDelay();
-            worldIn.addEntity(itementity);
+            itementity.setDefaultPickUpDelay();
+            worldIn.addFreshEntity(itementity);
 
         }
 
-        super.onBlockHarvested(worldIn, pos, state, player);
+        super.playerWillDestroy(worldIn, pos, state, player);
     }
 
     private VaultCrateBlock getBlockVariant() {
@@ -119,10 +121,10 @@ public class VaultCrateBlock extends Block {
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        if (worldIn.isRemote) return;
+    public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        if (worldIn.isClientSide) return;
 
-        CompoundNBT compoundnbt = stack.getChildTag("BlockEntityTag");
+        CompoundNBT compoundnbt = stack.getTagElement("BlockEntityTag");
         if (compoundnbt == null) return;
 
         VaultCrateTileEntity crate = getCrateTileEntity(worldIn, pos);
@@ -131,14 +133,14 @@ public class VaultCrateBlock extends Block {
         crate.loadFromNBT(compoundnbt);
 
 
-        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+        super.setPlacedBy(worldIn, pos, state, placer, stack);
     }
 
     private VaultCrateTileEntity getCrateTileEntity(World worldIn, BlockPos pos) {
-        TileEntity te = worldIn.getTileEntity(pos);
+        TileEntity te = worldIn.getBlockEntity(pos);
         if (te == null || !(te instanceof VaultCrateTileEntity))
             return null;
-        VaultCrateTileEntity crate = (VaultCrateTileEntity) worldIn.getTileEntity(pos);
+        VaultCrateTileEntity crate = (VaultCrateTileEntity) worldIn.getBlockEntity(pos);
         return crate;
     }
 }

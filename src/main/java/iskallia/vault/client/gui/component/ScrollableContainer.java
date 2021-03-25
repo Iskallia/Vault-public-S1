@@ -111,7 +111,7 @@ public class ScrollableContainer extends AbstractGui {
         Rectangle renderableBounds = getRenderableBounds();
         Rectangle scrollBounds = getScrollBounds();
 
-        textureManager.bindTexture(SkillTreeScreen.UI_RESOURCE);
+        textureManager.bind(SkillTreeScreen.UI_RESOURCE);
         UIHelper.renderContainerBorder(this, matrixStack,
                 renderableBounds,
                 14, 44,
@@ -122,18 +122,18 @@ public class ScrollableContainer extends AbstractGui {
                 (ms) -> fill(ms, renderableBounds.x0 + 1, renderableBounds.y0 + 1,
                         renderableBounds.x1 - 1, renderableBounds.y1 - 1, 0xFF_8B8B8B),
                 (ms) -> {
-                    ms.push();
+                    ms.pushPose();
                     ms.translate(renderableBounds.x0 + 1, renderableBounds.y0 - yOffset + 1, 0);
                     renderer.render(matrixStack, mouseX, mouseY, partialTicks);
-                    ms.pop();
+                    ms.popPose();
                 });
 
-        textureManager.bindTexture(SkillTreeScreen.UI_RESOURCE);
-        matrixStack.push();
+        textureManager.bind(SkillTreeScreen.UI_RESOURCE);
+        matrixStack.pushPose();
         matrixStack.translate(scrollBounds.x0 + 2, scrollBounds.y0, 0);
         matrixStack.scale(1, scrollBounds.getHeight(), 1);
         blit(matrixStack, 0, 0, 1, 146, 6, 1);
-        matrixStack.pop();
+        matrixStack.popPose();
         blit(matrixStack, scrollBounds.x0 + 2, scrollBounds.y0, 1, 145, 6, 1);
         blit(matrixStack, scrollBounds.x0 + 2, scrollBounds.y1 - 1, 1, 251, 6, 1);
 
@@ -144,7 +144,7 @@ public class ScrollableContainer extends AbstractGui {
         if (viewportRatio <= 1) {
             int scrollU = scrolling ? 28 : scrollBounds.contains(mouseX, mouseY) ? 18 : 8;
 
-            matrixStack.push();
+            matrixStack.pushPose();
             matrixStack.translate(0, (scrollBounds.getHeight() - scrollHeight) * scrollPercentage, 0);
             blit(matrixStack, scrollBounds.x0 + 1, scrollBounds.y0,
                     scrollU, 104,
@@ -155,7 +155,7 @@ public class ScrollableContainer extends AbstractGui {
             blit(matrixStack, scrollBounds.x0 + 1, scrollBounds.y0 + scrollHeight,
                     scrollU, 253,
                     8, 2);
-            matrixStack.pop();
+            matrixStack.popPose();
         }
     }
 

@@ -328,7 +328,7 @@ public class AbilityTree implements INBTSerializable<CompoundNBT> {
         NetcodeUtils.runIfPresent(server, this.uuid, player -> {
             ModNetwork.CHANNEL.sendTo(
                     new AbilityKnownOnesMessage(this),
-                    player.connection.netManager,
+                    player.connection.connection,
                     NetworkDirection.PLAY_TO_CLIENT
             );
         });
@@ -338,7 +338,7 @@ public class AbilityTree implements INBTSerializable<CompoundNBT> {
         NetcodeUtils.runIfPresent(server, this.uuid, player -> {
             ModNetwork.CHANNEL.sendTo(
                     new AbilityFocusMessage(this.focusedAbilityIndex),
-                    player.connection.netManager,
+                    player.connection.connection,
                     NetworkDirection.PLAY_TO_CLIENT
             );
         });
@@ -363,7 +363,7 @@ public class AbilityTree implements INBTSerializable<CompoundNBT> {
         NetcodeUtils.runIfPresent(server, this.uuid, player -> {
             ModNetwork.CHANNEL.sendTo(
                     new AbilityActivityMessage(abilityIndex, cooldown, activeFlag),
-                    player.connection.netManager,
+                    player.connection.connection,
                     NetworkDirection.PLAY_TO_CLIENT
             );
         });

@@ -22,15 +22,15 @@ public class VaultGuardianEntity extends PiglinBruteEntity {
     }
 
     @Override
-    protected void dropLoot(DamageSource source, boolean attackedRecently) {
-        if (getRNG().nextInt(ModConfigs.VAULT_GENERAL.getObeliskDropChance()) == 0)
-            this.entityDropItem(new ItemStack(ModItems.OBELISK_INSCRIPTION));
+    protected void dropFromLootTable(DamageSource source, boolean attackedRecently) {
+        if (getRandom().nextInt(ModConfigs.VAULT_GENERAL.getObeliskDropChance()) == 0)
+            this.spawnAtLocation(new ItemStack(ModItems.OBELISK_INSCRIPTION));
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
-        if (!(source.getTrueSource() instanceof PlayerEntity)
-                && !(source.getTrueSource() instanceof EternalEntity)
+    public boolean hurt(DamageSource source, float amount) {
+        if (!(source.getEntity() instanceof PlayerEntity)
+                && !(source.getEntity() instanceof EternalEntity)
                 && source != DamageSource.OUT_OF_WORLD) {
             return false;
         }
@@ -41,7 +41,7 @@ public class VaultGuardianEntity extends PiglinBruteEntity {
 
         playHurtSound(source);
 
-        return super.attackEntityFrom(source, amount);
+        return super.hurt(source, amount);
     }
 
     @Override
@@ -49,19 +49,19 @@ public class VaultGuardianEntity extends PiglinBruteEntity {
         return super.isInvulnerableTo(source) || source.isProjectile();
     }
 
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
-        this.func_242340_t(true);
-        this.field_242334_c = compound.getInt("TimeInOverworld");
+    public void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
+        this.setImmuneToZombification(true);
+        this.timeInOverworld = compound.getInt("TimeInOverworld");
     }
 
     @Override
-    public void applyKnockback(float strength, double ratioX, double ratioZ) {
+    public void knockback(float strength, double ratioX, double ratioZ) {
         // Nope! No knockback allowed bruhhhh
     }
 
     @Override
-    protected float getSpeedFactor() {
+    protected float getBlockSpeedFactor() {
         return 0.75f;
     }
 

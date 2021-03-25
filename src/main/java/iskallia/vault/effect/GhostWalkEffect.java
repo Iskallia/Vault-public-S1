@@ -30,36 +30,36 @@ public class GhostWalkEffect extends Effect {
     }
 
     @Override
-    public boolean isReady(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return true;
     }
 
     @Override
-    public void applyAttributesModifiersToEntity(LivingEntity entityLivingBaseIn, AttributeModifierManager attributeMapIn, int amplifier) {
+    public void addAttributeModifiers(LivingEntity entityLivingBaseIn, AttributeModifierManager attributeMapIn, int amplifier) {
         ModifiableAttributeInstance movementSpeed = entityLivingBaseIn.getAttribute(Attributes.MOVEMENT_SPEED);
         initializeAttributeModifiers();
         if (movementSpeed != null) {
             AttributeModifier attributeModifier = this.attributeModifiers[MathHelper.clamp(amplifier + 1, 0, this.attributeModifiers.length - 1)];
-            movementSpeed.applyNonPersistentModifier(attributeModifier);
+            movementSpeed.addTransientModifier(attributeModifier);
         }
 
         entityLivingBaseIn.setInvulnerable(true);
 
-        super.applyAttributesModifiersToEntity(entityLivingBaseIn, attributeMapIn, amplifier);
+        super.addAttributeModifiers(entityLivingBaseIn, attributeMapIn, amplifier);
     }
 
     @Override
-    public void removeAttributesModifiersFromEntity(LivingEntity entityLivingBaseIn, AttributeModifierManager attributeMapIn, int amplifier) {
+    public void removeAttributeModifiers(LivingEntity entityLivingBaseIn, AttributeModifierManager attributeMapIn, int amplifier) {
         ModifiableAttributeInstance movementSpeed = entityLivingBaseIn.getAttribute(Attributes.MOVEMENT_SPEED);
 
         if (movementSpeed != null) {
             AttributeModifier attributeModifier = this.attributeModifiers[MathHelper.clamp(amplifier + 1, 0, this.attributeModifiers.length - 1)];
-            movementSpeed.removeModifier(attributeModifier.getID());
+            movementSpeed.removeModifier(attributeModifier.getId());
         }
 
         entityLivingBaseIn.setInvulnerable(false);
 
-        super.removeAttributesModifiersFromEntity(entityLivingBaseIn, attributeMapIn, amplifier);
+        super.removeAttributeModifiers(entityLivingBaseIn, attributeMapIn, amplifier);
     }
 
 }

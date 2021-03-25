@@ -20,16 +20,18 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class GlobalTraderBlockItem extends BlockItem {
 
     public GlobalTraderBlockItem(Block block) {
         super(block, new Properties()
-                .group(ModItems.VAULT_MOD_GROUP)
-                .maxStackSize(64));
+                .tab(ModItems.VAULT_MOD_GROUP)
+                .stacksTo(64));
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         CompoundNBT nbt = stack.getTag();
 
         if (nbt != null) {
@@ -40,7 +42,7 @@ public class GlobalTraderBlockItem extends BlockItem {
                 try {
                     core = NBTSerializer.deserialize(TraderCore.class, (CompoundNBT) tag);
                     StringTextComponent text = new StringTextComponent(" Vendor: " + core.getName());
-                    text.setStyle(Style.EMPTY.setColor(Color.fromInt(0xFF_ff9966)));
+                    text.setStyle(Style.EMPTY.withColor(Color.fromRgb(0xFF_ff9966)));
                     tooltip.add(text);
                     return;
                 } catch (Exception e) {
@@ -49,6 +51,6 @@ public class GlobalTraderBlockItem extends BlockItem {
             }
         }
 
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 }

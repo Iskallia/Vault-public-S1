@@ -30,7 +30,7 @@ public class GiftBombOverlay {
 
     @OnlyIn(Dist.CLIENT)
     public static void pop() {
-        Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(
+        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(
                 ModSounds.CONFETTI_SFX,
                 1.0F
         ));
@@ -47,8 +47,8 @@ public class GiftBombOverlay {
         Minecraft minecraft = Minecraft.getInstance();
         MatrixStack matrixStack = event.getMatrixStack();
 
-        int width = minecraft.getMainWindow().getScaledWidth();
-        int height = minecraft.getMainWindow().getScaledHeight();
+        int width = minecraft.getWindow().getGuiScaledWidth();
+        int height = minecraft.getWindow().getGuiScaledHeight();
 
         int midX = width / 2;
         int midY = height / 2;

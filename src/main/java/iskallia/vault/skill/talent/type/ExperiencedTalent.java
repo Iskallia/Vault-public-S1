@@ -28,13 +28,13 @@ public class ExperiencedTalent extends PlayerTalent {
     public static void onOrbPickup(PlayerXpEvent.PickupXp event) {
         if (!(event.getPlayer() instanceof ServerPlayerEntity)) return;
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
-        TalentTree abilities = PlayerTalentsData.get(player.getServerWorld()).getTalents(player);
+        TalentTree abilities = PlayerTalentsData.get(player.getLevel()).getTalents(player);
 
         for (TalentNode<?> node : abilities.getNodes()) {
             if (!(node.getTalent() instanceof ExperiencedTalent)) continue;
             ExperiencedTalent experienced = ((ExperiencedTalent) node.getTalent());
             ExperienceOrbEntity orb = event.getOrb();
-            orb.xpValue *= (1 + experienced.getIncreasedExpPercentage());
+            orb.value *= (1 + experienced.getIncreasedExpPercentage());
         }
     }
 

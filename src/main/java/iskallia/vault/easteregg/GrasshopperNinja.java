@@ -12,10 +12,10 @@ import net.minecraft.inventory.EquipmentSlotType;
 public class GrasshopperNinja {
 
     public static void achieve(ServerPlayerEntity playerEntity) {
-        Advancement advancement = playerEntity.getServer().getAdvancementManager()
+        Advancement advancement = playerEntity.getServer().getAdvancements()
                 .getAdvancement(Vault.id("grasshopper_ninja"));
         playerEntity.getAdvancements()
-                .grantCriterion(advancement, "hopped");
+                .award(advancement, "hopped");
     }
 
     public static boolean isGrasshopperShape(PlayerEntity playerEntity) {

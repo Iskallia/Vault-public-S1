@@ -28,18 +28,18 @@ import java.util.List;
 
 public class VaultArtifactBlock extends Block {
 
-    public static final VoxelShape EAST_SHAPE = Block.makeCuboidShape(15.75, 0, 0, 16, 16, 16);
-    public static final VoxelShape NORTH_SHAPE = Block.makeCuboidShape(0, 0, 0, 16, 16, 0.25);
-    public static final VoxelShape WEST_SHAPE = Block.makeCuboidShape(0, 0, 0, 0.25, 16, 16);
-    public static final VoxelShape SOUTH_SHAPE = Block.makeCuboidShape(0, 0, 15.75, 16, 16, 16);
+    public static final VoxelShape EAST_SHAPE = Block.box(15.75, 0, 0, 16, 16, 16);
+    public static final VoxelShape NORTH_SHAPE = Block.box(0, 0, 0, 16, 16, 0.25);
+    public static final VoxelShape WEST_SHAPE = Block.box(0, 0, 0, 0.25, 16, 16);
+    public static final VoxelShape SOUTH_SHAPE = Block.box(0, 0, 15.75, 16, 16, 16);
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     protected int order;
 
     public VaultArtifactBlock(int order) {
-        super(AbstractBlock.Properties.create(Material.CLAY, MaterialColor.WOOD).sound(SoundType.CLOTH).notSolid());
-        this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.SOUTH));
+        super(AbstractBlock.Properties.of(Material.CLAY, MaterialColor.WOOD).sound(SoundType.WOOL).noOcclusion());
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.SOUTH));
         this.order = order;
     }
 
@@ -49,7 +49,7 @@ public class VaultArtifactBlock extends Block {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        switch (state.get(FACING)) {
+        switch (state.getValue(FACING)) {
             case EAST:
                 return EAST_SHAPE;
             case NORTH:
@@ -63,11 +63,11 @@ public class VaultArtifactBlock extends Block {
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing());
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection());
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 

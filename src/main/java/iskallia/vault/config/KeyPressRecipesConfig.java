@@ -64,7 +64,7 @@ public class KeyPressRecipesConfig extends Config {
             ItemStack resultStack = new ItemStack(item, recipe.RESULT_ITEM.AMOUNT);
 
             if (recipe.RESULT_ITEM.NBT != null && !recipe.RESULT_ITEM.NBT.isEmpty()) {
-                resultStack.setTag(JsonToNBT.getTagFromJson(recipe.RESULT_ITEM.NBT));
+                resultStack.setTag(JsonToNBT.parseTag(recipe.RESULT_ITEM.NBT));
             }
 
             return resultStack;

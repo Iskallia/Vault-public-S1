@@ -48,9 +48,9 @@ public class FinalDummyEntity extends VaultGuardianEntity {
 
 	@Override
 	public void tick() {
-		if(!this.world.isRemote) {
+		if(!this.level.isClientSide) {
 			this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
-			this.setAttackTarget(this.world.getClosestPlayer(this, 96.0D));
+			this.setTarget(this.level.getNearestPlayer(this, 96.0D));
 		}
 
 		super.tick();
@@ -61,23 +61,23 @@ public class FinalDummyEntity extends VaultGuardianEntity {
 		sizeField.setAccessible(true);
 
 		try {
-			sizeField.set(this, this.getSize(Pose.STANDING).scale(this.sizeMultiplier = m));
+			sizeField.set(this, this.getDimensions(Pose.STANDING).scale(this.sizeMultiplier = m));
 		} catch(IllegalAccessException e) {
 			e.printStackTrace();
 		}
 
-		this.recalculateSize();
+		this.refreshDimensions();
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
+	public void addAdditionalSaveData(CompoundNBT compound) {
+		super.addAdditionalSaveData(compound);
 		compound.putFloat("SizeMultiplier", this.sizeMultiplier);
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT compound) {
-		super.readAdditional(compound);
+	public void readAdditionalSaveData(CompoundNBT compound) {
+		super.readAdditionalSaveData(compound);
 
 		if(compound.contains("SizeMultiplier", Constants.NBT.TAG_FLOAT)) {
 			this.changeSize(compound.getFloat("SizeMultiplier"));
@@ -85,19 +85,19 @@ public class FinalDummyEntity extends VaultGuardianEntity {
 	}
 
 	@Override
-	public void addTrackingPlayer(ServerPlayerEntity player) {
-		super.addTrackingPlayer(player);
+	public void startSeenByPlayer(ServerPlayerEntity player) {
+		super.startSeenByPlayer(player);
 		this.bossInfo.addPlayer(player);
 	}
 
 	@Override
-	public void removeTrackingPlayer(ServerPlayerEntity player) {
-		super.removeTrackingPlayer(player);
+	public void stopSeenByPlayer(ServerPlayerEntity player) {
+		super.stopSeenByPlayer(player);
 		this.bossInfo.removePlayer(player);
 	}
 
 	@Override
-	public EntitySize getSize(Pose pose) {
+	public EntitySize getDimensions(Pose pose) {
 		Field sizeField = Entity.class.getDeclaredFields()[79]; //Entity.size
 		sizeField.setAccessible(true);
 
@@ -105,7 +105,7 @@ public class FinalDummyEntity extends VaultGuardianEntity {
 			return (EntitySize)sizeField.get(this);
 		} catch(IllegalAccessException e) {
 			e.printStackTrace();
-			return super.getSize(pose);
+			return super.getDimensions(pose);
 		}
 	}
 
@@ -115,14 +115,14 @@ public class FinalDummyEntity extends VaultGuardianEntity {
 	}
 
 	@Override
-	public void onDeath(DamageSource cause) {
-		super.onDeath(cause);
+	public void die(DamageSource cause) {
+		super.die(cause);
 
-		if(!this.world.isRemote) {
-			VaultRaid raid = VaultRaidData.get((ServerWorld)this.world).getAt(this.getPosition());
+		if(!this.level.isClientSide) {
+			VaultRaid raid = VaultRaidData.get((ServerWorld)this.level).getAt(this.blockPosition());
 
 			ModConfigs.FINAL_VAULT_GENERAL.bossNames.forEach(name -> {
-				FinalBossEntity boss = ModEntities.FINAL_BOSS.create(this.world);
+				FinalBossEntity boss = ModEntities.FINAL_BOSS.create(this.level);
 				boss.setCustomName(new StringTextComponent(name));
 
 				if(raid != null) {
@@ -131,47 +131,47 @@ public class FinalDummyEntity extends VaultGuardianEntity {
 				}
 
 				boss.changeSize(1.0F);
-				boss.setLocationAndAngles(this.getPosX() + 0.5D, this.getPosY() + 0.2D, this.getPosZ() + 0.5D, 0.0F, 0.0F);
-				((ServerWorld)this.world).summonEntity(boss);
+				boss.moveTo(this.getX() + 0.5D, this.getY() + 0.2D, this.getZ() + 0.5D, 0.0F, 0.0F);
+				((ServerWorld)this.level).addWithUUID(boss);
 			});
 		}
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if(!(source.getTrueSource() instanceof PlayerEntity)
-				|| !(source.getImmediateSource() instanceof PlayerEntity)) {
+	public boolean hurt(DamageSource source, float amount) {
+		if(!(source.getEntity() instanceof PlayerEntity)
+				|| !(source.getDirectEntity() instanceof PlayerEntity)) {
 			if(source != DamageSource.OUT_OF_WORLD) {
 				return false;
 			}
 		}
 
-		this.playSound(SoundEvents.ENTITY_IRON_GOLEM_DAMAGE, 1.0F, 1.0F);
-		return super.attackEntityFrom(source, this.getMaxHealth() / 50.0F);
+		this.playSound(SoundEvents.IRON_GOLEM_DAMAGE, 1.0F, 1.0F);
+		return super.hurt(source, this.getMaxHealth() / 50.0F);
 	}
 
 	@Override
-	public boolean isImmuneToFire() {
+	public boolean fireImmune() {
 		return true;
 	}
 
 	@Override
-	public boolean isImmuneToExplosions() {
+	public boolean ignoreExplosion() {
 		return true;
 	}
 
 	@Override
-	public boolean canRenderOnFire() {
+	public boolean displayFireAnimation() {
 		return false;
 	}
 
-	public static AttributeModifierMap.MutableAttribute getAttributes() {
-		return MonsterEntity.func_234295_eP_()
-				.createMutableAttribute(Attributes.FOLLOW_RANGE, 100.0D)
-				.createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.15F)
-				.createMutableAttribute(Attributes.ATTACK_DAMAGE, 3.0D)
-				.createMutableAttribute(Attributes.ARMOR, 2.0D)
-				.createMutableAttribute(Attributes.ZOMBIE_SPAWN_REINFORCEMENTS);
+	public static AttributeModifierMap.MutableAttribute getCustomAttributes() {
+		return MonsterEntity.createMonsterAttributes()
+				.add(Attributes.FOLLOW_RANGE, 100.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.15F)
+				.add(Attributes.ATTACK_DAMAGE, 3.0D)
+				.add(Attributes.ARMOR, 2.0D)
+				.add(Attributes.SPAWN_REINFORCEMENTS_CHANCE);
 	}
 
 }

@@ -30,8 +30,8 @@ public class StepTalent extends PlayerTalent {
 	@Override
 	public void onAdded(PlayerEntity player) {
 		//System.out.println(player.stepHeisght);
-		player.stepHeight += this.stepHeightAddend;
-		set((ServerPlayerEntity)player, player.stepHeight + this.stepHeightAddend);
+		player.maxUpStep += this.stepHeightAddend;
+		set((ServerPlayerEntity)player, player.maxUpStep + this.stepHeightAddend);
 		//System.out.println(player.stepHeight);
 	}
 
@@ -42,16 +42,16 @@ public class StepTalent extends PlayerTalent {
 
 	@Override
 	public void onRemoved(PlayerEntity player) {
-		set((ServerPlayerEntity)player, player.stepHeight - this.stepHeightAddend);
+		set((ServerPlayerEntity)player, player.maxUpStep - this.stepHeightAddend);
 	}
 
 	@SubscribeEvent
 	public static void onEntityCreated(EntityJoinWorldEvent event) {
-		if(event.getEntity().world.isRemote)return;
+		if(event.getEntity().level.isClientSide)return;
 		if(!(event.getEntity() instanceof PlayerEntity))return;
 
 		ServerPlayerEntity player = (ServerPlayerEntity)event.getEntity();
-		TalentTree abilities = PlayerTalentsData.get(player.getServerWorld()).getTalents(player);
+		TalentTree abilities = PlayerTalentsData.get(player.getLevel()).getTalents(player);
 		float totalStepHeight = 0.0F;
 
 		for(TalentNode<?> node : abilities.getNodes()) {
@@ -61,13 +61,13 @@ public class StepTalent extends PlayerTalent {
 		}
 
 		if(totalStepHeight != 0.0F) {
-			set(player, player.stepHeight + totalStepHeight);
+			set(player, player.maxUpStep + totalStepHeight);
 		}
 	}
 
 	public static void set(ServerPlayerEntity player, float stepHeight) {
-		ModNetwork.CHANNEL.sendTo(new StepHeightMessage(stepHeight), player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
-		player.stepHeight = stepHeight;
+		ModNetwork.CHANNEL.sendTo(new StepHeightMessage(stepHeight), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+		player.maxUpStep = stepHeight;
 	}
 
 }

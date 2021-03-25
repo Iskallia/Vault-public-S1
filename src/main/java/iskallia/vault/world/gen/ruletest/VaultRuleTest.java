@@ -18,7 +18,7 @@ public class VaultRuleTest extends RuleTest {
 
 	@Override
 	public boolean test(BlockState state, Random random) {
-		return state.isSolid() && state.getMaterial() == Material.ROCK;
+		return state.canOcclude() && state.getMaterial() == Material.STONE;
 	}
 
 	@Override

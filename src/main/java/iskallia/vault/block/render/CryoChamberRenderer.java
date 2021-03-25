@@ -52,7 +52,7 @@ public class CryoChamberRenderer extends TileEntityRenderer<CryoChamberTileEntit
     }
 
     public IVertexBuilder getPlayerVertexBuilder(ResourceLocation skinTexture, IRenderTypeBuffer buffer) {
-        RenderType renderType = PLAYER_MODEL.getRenderType(skinTexture);
+        RenderType renderType = PLAYER_MODEL.renderType(skinTexture);
         return buffer.getBuffer(renderType);
     }
 
@@ -87,74 +87,74 @@ public class CryoChamberRenderer extends TileEntityRenderer<CryoChamberTileEntit
 
         renderLiquid(matrixStack, tileEntity, buffer, partialTicks);
 
-        if (mc.objectMouseOver != null && mc.objectMouseOver.getType() == RayTraceResult.Type.BLOCK
+        if (mc.hitResult != null && mc.hitResult.getType() == RayTraceResult.Type.BLOCK
                 && tileEntity.getEternal() != null && tileEntity.getEternal().getName() != null) {
-            BlockRayTraceResult result = (BlockRayTraceResult) mc.objectMouseOver;
+            BlockRayTraceResult result = (BlockRayTraceResult) mc.hitResult;
 
-            if (tileEntity.getPos().equals(result.getPos()) || tileEntity.getPos().up().equals(result.getPos())) {
+            if (tileEntity.getBlockPos().equals(result.getBlockPos()) || tileEntity.getBlockPos().above().equals(result.getBlockPos())) {
                 renderLabel(matrixStack, buffer, combinedLight, new StringTextComponent(tileEntity.getEternal().getName()),
-                        0xFF_FFFFFF, tileEntity.getWorld().getBlockState(result.getPos()).get(CryoChamberBlock.HALF) == DoubleBlockHalf.UPPER);
+                        0xFF_FFFFFF, tileEntity.getLevel().getBlockState(result.getBlockPos()).getValue(CryoChamberBlock.HALF) == DoubleBlockHalf.UPPER);
             }
         }
     }
 
     private void renderLabel(MatrixStack matrixStack, IRenderTypeBuffer buffer, int lightLevel,
                              StringTextComponent text, int color, boolean topBlock) {
-        FontRenderer fontRenderer = mc.fontRenderer;
+        FontRenderer fontRenderer = mc.font;
 
         //render amount required for the item
-        matrixStack.push();
+        matrixStack.pushPose();
         float scale = 0.02f;
         int opacity = (int) (.4f * 255.0F) << 24;
-        float offset = (float) (-fontRenderer.getStringPropertyWidth(text) / 2);
-        Matrix4f matrix4f = matrixStack.getLast().getMatrix();
+        float offset = (float) (-fontRenderer.width(text) / 2);
+        Matrix4f matrix4f = matrixStack.last().pose();
 
         matrixStack.translate(0.5f, 2.3f, 0.5f);
         matrixStack.scale(scale, scale, scale);
-        matrixStack.rotate(mc.getRenderManager().getCameraOrientation()); // face the camera
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(180.0F)); // flip vertical
+        matrixStack.mulPose(mc.getEntityRenderDispatcher().cameraOrientation()); // face the camera
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F)); // flip vertical
 
-        fontRenderer.func_243247_a(text, offset, 0, color, false, matrix4f, buffer, true, opacity, lightLevel);
-        fontRenderer.func_243247_a(text, offset, 0, -1, false, matrix4f, buffer, false, 0, lightLevel);
-        matrixStack.pop();
+        fontRenderer.drawInBatch(text, offset, 0, color, false, matrix4f, buffer, true, opacity, lightLevel);
+        fontRenderer.drawInBatch(text, offset, 0, -1, false, matrix4f, buffer, false, 0, lightLevel);
+        matrixStack.popPose();
     }
 
     public void renderPlayerModel(MatrixStack matrixStack, CryoChamberTileEntity tileEntity, float scale, float alpha, IVertexBuilder vertexBuilder, int combinedLight, int combinedOverlay) {
         BlockState blockState = tileEntity.getBlockState();
-        Direction direction = blockState.get(PlayerStatueBlock.FACING);
+        Direction direction = blockState.getValue(PlayerStatueBlock.FACING);
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0.5, 1.3, 0.5);
         matrixStack.scale(scale, scale, scale);
-        matrixStack.rotate(Vector3f.YN.rotationDegrees(direction.getHorizontalAngle() + 180));
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(180));
-        PLAYER_MODEL.bipedBody.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
-        PLAYER_MODEL.bipedLeftLeg.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
-        PLAYER_MODEL.bipedRightLeg.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
-        PLAYER_MODEL.bipedLeftArm.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
-        PLAYER_MODEL.bipedRightArm.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
+        matrixStack.mulPose(Vector3f.YN.rotationDegrees(direction.toYRot() + 180));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
+        PLAYER_MODEL.body.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
+        PLAYER_MODEL.leftLeg.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
+        PLAYER_MODEL.rightLeg.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
+        PLAYER_MODEL.leftArm.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
+        PLAYER_MODEL.rightArm.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
 
-        PLAYER_MODEL.bipedBodyWear.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
-        PLAYER_MODEL.bipedLeftLegwear.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
-        PLAYER_MODEL.bipedRightLegwear.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
-        PLAYER_MODEL.bipedLeftArmwear.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
+        PLAYER_MODEL.jacket.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
+        PLAYER_MODEL.leftPants.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
+        PLAYER_MODEL.rightPants.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
+        PLAYER_MODEL.leftSleeve.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0, 0, -0.62f);
-        PLAYER_MODEL.bipedRightArmwear.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
-        matrixStack.pop();
+        PLAYER_MODEL.rightSleeve.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
+        matrixStack.popPose();
 
-        PLAYER_MODEL.bipedHeadwear.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
-        PLAYER_MODEL.bipedHead.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
-        matrixStack.pop();
+        PLAYER_MODEL.hat.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
+        PLAYER_MODEL.head.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, alpha);
+        matrixStack.popPose();
     }
 
     public void renderArmor(MatrixStack matrixStack, CryoChamberTileEntity tileEntity, IRenderTypeBuffer buffer, int combinedOverlay) {
         if (tileEntity.getEternal() == null) return;
         BlockState blockState = tileEntity.getBlockState();
-        Direction direction = blockState.get(CryoChamberBlock.FACING);
+        Direction direction = blockState.getValue(CryoChamberBlock.FACING);
 
-        int lightLevel = getLightAtPos(tileEntity.getWorld(), tileEntity.getPos().up());
+        int lightLevel = getLightAtPos(tileEntity.getLevel(), tileEntity.getBlockPos().above());
 
         EternalData eternalData = tileEntity.getEternal();
 
@@ -167,32 +167,32 @@ public class CryoChamberRenderer extends TileEntityRenderer<CryoChamberTileEntit
 
 
     private void renderItem(ItemStack stack, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedOverlay, int lightLevel, Direction direction, EquipmentSlotType slot) {
-        matrixStack.push();
+        matrixStack.pushPose();
         double[] rootTranslation = getRootTranslation(direction);
         double[] itemTranslation = getItemTranslation(slot);
-        matrixStack.rotate(getRotationFromDirection(direction));
+        matrixStack.mulPose(getRotationFromDirection(direction));
         matrixStack.translate(rootTranslation[0], rootTranslation[1], rootTranslation[2]);
         matrixStack.translate(itemTranslation[0], itemTranslation[1], itemTranslation[2]);
         matrixStack.scale(0.25f, 0.25f, 0.25f);
 
-        IBakedModel ibakedmodel = mc.getItemRenderer().getItemModelWithOverrides(stack, null, null);
-        mc.getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GROUND, false, matrixStack, buffer, lightLevel, combinedOverlay, ibakedmodel);
-        matrixStack.pop();
+        IBakedModel ibakedmodel = mc.getItemRenderer().getModel(stack, null, null);
+        mc.getItemRenderer().render(stack, ItemCameraTransforms.TransformType.GROUND, false, matrixStack, buffer, lightLevel, combinedOverlay, ibakedmodel);
+        matrixStack.popPose();
     }
 
     private int getLightAtPos(World world, BlockPos pos) {
-        int blockLight = world.getLightFor(LightType.BLOCK, pos);
-        int skyLight = world.getLightFor(LightType.SKY, pos);
-        return LightTexture.packLight(blockLight, skyLight);
+        int blockLight = world.getBrightness(LightType.BLOCK, pos);
+        int skyLight = world.getBrightness(LightType.SKY, pos);
+        return LightTexture.pack(blockLight, skyLight);
     }
 
     private Quaternion getRotationFromDirection(Direction direction) {
         switch (direction) {
             case NORTH:
             case SOUTH:
-                return Vector3f.YP.rotationDegrees(direction.getOpposite().getHorizontalAngle());
+                return Vector3f.YP.rotationDegrees(direction.getOpposite().toYRot());
             default:
-                return Vector3f.YP.rotationDegrees(direction.getHorizontalAngle());
+                return Vector3f.YP.rotationDegrees(direction.toYRot());
         }
     }
 
@@ -233,17 +233,17 @@ public class CryoChamberRenderer extends TileEntityRenderer<CryoChamberTileEntit
 
     private void renderLiquid(MatrixStack matrixStack, CryoChamberTileEntity tileEntity, IRenderTypeBuffer buffer, float partialTicks) {
         if (tileEntity.getMaxCores() == 0) return;
-        IVertexBuilder builder = buffer.getBuffer(RenderType.getTranslucent());
-        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(Fluids.WATER.getAttributes().getStillTexture());
+        IVertexBuilder builder = buffer.getBuffer(RenderType.translucent());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(PlayerContainer.BLOCK_ATLAS).apply(Fluids.WATER.getAttributes().getStillTexture());
         BlockState blockState = tileEntity.getBlockState();
-        Direction direction = blockState.get(PlayerStatueBlock.FACING);
+        Direction direction = blockState.getValue(PlayerStatueBlock.FACING);
 
         float max = tileEntity.getMaxCores();
         float difference = (float) tileEntity.getCoreCount() - tileEntity.lastCoreCount;
         tileEntity.lastCoreCount += difference * 0.02F;
         float scale = tileEntity.lastCoreCount / max;
 
-        updateIndex(mc.player.ticksExisted);
+        updateIndex(mc.player.tickCount);
 
         updateColor(partialTicks);
 
@@ -251,20 +251,20 @@ public class CryoChamberRenderer extends TileEntityRenderer<CryoChamberTileEntit
         float g = currentColor.getGreen() / 255.0F;
         float b = currentColor.getBlue() / 255.0F;
 
-        float minU = sprite.getInterpolatedU(0);
-        float maxU = sprite.getInterpolatedU(16);
-        float minV = sprite.getInterpolatedV(0);
+        float minU = sprite.getU(0);
+        float maxU = sprite.getU(16);
+        float minV = sprite.getV(0);
 
-        float maxVBottom = sprite.getInterpolatedV(scale < .5 ? (scale * 2) * 16d : 16);
-        float maxVTop = sprite.getInterpolatedV(scale >= .5 ? ((scale * 2) - 1) * 16d : 0);
+        float maxVBottom = sprite.getV(scale < .5 ? (scale * 2) * 16d : 16);
+        float maxVTop = sprite.getV(scale >= .5 ? ((scale * 2) - 1) * 16d : 0);
 
         float bottomHeight = scale < .5f ? scale * 2f : 1.0f;
         float topHeight = scale < .5f ? 0f : Math.min(scale * 2f, 1.90f);
 
-        matrixStack.push();
+        matrixStack.pushPose();
         renderSides(matrixStack, builder, scale, r, g, b, minU, maxU, minV, maxVBottom, maxVTop, bottomHeight, topHeight, direction);
-        renderTop(matrixStack, builder, scale, r, g, b, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV(), bottomHeight, topHeight);
-        matrixStack.pop();
+        renderTop(matrixStack, builder, scale, r, g, b, sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), bottomHeight, topHeight);
+        matrixStack.popPose();
     }
 
 
@@ -286,7 +286,7 @@ public class CryoChamberRenderer extends TileEntityRenderer<CryoChamberTileEntit
     private void renderSides(MatrixStack matrixStack, IVertexBuilder builder, float scale, float r, float g, float b, float minU, float maxU, float minV, float maxVBottom, float maxVTop, float bottomHeight, float topHeight, Direction direction) {
 
         double[] translation = getRootTranslation(direction);
-        matrixStack.rotate(getRotationFromDirection(direction));
+        matrixStack.mulPose(getRotationFromDirection(direction));
         matrixStack.translate(translation[0], translation[1], translation[2]);
 
 
@@ -359,10 +359,10 @@ public class CryoChamberRenderer extends TileEntityRenderer<CryoChamberTileEntit
     }
 
     private void addVertex(IVertexBuilder renderer, MatrixStack stack, float x, float y, float z, float u, float v, float r, float g, float b, float a) {
-        renderer.pos(stack.getLast().getMatrix(), x, y, z)
+        renderer.vertex(stack.last().pose(), x, y, z)
                 .color(r, g, b, .5f)
-                .tex(u, v)
-                .lightmap(0, 240)
+                .uv(u, v)
+                .uv2(0, 240)
                 .normal(1, 0, 0)
                 .endVertex();
     }

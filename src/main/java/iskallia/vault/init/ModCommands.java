@@ -35,7 +35,7 @@ public class ModCommands {
 
         if (!command.isDedicatedServerOnly() || env == Commands.EnvironmentType.DEDICATED || env == Commands.EnvironmentType.ALL) {
             LiteralArgumentBuilder<CommandSource> builder = literal(command.getName());
-            builder.requires((sender) -> sender.hasPermissionLevel(command.getRequiredPermissionLevel()));
+            builder.requires((sender) -> sender.hasPermission(command.getRequiredPermissionLevel()));
             command.build(builder);
             dispatcher.register(literal(Vault.MOD_ID).then(builder));
         }

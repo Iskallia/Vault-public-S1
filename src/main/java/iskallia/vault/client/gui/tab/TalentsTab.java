@@ -25,7 +25,7 @@ public class TalentsTab extends SkillTab {
     public void refresh() {
         this.talentWidgets.clear();
 
-        TalentTree talentTree = parentScreen.getContainer().getTalentTree();
+        TalentTree talentTree = parentScreen.getMenu().getTalentTree();
         ModConfigs.TALENTS_GUI.getStyles().forEach((abilityName, style) -> {
             this.talentWidgets.add(new TalentWidget(
                     ModConfigs.TALENTS.getByName(abilityName),
@@ -62,7 +62,7 @@ public class TalentsTab extends SkillTab {
 
         Vector2f midpoint = parentScreen.getContainerBounds().midpoint();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(midpoint.x, midpoint.y, 0);
         matrixStack.scale(viewportScale, viewportScale, 1);
         matrixStack.translate(viewportTranslation.x, viewportTranslation.y, 0);
@@ -74,7 +74,7 @@ public class TalentsTab extends SkillTab {
             abilityWidget.render(matrixStack, containerMouseX, containerMouseY, partialTicks);
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
 }

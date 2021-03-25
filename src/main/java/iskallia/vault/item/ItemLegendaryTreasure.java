@@ -18,24 +18,26 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class ItemLegendaryTreasure extends Item {
 
     private VaultRarity vaultRarity;
 
     public ItemLegendaryTreasure(ItemGroup group, ResourceLocation id, VaultRarity vaultRarity) {
         super(new Properties()
-                .group(group)
-                .maxStackSize(1));
+                .tab(group)
+                .stacksTo(1));
 
         this.setRegistryName(id);
         this.vaultRarity = vaultRarity;
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        if (worldIn.isRemote) return super.onItemRightClick(worldIn, playerIn, handIn);
-        if (handIn != Hand.MAIN_HAND) return super.onItemRightClick(worldIn, playerIn, handIn);
-        ItemStack stack = playerIn.getHeldItemMainhand();
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        if (worldIn.isClientSide) return super.use(worldIn, playerIn, handIn);
+        if (handIn != Hand.MAIN_HAND) return super.use(worldIn, playerIn, handIn);
+        ItemStack stack = playerIn.getMainHandItem();
         if (stack.getItem() instanceof ItemLegendaryTreasure) {
             ItemLegendaryTreasure item = (ItemLegendaryTreasure) stack.getItem();
             ItemStack toDrop = ItemStack.EMPTY;
@@ -53,31 +55,31 @@ public class ItemLegendaryTreasure extends Item {
                     toDrop = ModConfigs.LEGENDARY_TREASURE_OMEGA.getRandom();
                     break;
             }
-            playerIn.dropItem(toDrop, false);
+            playerIn.drop(toDrop, false);
             stack.shrink(1);
-            ItemRelicBoosterPack.successEffects(worldIn, playerIn.getPositionVec());
+            ItemRelicBoosterPack.successEffects(worldIn, playerIn.position());
         }
 
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+        return super.use(worldIn, playerIn, handIn);
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (stack.getItem() instanceof ItemLegendaryTreasure) {
             ItemLegendaryTreasure item = (ItemLegendaryTreasure) stack.getItem();
             tooltip.add(new StringTextComponent(TextFormatting.GOLD + "Right-Click to identify..."));
             tooltip.add(new StringTextComponent("Rarity: " + item.getRarity().color + item.getRarity()));
         }
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
     @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
+    public ITextComponent getName(ItemStack stack) {
         if (stack.getItem() instanceof ItemLegendaryTreasure) {
             ItemLegendaryTreasure item = (ItemLegendaryTreasure) stack.getItem();
             return new StringTextComponent(item.getRarity().color + "Legendary Treasure");
         }
-        return super.getDisplayName(stack);
+        return super.getName(stack);
     }
 
     public VaultRarity getRarity() {

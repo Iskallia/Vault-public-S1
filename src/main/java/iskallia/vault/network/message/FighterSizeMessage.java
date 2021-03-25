@@ -24,7 +24,7 @@ public class FighterSizeMessage {
 	}
 
 	public FighterSizeMessage(Entity entity, float size) {
-		this(entity.getEntityId(), size);
+		this(entity.getId(), size);
 	}
 
 	public static void encode(FighterSizeMessage message, PacketBuffer buffer) {
@@ -45,8 +45,8 @@ public class FighterSizeMessage {
 		context.enqueueWork(() -> {
 			Minecraft minecraft = Minecraft.getInstance();
 			ClientPlayerEntity player = minecraft.player;
-			World world = player.world;
-			Entity entity = world.getEntityByID(message.entityId);
+			World world = player.level;
+			Entity entity = world.getEntity(message.entityId);
 			if(entity == null || !entity.isAlive())return;
 			if(entity instanceof FighterEntity)((FighterEntity)entity).changeSize(message.size);
 			if(entity instanceof EternalEntity)((EternalEntity)entity).changeSize(message.size);

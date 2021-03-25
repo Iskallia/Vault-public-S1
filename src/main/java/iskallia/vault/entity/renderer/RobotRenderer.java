@@ -16,13 +16,13 @@ public class RobotRenderer extends IronGolemRenderer {
     }
 
     @Override
-    protected void preRenderCallback(IronGolemEntity entitylivingbase, MatrixStack matrixStack, float partialTickTime) {
-        super.preRenderCallback(entitylivingbase, matrixStack, partialTickTime);
+    protected void scale(IronGolemEntity entitylivingbase, MatrixStack matrixStack, float partialTickTime) {
+        super.scale(entitylivingbase, matrixStack, partialTickTime);
         matrixStack.scale(2, 2, 2);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(IronGolemEntity entity) {
+    public ResourceLocation getTextureLocation(IronGolemEntity entity) {
         return TEXTURE;
     }
 

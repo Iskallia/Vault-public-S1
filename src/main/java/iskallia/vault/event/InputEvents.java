@@ -36,28 +36,28 @@ public class InputEvents {
     @SubscribeEvent
     public static void onKey(InputEvent.KeyInputEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.world == null) return;
+        if (minecraft.level == null) return;
         onInput(minecraft, event.getKey(), event.getAction());
     }
 
     @SubscribeEvent
     public static void onMouse(InputEvent.MouseInputEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.world == null) return;
+        if (minecraft.level == null) return;
         onInput(minecraft, event.getButton(), event.getAction());
     }
 
     private static void onInput(Minecraft minecraft, int key, int action) {
-        if (minecraft.currentScreen == null && ModKeybinds.abilityWheelKey.getKey().getKeyCode() == key) {
+        if (minecraft.screen == null && ModKeybinds.abilityWheelKey.getKey().getValue() == key) {
             if (action != GLFW.GLFW_PRESS) return;
             if (AbilitiesOverlay.learnedAbilities.size() <= 2) return;
-            minecraft.displayGuiScreen(new AbilitySelectionScreen());
+            minecraft.setScreen(new AbilitySelectionScreen());
             ModNetwork.CHANNEL.sendToServer(new AbilityKeyMessage(true));
 
-        } else if (minecraft.currentScreen == null && ModKeybinds.openAbilityTree.isPressed()) {
+        } else if (minecraft.screen == null && ModKeybinds.openAbilityTree.consumeClick()) {
             ModNetwork.CHANNEL.sendToServer(new OpenSkillTreeMessage());
 
-        } else if (minecraft.currentScreen == null && ModKeybinds.abilityKey.getKey().getKeyCode() == key) {
+        } else if (minecraft.screen == null && ModKeybinds.abilityKey.getKey().getValue() == key) {
             if (action == GLFW.GLFW_RELEASE) {
                 ModNetwork.CHANNEL.sendToServer(new AbilityKeyMessage(true, false, false, false));
 
@@ -71,12 +71,12 @@ public class InputEvents {
     public static void onMouseScroll(InputEvent.MouseScrollEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
 
-        if (minecraft.world == null) return;
+        if (minecraft.level == null) return;
 
         double scrollDelta = event.getScrollDelta();
 
-        if (ModKeybinds.abilityKey.isKeyDown()) {
-            if (minecraft.currentScreen == null) {
+        if (ModKeybinds.abilityKey.isDown()) {
+            if (minecraft.screen == null) {
                 if (scrollDelta < 0) {
                     ModNetwork.CHANNEL.sendToServer(new AbilityKeyMessage(false, false, false, true));
 
