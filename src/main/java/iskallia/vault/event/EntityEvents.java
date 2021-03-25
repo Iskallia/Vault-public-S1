@@ -220,6 +220,8 @@ public class EntityEvents {
 				//	}
 				//});
 
+				raid.won = true;
+				raid.ticksLeft = 20 * 20;
 				world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 1.0F, 1.0F);
 
 				StringTextComponent title = new StringTextComponent("Vault Cleared!");
