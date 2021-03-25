@@ -146,14 +146,18 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
     public void tick(ServerWorld world) {
         if (this.finished) return;
 
-        if(!this.won && this.summonedBoss && this.bosses.isEmpty()) {
+        if (!this.won && this.summonedBoss && this.bosses.isEmpty()) {
             this.won = true;
             this.ticksLeft = 20 * 20;
         }
 
-        if(this.playerIds.size() == 1) {
+        if (this.playerIds.size() == 1) {
             this.runForPlayers(world.getServer(), player -> {
+
+                this.modifiers.tick(world, player);
+                this.ticksLeft--;
                 this.syncTicksLeft(world.getServer());
+
             });
         } else {
             this.ticksLeft--;
@@ -161,7 +165,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
         }
 
         if (this.ticksLeft <= 0) {
-            if(this.won) {
+            if (this.won) {
                 this.onFinishRaid(world);
             } else {
                 this.runForAll(world.getServer(), player -> {
@@ -178,9 +182,9 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
             }
         } else {
             this.runForPlayers(world.getServer(), player -> {
-                if(this.ticksLeft + 20 < this.sTickLeft
+                if (this.ticksLeft + 20 < this.sTickLeft
                         && player.world.getDimensionKey() != Vault.VAULT_KEY) {
-                    if(player.world.getDimensionKey() == World.OVERWORLD) {
+                    if (player.world.getDimensionKey() == World.OVERWORLD) {
                         //This triggers when you go through the portal or TP out.
                         this.onFinishRaid(world);
                     } else {
@@ -199,7 +203,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
         this.finished = true;
 
         this.runForAll(world.getServer(), player -> {
-            if(!player.removed && player.world.getDimensionKey() == Vault.VAULT_KEY) {
+            if (!player.removed && player.world.getDimensionKey() == Vault.VAULT_KEY) {
                 this.teleportToStart(world, player);
             }
 
@@ -207,13 +211,13 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
 
             List<UUID> list = this.spectators.stream().map(spectator -> spectator.uuid).collect(Collectors.toList());
 
-            if(!player.removed && !list.contains(player.getUniqueID())) {
+            if (!player.removed && !list.contains(player.getUniqueID())) {
                 float range = ModConfigs.VAULT_GENERAL.VAULT_EXIT_TNL_MAX - ModConfigs.VAULT_GENERAL.VAULT_EXIT_TNL_MIN;
                 float tnl = ModConfigs.VAULT_GENERAL.VAULT_EXIT_TNL_MIN + world.rand.nextFloat() * range;
 
                 PlayerVaultStatsData statsData = PlayerVaultStatsData.get(world);
                 PlayerVaultStats stats = statsData.getVaultStats(player);
-                statsData.addVaultExp(player, (int)(stats.getTnl() * tnl));
+                statsData.addVaultExp(player, (int) (stats.getTnl() * tnl));
             }
         });
 
@@ -244,19 +248,19 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
     }
 
     public void runForPlayers(MinecraftServer server, Consumer<ServerPlayerEntity> action) {
-        for(UUID uuid : this.playerIds) {
-            if(server == null)return;
+        for (UUID uuid : this.playerIds) {
+            if (server == null) return;
             ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(uuid);
-            if(player == null)return;
+            if (player == null) return;
             action.accept(player);
         }
     }
 
     public void runForSpectators(MinecraftServer server, Consumer<ServerPlayerEntity> action) {
         this.spectators.stream().map(spectator -> spectator.uuid).forEach(uuid -> {
-            if(server == null)return;
+            if (server == null) return;
             ServerPlayerEntity player = server.getPlayerList().getPlayerByUUID(uuid);
-            if(player == null)return;
+            if (player == null) return;
             action.accept(player);
         });
     }
@@ -280,7 +284,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
 
-        if(this.playerIds.size() == 1) {
+        if (this.playerIds.size() == 1) {
             nbt.putUniqueId("PlayerId", this.playerIds.get(0));
         } else {
             ListNBT playerIdsList = new ListNBT();
@@ -321,7 +325,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        if(nbt.contains("PlayerId")) {
+        if (nbt.contains("PlayerId")) {
             this.playerIds = Collections.singletonList(nbt.getUniqueId("PlayerId"));
         } else {
             ListNBT playerIdsList = nbt.getList("PlayerIds", Constants.NBT.TAG_INT_ARRAY);
@@ -345,17 +349,18 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
             this.start = new BlockPos(startNBT.getInt("x"), startNBT.getInt("y"), startNBT.getInt("z"));
         }
 
-        this.spectators.clear();;
+        this.spectators.clear();
+        ;
         ListNBT spectatorsList = nbt.getList("Spectators", Constants.NBT.TAG_COMPOUND);
         spectatorsList.stream()
-                .map(inbt -> (CompoundNBT)inbt)
+                .map(inbt -> (CompoundNBT) inbt)
                 .map(Spectator::fromNBT)
                 .forEach(this.spectators::add);
 
         this.bosses.clear();
         ListNBT bossesList = nbt.getList("Bosses", Constants.NBT.TAG_STRING);
         bossesList.stream()
-                .map(inbt -> ((StringNBT)inbt).getString())
+                .map(inbt -> ((StringNBT) inbt).getString())
                 .map(UUID::fromString)
                 .forEach(this.bosses::add);
     }
@@ -412,7 +417,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
 
         this.spectatorIds.forEach(uuid -> {
             ServerPlayerEntity player = world.getServer().getPlayerList().getPlayerByUUID(uuid);
-            if(player == null)return;
+            if (player == null) return;
             this.addSpectator(player);
         });
 
@@ -473,18 +478,18 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
 
                 text.append(s);
 
-                if(i == 0) {
+                if (i == 0) {
                     char c = modifier.getName().toLowerCase().charAt(0);
                     startsWithVowel.set(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u');
                 }
 
-                if(i != this.modifiers.size() - 1) {
+                if (i != this.modifiers.size() - 1) {
                     text.append(new StringTextComponent(", "));
                 }
             });
 
             StringTextComponent prefix = new StringTextComponent(startsWithVowel.get() ? " entered an " : " entered a ");
-            if(this.modifiers.size() != 0)text.append(new StringTextComponent(" "));
+            if (this.modifiers.size() != 0) text.append(new StringTextComponent(" "));
 
             String rarityName = VaultRarity.values()[this.rarity].name().toLowerCase();
             rarityName = rarityName.substring(0, 1).toUpperCase() + rarityName.substring(1);
@@ -510,7 +515,7 @@ public class VaultRaid implements INBTSerializable<CompoundNBT> {
         spectator.oldGameType = player.interactionManager.getGameType();
         player.setGameType(GameType.SPECTATOR);
 
-        if(player.world.getDimensionKey() != Vault.VAULT_KEY) {
+        if (player.world.getDimensionKey() != Vault.VAULT_KEY) {
             this.teleportToStart(player.getServer().getWorld(Vault.VAULT_KEY), player);
         }
     }
