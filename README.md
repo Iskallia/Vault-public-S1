@@ -1,6 +1,6 @@
-#Vault
+# Vault
 
-###Here is the recommended way to install at the moment.Radme
+### Here is the recommended way to install at the moment.Radme
 
 1. Download and Install MultiMC - https://multimc.org/#Download
 2. Launch MultiMC 
