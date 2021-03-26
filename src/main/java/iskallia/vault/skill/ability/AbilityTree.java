@@ -255,15 +255,33 @@ public class AbilityTree implements INBTSerializable<CompoundNBT> {
     }
 
     public AbilityTree upgradeAbility(MinecraftServer server, AbilityNode<?> abilityNode) {
+        int abilityIndex = this.nodes.indexOf(abilityNode);
         this.remove(server, abilityNode);
 
         AbilityGroup<?> abilityGroup = ModConfigs.ABILITIES.getByName(abilityNode.getGroup().getParentName());
         AbilityNode<?> upgradedAbilityNode = new AbilityNode<>(abilityGroup, abilityNode.getLevel() + 1);
-        this.add(server, upgradedAbilityNode);
+
+        NetcodeUtils.runIfPresent(server, this.uuid, player -> {
+            if (upgradedAbilityNode.isLearned()) {
+                upgradedAbilityNode.getAbility().onAdded(player);
+            }
+        });
+
+        if (abilityIndex != -1) {
+            // Place ability in its previous location
+            this.nodes.add(abilityIndex, upgradedAbilityNode);
+        }
+        else {
+            // This is just a protective code to avoid not adding upgrade.
+            this.nodes.add(upgradedAbilityNode);
+        }
+
+        this.focusedAbilityIndex = MathHelper.clamp(this.focusedAbilityIndex,
+            0, learnedNodes().size() - 1);
 
         return this;
     }
-
+    
     /* ---------------------------------- */
 
     public AbilityTree add(MinecraftServer server, AbilityNode<?>... nodes) {
