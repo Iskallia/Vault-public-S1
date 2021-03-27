@@ -64,7 +64,6 @@ public class SuperSecretCakes {
 
     @SubscribeEvent
     public static void onCakeEat(PlayerInteractEvent.RightClickBlock event) {
-        if (event.getWorld().isRemote()) return;
         if (event.getWorld().getDimensionKey() != Vault.VAULT_KEY) return;
 
         if (event.getWorld().getBlockState(event.getPos()).getBlock() == Blocks.CAKE) {
