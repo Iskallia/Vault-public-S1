@@ -81,6 +81,7 @@ public class VaultAltarBlock extends Block {
     }
 
     private ActionResultType onAddVaultRock(ServerWorld worldIn, PlayerEntity player, VaultAltarTileEntity altar, ItemStack heldItem, PlayerVaultAltarData data) {
+        if(altar.containsVaultRock()) return ActionResultType.FAIL;
         AltarInfusionRecipe recipe = data.getRecipe(worldIn, player);
 
         altar.setRecipe(recipe);
