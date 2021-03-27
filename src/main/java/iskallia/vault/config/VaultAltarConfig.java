@@ -82,9 +82,9 @@ public class VaultAltarConfig extends Config {
 
     public List<RequiredItem> generateItems(ServerWorld world, PlayerEntity player) {
 
-        return getRequiredItemsFromJson();
+        // return getRequiredItemsFromJson();
 
-        //return getRequiredItemsFromTables(world, player);
+        return getRequiredItemsFromTables(world, player);
     }
 
     private List<RequiredItem> getRequiredItemsFromJson() {
