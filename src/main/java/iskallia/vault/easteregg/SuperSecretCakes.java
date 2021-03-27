@@ -53,6 +53,7 @@ public class SuperSecretCakes {
 
     @SubscribeEvent
     public static void onCakePlaced(BlockEvent.EntityPlaceEvent event) {
+        if (event.getWorld().isRemote()) return;
         if (((ServerWorld) event.getWorld()).getDimensionKey() != Vault.VAULT_KEY) return;
 
         // Cancel if put by players or tile entities
@@ -63,6 +64,7 @@ public class SuperSecretCakes {
 
     @SubscribeEvent
     public static void onCakeEat(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getWorld().isRemote()) return;
         if (event.getWorld().getDimensionKey() != Vault.VAULT_KEY) return;
 
         if (event.getWorld().getBlockState(event.getPos()).getBlock() == Blocks.CAKE) {
