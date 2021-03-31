@@ -1,10 +1,12 @@
 package iskallia.vault.block;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -58,5 +60,13 @@ public class VaultDoorBlock extends DoorBlock {
         return ActionResultType.PASS;
     }
 
+    @Override
+    public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+        //Not reacting to neighbor changes, esp. not redstone
+    }
 
+    @Override
+    public PushReaction getPushReaction(BlockState state) {
+        return PushReaction.IGNORE;
+    }
 }
