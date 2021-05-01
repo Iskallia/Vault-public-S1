@@ -33,7 +33,7 @@ public class ModConfigs {
     public static GiftBombConfig GIFT_BOMB;
     public static StatueLootConfig STATUE_LOOT;
     public static CryoChamberConfig CRYO_CHAMBER;
-    public static KeyPressRecipesConfig KEY_PRESS;
+//    public static KeyPressRecipesConfig KEY_PRESS;
     public static OverLevelEnchantConfig OVERLEVEL_ENCHANT;
     public static VaultStewConfig VAULT_STEW;
     public static MysteryBoxConfig MYSTERY_BOX;
@@ -83,7 +83,7 @@ public class ModConfigs {
         GIFT_BOMB = (GiftBombConfig) new GiftBombConfig().readConfig();
         STATUE_LOOT = (StatueLootConfig) new StatueLootConfig().readConfig();
         CRYO_CHAMBER = (CryoChamberConfig) new CryoChamberConfig().readConfig();
-        KEY_PRESS = (KeyPressRecipesConfig) new KeyPressRecipesConfig().readConfig();
+//        KEY_PRESS = (KeyPressRecipesConfig) new KeyPressRecipesConfig().readConfig();
         OVERLEVEL_ENCHANT = (OverLevelEnchantConfig) new OverLevelEnchantConfig().readConfig();
         VAULT_STEW = (VaultStewConfig) new VaultStewConfig().readConfig();
         MYSTERY_BOX = (MysteryBoxConfig) new MysteryBoxConfig().readConfig();

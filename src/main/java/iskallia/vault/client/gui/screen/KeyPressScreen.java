@@ -13,7 +13,7 @@ import net.minecraft.util.text.StringTextComponent;
 
 public class KeyPressScreen extends ContainerScreen<KeyPressContainer> {
 
-    private static final ResourceLocation GUI_RESOURCE = Vault.id("textures/gui/key-press.png");
+    public static final ResourceLocation GUI_RESOURCE = Vault.id("textures/gui/key-press.png");
 
     public KeyPressScreen(KeyPressContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);

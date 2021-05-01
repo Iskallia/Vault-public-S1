@@ -1,0 +1,13 @@
+{
+  "type": "the_vault:key_press_recipe",
+  "key": {
+    "item": "the_vault:blank_key"
+  },
+  "cluster": {
+    "item": "the_vault:cluster_wutodie"
+  },
+  "result": {
+    "item": "the_vault:key_wutodie",
+    "count": 1
+  }
+}
