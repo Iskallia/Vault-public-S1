@@ -49,7 +49,7 @@ public class UnidentifiedRelicRecipe extends SpecialRecipe {
 
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
-		return ModRecipes.Serializer.CRAFTING_SPECIAL_UNIDENTIFIED_RELIC;
+		return null;//ModRecipes.Serializer.CRAFTING_SPECIAL_UNIDENTIFIED_RELIC;
 	}
 
 }
