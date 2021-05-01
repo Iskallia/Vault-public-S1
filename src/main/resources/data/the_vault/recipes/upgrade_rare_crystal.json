@@ -1,0 +1,19 @@
+{
+  "type": "the_vault:crystal_crafting",
+  "pattern": [
+    "ccc",
+    "csc",
+    "ccc"
+  ],
+  "key": {
+    "s": {
+      "item": "the_vault:spark"
+    },
+    "c": {
+      "item": "the_vault:vault_crystal_rare"
+    }
+  },
+  "result": {
+    "item": "the_vault:vault_crystal_epic"
+  }
+}

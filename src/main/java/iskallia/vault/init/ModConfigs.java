@@ -45,7 +45,7 @@ public class ModConfigs {
     public static PandorasBoxConfig PANDORAS_BOX;
     public static EternalConfig ETERNAL;
     public static VaultTimerConfig VAULT_TIMER;
-    public static CrystalUpgradeConfig CRYSTAL_UPGRADE;
+//    public static CrystalUpgradeConfig CRYSTAL_UPGRADE;
     public static VaultGearConfig VAULT_GEAR_SCRAPPY;
     public static VaultGearConfig VAULT_GEAR_COMMON;
     public static VaultGearConfig VAULT_GEAR_RARE;
@@ -95,7 +95,7 @@ public class ModConfigs {
         PANDORAS_BOX = (PandorasBoxConfig) new PandorasBoxConfig().readConfig();
         ETERNAL = (EternalConfig) new EternalConfig().readConfig();
         VAULT_TIMER = (VaultTimerConfig) new VaultTimerConfig().readConfig();
-        CRYSTAL_UPGRADE = (CrystalUpgradeConfig) new CrystalUpgradeConfig().readConfig();
+//        CRYSTAL_UPGRADE = (CrystalUpgradeConfig) new CrystalUpgradeConfig().readConfig();
         VAULT_GEAR_SCRAPPY = (VaultGearConfig) new VaultGearConfig.Scrappy().readConfig();
         VAULT_GEAR_COMMON = (VaultGearConfig) new VaultGearConfig.Common().readConfig();
         VAULT_GEAR_RARE = (VaultGearConfig) new VaultGearConfig.Rare().readConfig();
