@@ -67,7 +67,7 @@ public class RelicSetRecipe extends SpecialRecipe {
 
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
-		return ModRecipes.Serializer.CRAFTING_SPECIAL_RELIC_SET;
+		return null;// ModRecipes.Serializer.CRAFTING_SPECIAL_RELIC_SET;
 	}
 
 }

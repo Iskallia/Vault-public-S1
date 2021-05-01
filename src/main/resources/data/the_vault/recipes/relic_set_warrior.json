@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:relic_sword_blade"},
+    {"item": "the_vault:relic_sword_stick"},
+    {"item": "the_vault:relic_sword_handle"},
+    {"item": "the_vault:relic_warriors_armour"},
+    {"item": "the_vault:relic_warriors_charm"}
+  ],
+  "result": {
+    "item": "the_vault:relic_statue",
+    "count": 1,
+    "nbt": "{\"BlockEntityTag\": {\"RelicSet\": \"the_vault:warrior\"}}"
+  }
+}

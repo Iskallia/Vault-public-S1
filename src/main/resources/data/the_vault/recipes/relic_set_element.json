@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:relic_air"},
+    {"item": "the_vault:relic_spirit"},
+    {"item": "the_vault:relic_fire"},
+    {"item": "the_vault:relic_earth"},
+    {"item": "the_vault:relic_water"}
+  ],
+  "result": {
+    "item": "the_vault:relic_statue",
+    "count": 1,
+    "nbt": "{\"BlockEntityTag\": {\"RelicSet\": \"the_vault:element\"}}"
+  }
+}

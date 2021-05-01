@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:relic_miners_delight"},
+    {"item": "the_vault:relic_miners_light"},
+    {"item": "the_vault:relic_pickaxe_handle"},
+    {"item": "the_vault:relic_pickaxe_head"},
+    {"item": "the_vault:relic_pickaxe_tool"}
+  ],
+  "result": {
+    "item": "the_vault:relic_statue",
+    "count": 1,
+    "nbt": "{\"BlockEntityTag\": {\"RelicSet\": \"the_vault:miner\"}}"
+  }
+}

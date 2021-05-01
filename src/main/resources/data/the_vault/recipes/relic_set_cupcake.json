@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:relic_cupcake_blue"},
+    {"item": "the_vault:relic_cupcake_lime"},
+    {"item": "the_vault:relic_cupcake_pink"},
+    {"item": "the_vault:relic_cupcake_purple"},
+    {"item": "the_vault:relic_cupcake_red"}
+  ],
+  "result": {
+    "item": "the_vault:relic_statue",
+    "count": 1,
+    "nbt": "{\"BlockEntityTag\": {\"RelicSet\": \"the_vault:cupcake\"}}"
+  }
+}
