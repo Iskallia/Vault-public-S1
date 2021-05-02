@@ -30,8 +30,8 @@ public class StepTalent extends PlayerTalent {
 	@Override
 	public void onAdded(PlayerEntity player) {
 		//System.out.println(player.stepHeisght);
-		player.stepHeight += this.stepHeightAddend;
-		set((ServerPlayerEntity)player, player.stepHeight + this.stepHeightAddend);
+		//player.stepHeight += this.stepHeightAddend;
+		set((ServerPlayerEntity) player, player.stepHeight + this.stepHeightAddend);
 		//System.out.println(player.stepHeight);
 	}
 
@@ -60,8 +60,9 @@ public class StepTalent extends PlayerTalent {
 			totalStepHeight += talent.getStepHeightAddend();
 		}
 
-		if(totalStepHeight != 0.0F) {
-			set(player, player.stepHeight + totalStepHeight);
+		// Add stepHeight from default value, what is 1.0F
+		if (totalStepHeight != 0.0F) {
+			set(player, 1.0F + totalStepHeight);
 		}
 	}
 
