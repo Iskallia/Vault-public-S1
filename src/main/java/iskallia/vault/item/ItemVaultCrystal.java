@@ -115,6 +115,11 @@ public class ItemVaultCrystal extends Item {
     }
 
     private boolean tryCreatePortal(ItemVaultCrystal crystal, World world, BlockPos pos, Direction facing, String playerBossName, CrystalData data) {
+        if (world.getDimensionKey() != World.OVERWORLD)
+        {
+            return false;
+        }
+
         Optional<VaultPortalSize> optional = VaultPortalSize.getPortalSize(world, pos.offset(facing), Direction.Axis.X);
         if (optional.isPresent()) {
             optional.get().placePortalBlocks(crystal, playerBossName, data);
