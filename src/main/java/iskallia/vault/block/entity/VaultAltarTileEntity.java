@@ -261,18 +261,30 @@ public class VaultAltarTileEntity extends TileEntity implements ITickableTileEnt
                 if (recipe != null && !recipe.getRequiredItems().isEmpty()) {
                     List<RequiredItem> items = recipe.getRequiredItems();
                     for (RequiredItem item : items) {
-                        if (item.reachedAmountRequired()) {
-                            return stack;
-                        }
                         if (item.isItemEqual(stack)) {
+                            if (item.reachedAmountRequired()) {
+                                return stack;
+                            }
                             int amount = stack.getCount();
                             int excess = item.getRemainder(amount);
                             if (excess > 0) {
-                                item.setCurrentAmount(item.getAmountRequired());
+                                // VanillaInventoryCodeHooks#insertItem operates in 2 modes: simulate and actual insert.
+                                // It triggers it 2 times, first time to check if it works, and second time to actually
+                                // insert items. It must be required to check if simulate is false, otherwise,
+                                // all items will be inserted twice.
+                                if (!simulate) {
+                                    item.setCurrentAmount(item.getAmountRequired());
+                                }
                                 stack.setCount(excess);
                                 return ItemHandlerHelper.copyStackWithSize(stack, excess);
                             } else {
-                                item.addAmount(stack.getCount());
+                                // VanillaInventoryCodeHooks#insertItem operates in 2 modes: simulate and actual insert.
+                                // It triggers it 2 times, first time to check if it works, and second time to actually
+                                // insert items. It must be required to check if simulate is false, otherwise,
+                                // all items will be inserted twice.
+                                if (!simulate) {
+                                    item.addAmount(stack.getCount());
+                                }
                                 return ItemStack.EMPTY;
                             }
                         }
