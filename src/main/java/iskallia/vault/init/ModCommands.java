@@ -20,6 +20,7 @@ public class ModCommands {
     public static InternalCommand INTERNAL;
     public static GiveBitsCommand GIVE_BITS;
     public static GearDebugCommand GEAR_DEBUG_COMMAND;
+    public static ResetTraderCommand RESET_TRADER_COMMAND;
 
     public static void registerCommands(CommandDispatcher<CommandSource> dispatcher, Commands.EnvironmentType env) {
         RELOAD_CONFIGS = registerCommand(ReloadConfigsCommand::new, dispatcher, env);
@@ -28,6 +29,7 @@ public class ModCommands {
         INTERNAL = registerCommand(InternalCommand::new, dispatcher, env);
         GIVE_BITS = registerCommand(GiveBitsCommand::new, dispatcher, env);
         GEAR_DEBUG_COMMAND = registerCommand(GearDebugCommand::new, dispatcher, env);
+        RESET_TRADER_COMMAND = registerCommand(ResetTraderCommand::new, dispatcher, env);
     }
 
     public static <T extends Command> T registerCommand(Supplier<T> supplier, CommandDispatcher<CommandSource> dispatcher, Commands.EnvironmentType env) {

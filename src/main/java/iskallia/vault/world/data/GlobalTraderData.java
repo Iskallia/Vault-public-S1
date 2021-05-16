@@ -62,16 +62,36 @@ public class GlobalTraderData extends WorldSavedData {
         this.markDirty();
     }
 
+    private static final int dayInSeconds = 24 * 60 * 60;
+
+    private static int resetCounter = 0;
+    private static boolean isReset = false;
+
     @SubscribeEvent
     public static void onTick(TickEvent.WorldTickEvent event) {
-        if (event.world.getGameTime() % 20 != 0 || event.phase == TickEvent.Phase.END || event.world.getDimensionKey() != World.OVERWORLD)
+        if (event.phase == TickEvent.Phase.END || event.world.getDimensionKey() != World.OVERWORLD || event.side.isClient())
             return;
 
         long time = Instant.now().getEpochSecond();
-        if (time % (24 * 60 * 60) == 0) {
-            resetTrades();
-            GlobalTraderData.get((ServerWorld) event.world).markDirty();
+        if (time % dayInSeconds == 0) {
+            if (!isReset) {
+                reset((ServerWorld) event.world);
+                isReset = true;
+            }
         }
+        if (isReset) {
+            if (resetCounter++ >= 600) {
+                isReset = false;
+                resetCounter = 0;
+            }
+        }
+    }
+
+    public static void reset(ServerWorld world) {
+        resetTrades();
+        GlobalTraderData.get(world).markDirty();
+
+        Vault.LOGGER.info("Global Trades Reset");
     }
 
     private static void resetTrades() {
