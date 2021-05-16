@@ -262,17 +262,22 @@ public class VaultAltarTileEntity extends TileEntity implements ITickableTileEnt
                     List<RequiredItem> items = recipe.getRequiredItems();
                     for (RequiredItem item : items) {
                         if (item.reachedAmountRequired()) {
-                            return stack;
+                            continue;
                         }
                         if (item.isItemEqual(stack)) {
                             int amount = stack.getCount();
                             int excess = item.getRemainder(amount);
                             if (excess > 0) {
-                                item.setCurrentAmount(item.getAmountRequired());
-                                stack.setCount(excess);
+                                if (!simulate) {
+                                    item.setCurrentAmount(item.getAmountRequired());
+                                    PlayerVaultAltarData.get((ServerWorld) world).markDirty();
+                                }
                                 return ItemHandlerHelper.copyStackWithSize(stack, excess);
                             } else {
-                                item.addAmount(stack.getCount());
+                                if (!simulate) {
+                                    item.addAmount(stack.getCount());
+                                    PlayerVaultAltarData.get((ServerWorld) world).markDirty();
+                                }
                                 return ItemStack.EMPTY;
                             }
                         }
