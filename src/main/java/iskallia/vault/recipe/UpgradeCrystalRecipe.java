@@ -1,102 +1,122 @@
 package iskallia.vault.recipe;
 
-import iskallia.vault.init.ModConfigs;
-import iskallia.vault.init.ModItems;
+import com.google.gson.JsonObject;
+
 import iskallia.vault.init.ModRecipes;
 import iskallia.vault.item.ItemVaultCrystal;
-import iskallia.vault.util.VaultRarity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
+import java.util.*;
 
-public class UpgradeCrystalRecipe extends SpecialRecipe {
 
-	public UpgradeCrystalRecipe(ResourceLocation id) {
-		super(id);
+/**
+ * This class manages crystal upgrade recipes.
+ * The custom processing is necessary to keep boss names in the crystals.
+ */
+public class UpgradeCrystalRecipe extends ShapedRecipe
+{
+	/**
+	 * Class serializer instance.
+	 */
+	public static final Serializer SERIALIZER = new Serializer();
+
+
+	/**
+	 * Default constructor.
+	 */
+	public UpgradeCrystalRecipe(ResourceLocation idIn,
+		String groupIn,
+		int recipeWidthIn,
+		int recipeHeightIn,
+		NonNullList<Ingredient> recipeItemsIn,
+		ItemStack recipeOutputIn)
+	{
+		super(idIn, groupIn, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
 	}
 
+
+	/**
+	 * This method creates crafting result based on input crystals.
+	 * If crystal has a boss name assigned to it, it randomly chooses one name based on used crystal names.
+	 */
 	@Override
-	public boolean matches(CraftingInventory inv, World world) {
-		VaultRarity rarity = null;
-		boolean hasSpark = false;
-		int count = 0;
+	public ItemStack getCraftingResult(CraftingInventory inventory)
+	{
+		List<String> bossNames = new ArrayList<>(inventory.getSizeInventory());
 
-		for(int i = 0; i < inv.getSizeInventory(); ++i) {
-			ItemStack stack = inv.getStackInSlot(i);
+		for (int i = 0; i < inventory.getSizeInventory(); ++i)
+		{
+			ItemStack stack = inventory.getStackInSlot(i);
 
-			if(stack.getItem() instanceof ItemVaultCrystal) {
-				if(rarity != null && ((ItemVaultCrystal)stack.getItem()).getRarity() != rarity) {
-					return false;
+			if (stack.getItem() instanceof ItemVaultCrystal)
+			{
+				if (stack.hasTag() && stack.getTag().contains("playerBossName", Constants.NBT.TAG_STRING))
+				{
+					bossNames.add(stack.getTag().getString("playerBossName"));
 				}
-
-				rarity = ((ItemVaultCrystal)stack.getItem()).getRarity();
-				count++;
-			} else if(!hasSpark && stack.getItem() == ModItems.SPARK) {
-				hasSpark = true;
-			} else if(!stack.isEmpty()) {
-				return false;
 			}
 		}
 
-		int targetCount = Integer.MAX_VALUE;
+		ItemStack returnCrystal = super.getCraftingResult(inventory);
 
-		if(rarity == VaultRarity.COMMON) {
-			targetCount = ModConfigs.CRYSTAL_UPGRADE.COMMON_TO_RARE;
-		} else if(rarity == VaultRarity.RARE) {
-			targetCount = ModConfigs.CRYSTAL_UPGRADE.RARE_TO_EPIC;
-		} else if(rarity == VaultRarity.EPIC) {
-			targetCount = ModConfigs.CRYSTAL_UPGRADE.EPIC_TO_OMEGA;
+		if (!bossNames.isEmpty())
+		{
+			Collections.shuffle(bossNames);
+			returnCrystal.getOrCreateTag().putString("playerBossName", bossNames.get(0));
 		}
 
-		return rarity != null && hasSpark && count == targetCount;
+		return returnCrystal;
 	}
 
-	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv) {
-		List<ItemStack> crystals = new ArrayList<>();
-		VaultRarity rarity = null;
 
-		for(int i = 0; i < inv.getSizeInventory(); ++i) {
-			ItemStack stack = inv.getStackInSlot(i);
-
-			if(stack.getItem() instanceof ItemVaultCrystal) {
-				rarity = ((ItemVaultCrystal)stack.getItem()).getRarity();
-				crystals.add(stack);
-			}
+	/**
+	 * Custom shaped recipe serializer that allows to save and load Upgrade Crystal Recipes.
+	 */
+	public static class Serializer extends ShapedRecipe.Serializer
+	{
+		/**
+		 * Default constructor.
+		 */
+		Serializer()
+		{
+			this.setRegistryName(ModRecipes.UPGRADE_CRYSTAL_RECIPE.toString());
 		}
 
-		List<String> bossNames = crystals.stream()
-				.filter(ItemStack::hasTag)
-				.filter(stack -> stack.getTag().contains("playerBossName", Constants.NBT.TAG_STRING))
-				.map(stack -> stack.getTag().getString("playerBossName"))
-				.sorted(String::compareToIgnoreCase)
-				.collect(Collectors.toList());
 
-		if(!bossNames.isEmpty()) {
-			return ItemVaultCrystal.getCrystalWithBoss(VaultRarity.values()[rarity.ordinal() + 1],
-					bossNames.get(new Random(bossNames.hashCode()).nextInt(bossNames.size())));
+		/**
+		 * Reader that transforms given shaped recipe to UpgradeCrystalRecipe.
+		 */
+		public ShapedRecipe read(ResourceLocation recipeId, JsonObject json) {
+			ShapedRecipe shapedRecipe = super.read(recipeId, json);
+
+			return new UpgradeCrystalRecipe(shapedRecipe.getId(),
+				shapedRecipe.getGroup(),
+				shapedRecipe.getRecipeWidth(),
+				shapedRecipe.getRecipeHeight(),
+				shapedRecipe.getIngredients(),
+				shapedRecipe.getRecipeOutput());
 		}
 
-		return ItemVaultCrystal.getCrystal(VaultRarity.values()[rarity.ordinal() + 1]);
-	}
 
-	@Override
-	public boolean canFit(int width, int height) {
-		return width * height >= Math.min(Math.min(ModConfigs.CRYSTAL_UPGRADE.COMMON_TO_RARE, ModConfigs.CRYSTAL_UPGRADE.RARE_TO_EPIC), ModConfigs.CRYSTAL_UPGRADE.EPIC_TO_OMEGA);
-	}
+		/**
+		 * Reader that transforms given shaped recipe to UpgradeCrystalRecipe.
+		 */
+		public ShapedRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+			ShapedRecipe shapedRecipe = super.read(recipeId, buffer);
 
-	@Override
-	public IRecipeSerializer<?> getSerializer() {
-		return ModRecipes.Serializer.CRAFTING_SPECIAL_UPGRADE_CRYSTAL;
+			return new UpgradeCrystalRecipe(shapedRecipe.getId(),
+				shapedRecipe.getGroup(),
+				shapedRecipe.getRecipeWidth(),
+				shapedRecipe.getRecipeHeight(),
+				shapedRecipe.getIngredients(),
+				shapedRecipe.getRecipeOutput());
+		}
 	}
-
 }
