@@ -1,3 +1,36 @@
 {
-  "type": "the_vault:crafting_special_mystery_stew"
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:bowl"
+    },
+    {
+      "item": "the_vault:vault_diamond"
+    },
+    {
+      "item": "the_vault:hunter_eye"
+    },
+    {
+      "item": "the_vault:oozing_pizza"
+    },
+    {
+      "item": "the_vault:poisonous_mushroom"
+    },
+    {
+      "item": "the_vault:sweet_kiwi"
+    },
+    {
+      "tag": "the_vault:gems"
+    },
+    {
+      "tag": "the_vault:gems"
+    },
+    {
+      "tag": "the_vault:gems"
+    }
+  ],
+  "result": {
+    "item": "the_vault:vault_stew_mystery",
+    "count": 1
+  }
 }

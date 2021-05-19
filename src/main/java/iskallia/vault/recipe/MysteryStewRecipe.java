@@ -63,7 +63,7 @@ public class MysteryStewRecipe extends SpecialRecipe {
 
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
-		return ModRecipes.Serializer.CRAFTING_SPECIAL_MYSTERY_STEW;
+		return ModRecipes.Serializer.CRAFTING_SPECIAL_RELIC_SET;//CRAFTING_SPECIAL_MYSTERY_STEW;
 	}
 
 }
