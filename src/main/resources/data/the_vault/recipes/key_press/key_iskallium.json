@@ -1,0 +1,13 @@
+{
+  "type": "the_vault:key_press_recipe",
+  "key": {
+    "item": "the_vault:blank_key"
+  },
+  "cluster": {
+    "item": "the_vault:cluster_iskallium"
+  },
+  "result": {
+    "item": "the_vault:key_iskallium",
+    "count": 1
+  }
+}
