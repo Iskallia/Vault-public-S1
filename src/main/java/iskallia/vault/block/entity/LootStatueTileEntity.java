@@ -108,7 +108,7 @@ public class LootStatueTileEntity extends TileEntity implements ITickableTileEnt
     @Override
     public void tick() {
         if (world.isRemote) return;
-        if (currentTick++ == getModifiedInterval()) {
+        if (currentTick++ >= getModifiedInterval()) {
             currentTick = 0;
 
             ItemStack stack = lootItem.copy();
