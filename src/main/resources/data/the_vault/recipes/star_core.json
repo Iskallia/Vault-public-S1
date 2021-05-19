@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "dbd",
+    " b ",
     "bcb",
-    "dbd"
+    " b "
   ],
   "key": {
     "b": {
@@ -11,9 +11,6 @@
     },
     "c": {
       "item": "the_vault:vault_diamond_block"
-    },
-    "d": {
-      "item": "minecraft:air"
     }
   },
   "result": {
