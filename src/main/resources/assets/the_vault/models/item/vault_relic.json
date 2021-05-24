@@ -21,6 +21,12 @@
     },
     {
       "predicate": {
+        "custom_model_data": 3
+      },
+      "model": "the_vault:item/statue_twitch"
+    },
+    {
+      "predicate": {
         "custom_model_data": 4
       },
       "model": "the_vault:item/statue_cupcake"
