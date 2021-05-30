@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {"item": "the_vault:relic_dragon_head"},
+    {"item": "the_vault:relic_dragon_tail"},
+    {"item": "the_vault:relic_dragon_foot"},
+    {"item": "the_vault:relic_dragon_chest"},
+    {"item": "the_vault:relic_dragon_breath"}
+  ],
+  "result": {
+    "item": "the_vault:relic_statue",
+    "count": 1,
+    "nbt": "{\"BlockEntityTag\": {\"RelicSet\": \"the_vault:dragon\"}}"
+  }
+}
