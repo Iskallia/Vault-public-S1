@@ -110,7 +110,7 @@ public class KeyPressContainer extends Container {
         ItemStack keyStack = internalInventory.getStackInSlot(KeyPressInventory.KEY_SLOT);
         ItemStack clusterStack = internalInventory.getStackInSlot(KeyPressInventory.CLUSTER_SLOT);
        
-        if (!keyStack.isEmpty()||!clusterStack.isEmpty()) {
+        if (!keyStack.isEmpty()||!clusterStack.isEmpty()) { //return both inventories to the player
             EntityHelper.giveItem(player, keyStack);
             EntityHelper.giveItem(player, clusterStack);
         }
