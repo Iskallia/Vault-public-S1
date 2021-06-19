@@ -25,7 +25,7 @@ public class GhostWalkEffect extends Effect {
         this.attributeModifiers = new AttributeModifier[ModConfigs.ABILITIES.GHOST_WALK.getMaxLevel()];
         for (int i = 0; i < this.attributeModifiers.length; i++) {
             this.attributeModifiers[i] = new AttributeModifier(this.getRegistryName().toString(),
-                    (i + 1) * 0.2f, AttributeModifier.Operation.ADDITION);
+                    (i + 1) * 0.2f, AttributeModifier.Operation.MULTIPLY_TOTAL);
         }
     }
 
