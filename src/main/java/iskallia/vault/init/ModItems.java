@@ -152,7 +152,7 @@ public class ModItems {
     public static BasicItem VAULT_GOLD = new BasicItem(Vault.id("vault_gold"), new Item.Properties().group(VAULT_MOD_GROUP));
     public static BasicItem VAULT_DIAMOND = new BasicItem(Vault.id("vault_diamond"), new Item.Properties().group(VAULT_MOD_GROUP));
     public static BasicItem SKILL_ESSENCE = new BasicItem(Vault.id("skill_essence"), new Item.Properties().group(VAULT_MOD_GROUP));
-    public static VaultXPFoodItem OOZING_PIZZA = new VaultXPFoodItem(Vault.id("oozing_pizza"), () -> 0.0F, () -> 0.0F, new Item.Properties().group(VAULT_MOD_GROUP));
+    public static VaultXPFoodItem OOZING_PIZZA = new VaultXPFoodItem(Vault.id("oozing_pizza"), () -> ModConfigs.VAULT_ITEMS.OOZING_PIZZA.minExpPercent, () -> ModConfigs.VAULT_ITEMS.OOZING_PIZZA.maxExpPercent, new Item.Properties().group(VAULT_MOD_GROUP));
     public static LootableItem UNIDENTIFIED_RELIC = new LootableItem(Vault.id("unidentified_relic"), new Item.Properties().group(VAULT_MOD_GROUP), () -> new ItemStack(ModConfigs.VAULT_RELICS.getRandomPart()));
     public static ItemVaultFruit.SweetKiwi SWEET_KIWI = new ItemVaultFruit.SweetKiwi(VAULT_MOD_GROUP, Vault.id("sweet_kiwi"), 20 * 5);
     public static BasicItem HUNTER_EYE = new BasicItem(Vault.id("hunter_eye"), new Item.Properties().group(VAULT_MOD_GROUP));
