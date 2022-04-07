@@ -1,4 +1,4 @@
-package iskallia.vault.config;
+public package iskallia.vault.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,10 +30,12 @@ public abstract class Config {
 
 	public Config readConfig() {
 		try {
-			return GSON.fromJson(new FileReader(this.getConfigFile()), this.getClass());
+			return GSON.fromJson(new InputStreamReader(new FileInputStream(getConfigFile()),"utf-8"), this.getClass());
 		} catch (FileNotFoundException e) {
 			this.generateConfig();
-		}
+		} catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
 
 		return this;
 	}
@@ -44,7 +46,7 @@ public abstract class Config {
 		File dir = new File(this.root);
 		if(!dir.exists() && !dir.mkdirs())return;
 		if(!this.getConfigFile().exists() && !this.getConfigFile().createNewFile())return;
-		FileWriter writer = new FileWriter(this.getConfigFile());
+		OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(getConfigFile()),"utf-8");
 		GSON.toJson(this, writer);
 		writer.flush();
 		writer.close();
