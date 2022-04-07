@@ -34,8 +34,8 @@ public abstract class Config {
 		} catch (FileNotFoundException e) {
 			this.generateConfig();
 		} catch (UnsupportedEncodingException e){
-            e.printStackTrace();
-        }
+            		e.printStackTrace();
+        	}
 
 		return this;
 	}
